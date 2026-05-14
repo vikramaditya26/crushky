@@ -228,6 +228,9 @@ Codex needs a GitHub Personal Access Token. Aditya should:
 - GitHub remote URL verified: `https://github.com/vikramaditya26/crushky.git`
 - Remote appeared reachable but had no visible refs at the time of setup, so treat it as likely empty unless a later agent sees otherwise.
 - Untracked folder `crushky-temp/` is present in the repo root and looks like a separate Vite scaffold. Codex did not commit it yet because it may be temporary or may need to be moved into the actual root structure intentionally.
+- Local commit created by Codex: `7cee58c` with message: `chore: bootstrap repo and document agent handoff`
+- Push attempt from this machine reached GitHub but failed with `403 Permission denied` because the active credential resolved to `adityakumar-teachmint`, which does not have write access to `vikramaditya26/crushky`.
+- Before the next push attempt, switch Git credentials to the correct GitHub account or use a PAT that has repo access to `vikramaditya26/crushky`.
 - Next agent should run `git status`, confirm `origin`, and then continue scaffolding the MVP before committing and pushing.
 - Any major implementation change from here onward should be appended back into this file so parallel agents have a reliable handoff trail.
 
