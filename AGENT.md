@@ -231,6 +231,7 @@ Codex needs a GitHub Personal Access Token. Aditya should:
 - Local commit created by Codex: `7cee58c` with message: `chore: bootstrap repo and document agent handoff`
 - Push attempt from this machine reached GitHub but failed with `403 Permission denied` because the active credential resolved to `adityakumar-teachmint`, which does not have write access to `vikramaditya26/crushky`.
 - Before the next push attempt, switch Git credentials to the correct GitHub account or use a PAT that has repo access to `vikramaditya26/crushky`.
+- After the bootstrap commits, a root-level Vite scaffold appeared in `/Users/aditya/Desktop/Crushky` (`package.json`, `src/`, `public/`, `vite.config.js`, etc.) along with an expanded `.gitignore` and local `node_modules/`. This work is currently uncommitted and should be reviewed before any push.
 - Next agent should run `git status`, confirm `origin`, and then continue scaffolding the MVP before committing and pushing.
 - Any major implementation change from here onward should be appended back into this file so parallel agents have a reliable handoff trail.
 
