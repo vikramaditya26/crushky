@@ -9,11 +9,6 @@ export default function Landing() {
       <NavBar />
 
       <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
-        <div className="mb-6 rounded-full border border-amber/30 bg-amber/10 px-5 py-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber">
-            Hello World - Vercel deployment check
-          </p>
-        </div>
         <p className="text-amber font-medium text-sm tracking-widest uppercase mb-6">
           AI-Powered Dating
         </p>

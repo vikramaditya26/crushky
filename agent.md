@@ -195,7 +195,6 @@ Match reveal always shows the "best" match with a generated explanation paragrap
 | Pushed to GitHub | ✅ Done | Claude Code |
 | Vercel connected to GitHub | ⬜ TODO | Aditya |
 | Deploy to Vercel (add VITE_ANTHROPIC_API_KEY env var) | ⬜ TODO | Aditya |
-| Temporary landing page deployment check banner (`Hello World`) | ✅ Done | Codex |
 | Write-up (300 words) | ⬜ TODO | Claude Chat |
 | Submit to Activate AI Fellows | ⬜ TODO | Aditya |
 
@@ -241,7 +240,7 @@ Codex needs a GitHub Personal Access Token. Aditya should:
 - After the bootstrap commits, a root-level Vite scaffold appeared in `/Users/aditya/Desktop/Crushky` (`package.json`, `src/`, `public/`, `vite.config.js`, etc.) along with an expanded `.gitignore` and local `node_modules/`. This work is currently uncommitted and should be reviewed before any push.
 - GitHub push access was later confirmed from this machine using a PAT for `vikramaditya26`; branch `main` was pushed successfully to `origin` on May 15, 2026.
 - Current remote status: the bootstrap/docs history is on GitHub, but the newer app scaffold files are still only local and uncommitted at the time of this note.
-- Temporary deployment verification change added by Codex on May 15, 2026: landing page now shows a visible `Hello World - Vercel deployment check` banner so Aditya can confirm `crushky.vercel.app` is updating from GitHub deploys. Remove or replace this once deploy is verified.
+- Temporary deployment verification change added by Codex on May 15, 2026 was removed after Aditya confirmed `crushky.vercel.app` was updating correctly from GitHub deploys.
 - Local `npm run build` on this machine failed because the installed Node version is `16.20.2`, while Vite 8 requires Node `20.19+` or `22.12+`. `package.json` was updated to `name: crushky` and to request `node >=20.19.0` for deployment/runtime compatibility.
 - Next agent should run `git status`, confirm `origin`, and then continue scaffolding the MVP before committing and pushing.
 - Any major implementation change from here onward should be appended back into this file so parallel agents have a reliable handoff trail.
