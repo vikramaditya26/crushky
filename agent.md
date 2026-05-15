@@ -113,7 +113,7 @@ crushky/
 | Resource | URL |
 |---|---|
 | GitHub Repo | https://github.com/vikramaditya26/crushky |
-| Vercel Deploy | TBD — will update after first deploy |
+| Vercel Deploy | https://crushky.vercel.app |
 | Activate AI Fellows | https://www.activatevc.ai/fellows |
 | Known (competitor) | https://www.known.app |
 | Wavelength (competitor, India) | Antler-funded, India |
@@ -181,14 +181,21 @@ Match reveal always shows the "best" match with a generated explanation paragrap
 | Local git repo initialized in `/Desktop/Crushky` | ✅ Done | Codex |
 | Initial repo safety files (`.gitignore`) added | ✅ Done | Codex |
 | agent.md written | ✅ Done | Claude Chat |
+| Project scaffolded (Vite + React + Tailwind v4 + React Router v6) | ✅ Done | Claude Code |
+| Landing page (hero + 3-step how-it-works + footer) | ✅ Done | Claude Code |
+| Signup page (name, age, gender, looking for) | ✅ Done | Claude Code |
+| Chat page (Claude API + demo fallback with 10 scripted Qs) | ✅ Done | Claude Code |
+| Match reveal page (loading animation + match card) | ✅ Done | Claude Code |
+| Match profile page (full profile with interests, compatibility, why-you-click) | ✅ Done | Claude Code |
+| Companion page (locked, coming soon teaser) | ✅ Done | Claude Code |
+| Seed match data (3 Indian profiles: Neha, Priya, Riya) | ✅ Done | Claude Code |
+| NavBar, ChatBubble, MatchCard components | ✅ Done | Claude Code |
+| Claude API util (sendMessage wrapper with system prompt) | ✅ Done | Claude Code |
+| .env.example created | ✅ Done | Claude Code |
+| Pushed to GitHub | ✅ Done | Claude Code |
 | Vercel connected to GitHub | ⬜ TODO | Aditya |
-| Project scaffolded (Vite + React) | ⬜ TODO | Claude Code / Codex |
-| Landing page | ⬜ TODO | Claude Code / Codex |
-| Signup page | ⬜ TODO | Claude Code / Codex |
-| Chat page (Claude API) | ⬜ TODO | Claude Code / Codex |
-| Match reveal page | ⬜ TODO | Claude Code / Codex |
-| Seed match data | ⬜ TODO | Claude Code / Codex |
-| Deploy to Vercel | ⬜ TODO | Aditya |
+| Deploy to Vercel (add VITE_ANTHROPIC_API_KEY env var) | ⬜ TODO | Aditya |
+| Temporary landing page deployment check banner (`Hello World`) | ✅ Done | Codex |
 | Write-up (300 words) | ⬜ TODO | Claude Chat |
 | Submit to Activate AI Fellows | ⬜ TODO | Aditya |
 
@@ -234,6 +241,8 @@ Codex needs a GitHub Personal Access Token. Aditya should:
 - After the bootstrap commits, a root-level Vite scaffold appeared in `/Users/aditya/Desktop/Crushky` (`package.json`, `src/`, `public/`, `vite.config.js`, etc.) along with an expanded `.gitignore` and local `node_modules/`. This work is currently uncommitted and should be reviewed before any push.
 - GitHub push access was later confirmed from this machine using a PAT for `vikramaditya26`; branch `main` was pushed successfully to `origin` on May 15, 2026.
 - Current remote status: the bootstrap/docs history is on GitHub, but the newer app scaffold files are still only local and uncommitted at the time of this note.
+- Temporary deployment verification change added by Codex on May 15, 2026: landing page now shows a visible `Hello World - Vercel deployment check` banner so Aditya can confirm `crushky.vercel.app` is updating from GitHub deploys. Remove or replace this once deploy is verified.
+- Local `npm run build` on this machine failed because the installed Node version is `16.20.2`, while Vite 8 requires Node `20.19+` or `22.12+`. `package.json` was updated to `name: crushky` and to request `node >=20.19.0` for deployment/runtime compatibility.
 - Next agent should run `git status`, confirm `origin`, and then continue scaffolding the MVP before committing and pushing.
 - Any major implementation change from here onward should be appended back into this file so parallel agents have a reliable handoff trail.
 
@@ -276,5 +285,6 @@ Offline date booking (planned for Phase 2), real user authentication, voice inte
 
 ---
 
-*Last updated: May 15, 2026 | Maintained by: Claude Chat + Aditya*
-*Next agent to work on this: Claude Code — scaffold the Vite project and build Landing + Signup pages first*
+*Last updated: May 15, 2026 | Maintained by: Claude Chat + Claude Code + Aditya*
+*Status: Full MVP built and pushed to GitHub. All 6 screens working. Next: Aditya deploys to Vercel, Claude Chat finalizes write-up.*
+*Tech notes: Using Node 22 (nvm). Tailwind v4 with @tailwindcss/vite plugin. Chat page works with or without Claude API key (has demo fallback responses).*
