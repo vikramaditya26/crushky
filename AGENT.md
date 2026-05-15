@@ -232,6 +232,8 @@ Codex needs a GitHub Personal Access Token. Aditya should:
 - Push attempt from this machine reached GitHub but failed with `403 Permission denied` because the active credential resolved to `adityakumar-teachmint`, which does not have write access to `vikramaditya26/crushky`.
 - Before the next push attempt, switch Git credentials to the correct GitHub account or use a PAT that has repo access to `vikramaditya26/crushky`.
 - After the bootstrap commits, a root-level Vite scaffold appeared in `/Users/aditya/Desktop/Crushky` (`package.json`, `src/`, `public/`, `vite.config.js`, etc.) along with an expanded `.gitignore` and local `node_modules/`. This work is currently uncommitted and should be reviewed before any push.
+- GitHub push access was later confirmed from this machine using a PAT for `vikramaditya26`; branch `main` was pushed successfully to `origin` on May 15, 2026.
+- Current remote status: the bootstrap/docs history is on GitHub, but the newer app scaffold files are still only local and uncommitted at the time of this note.
 - Next agent should run `git status`, confirm `origin`, and then continue scaffolding the MVP before committing and pushing.
 - Any major implementation change from here onward should be appended back into this file so parallel agents have a reliable handoff trail.
 
