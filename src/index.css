@@ -5,10 +5,13 @@
   --color-cream: #F5F0EB;
   --color-rose: #C94B4B;
   --color-amber: #D4956A;
+  --color-dark-green: #2D3B2D;
   --color-light-text: #FAFAFA;
   --color-dark-text: #1A1A1A;
+  --color-muted: #6B7280;
   --color-card-dark: rgba(255, 255, 255, 0.06);
   --color-card-border: rgba(255, 255, 255, 0.1);
+  --color-card-light: #FFFFFF;
   --font-display: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
 }
@@ -21,9 +24,8 @@
 
 body {
   font-family: var(--font-body);
-  background-color: var(--color-dark);
-  color: var(--color-light-text);
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 ::-webkit-scrollbar {
@@ -35,6 +37,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }

@@ -1,77 +1,513 @@
-# 🧠 CRUSHKY — AGENT MASTER FILE
-> Read this entire file before doing anything. This is the single source of truth for all agents (Claude Chat, Claude Code, Codex) working on this project.
+# CRUSHKY — AGENT MASTER FILE
+
+> Read this ENTIRE file before doing anything. This is the single source of truth for all agents working on this project. If something isn't documented here, ask Aditya before assuming.
 
 ---
 
-## 👤 FOUNDER
+## FOUNDER
+
 - **Name:** Aditya (Vikram Aditya)
 - **Age:** 22, IIT Bombay graduate
 - **Email:** vikram.aditya.connect@gmail.com
-- **Background:** Non-coder but comfortable with GitHub, Vercel, VS Code. Has shipped websites before using AI agents.
-- **Working Style:** Uses multiple AI agents in parallel. Gives direction in voice/chat, agents execute. Needs clear handoff documentation.
+- **Background:** Non-coder. Comfortable with GitHub, Vercel, VS Code. Ships products using AI agents.
+- **Working Style:** Uses multiple AI agents in parallel (Claude Code, Codex, Claude Chat). Gives direction, agents execute. Needs clear handoff docs.
 
 ---
 
-## 🎯 PROJECT OVERVIEW
+## PROJECT OVERVIEW
 
-**App Name:** Crushky  
-**Tagline:** *Talk to AI. Meet your person.*  
-**Type:** AI-first dating app (web MVP → mobile later)  
-**Stage:** Day 1. Building MVP for investor demo + Activate AI Fellows submission (deadline: today)
+**App Name:** Crushky
+**Tagline:** *Talk to AI. Meet your person.*
+**Type:** AI-first dating app (web MVP, mobile later)
+**Stage:** Building MVP for investor demo + Activate AI Fellows submission
 
 ### The Core Idea
-Unlike Hinge/Bumble where you swipe and then have to explain yourself to every match — on Crushky, you have **one 10-15 min conversation with an AI**. The AI learns everything about you. Then it finds your best match and explains *exactly why* you two would work. No swiping. No awkward openers. No repeating yourself.
 
-### What Makes Crushky Different from Known / Wavelength
-| Feature | Known (US) | Wavelength (India) | **Crushky** |
-|---|---|---|---|
-| AI conversation onboarding | ✅ | ✅ | ✅ |
-| AI match explanation | ✅ | ✅ | ✅ |
-| Offline date booking | ✅ | ❌ | ✅ (Phase 2) |
-| AI companion / virtual friend | ❌ | ❌ | ✅ (Phase 2, Premium) |
-| India-first | ❌ | ✅ | ✅ |
+Unlike Hinge/Bumble where you swipe and repeat yourself to every match, on Crushky you have ONE conversation with an AI matchmaker. The AI learns who you actually are, finds your best match, and explains exactly why you two would work. No swiping. No awkward openers. No repeating yourself.
 
----
+### Competitors We're Learning From
 
-## 🏗️ MVP SCOPE (For Activate AI Fellows Submission)
-
-**Goal:** Working demo a judge can click through in 5 minutes and understand the full value prop.
-
-### MVP Screens (In Order)
-1. **Landing Page** — Hero with tagline, CTA to sign up
-2. **Sign Up** — Name, age, gender, looking for, upload photo (basic)
-3. **AI Chat Onboarding** — Chat interface where Crushky AI asks ~10 warm questions
-4. **Match Reveal** — Card showing your match with AI-generated "why you two" explanation
-5. **Match Profile** — View match's details, shared interests, compatibility score
-6. **(Teaser)** AI Companion screen — locked, "Coming Soon — Premium"
-
-### What We Are NOT Building for MVP
-- Real matchmaking backend (we'll use dummy/seeded matches)
-- Voice interface (text chat only for now)
-- Payments / subscriptions
-- Offline date booking
-- Mobile app (web only, mobile-responsive)
-- User authentication backend (simple localStorage or mock auth is fine)
+| App | What They Do | What We Take |
+|---|---|---|
+| **Known** (US) | Dark premium aesthetic, AI learns about matches, books dates | Dark editorial design vibe, match explanation format |
+| **Wavelength** (India) | Warm cream aesthetic, voice AI onboarding, Ghibli-style illustrations | Warm typography, tab-based dashboard, detailed AI-written match intros |
+| **Ditto** (US) | No UI — AI chat via iMessage, sends one match + date plan per week | Simplicity, date poster concept, casual AI tone |
+| **Hinge** | Step-by-step onboarding, one question per screen, clean forms | Signup flow pattern, progress bar, field-by-field approach |
 
 ---
 
-## 🛠️ TECH STACK
+## TECH STACK
 
 | Layer | Tool | Reason |
 |---|---|---|
 | Frontend | React (Vite) | Fast, Vercel-friendly |
-| Styling | Tailwind CSS | Rapid UI |
-| AI Chat | Claude API (claude-sonnet-4-20250514) | Powers the onboarding conversation |
+| Styling | Tailwind CSS v4 | Rapid UI, @tailwindcss/vite plugin |
+| AI Chat | Claude API (claude-sonnet-4-20250514) | Powers onboarding + companion |
 | Routing | React Router v6 | Multi-page flow |
-| State | useState / localStorage | Simple, no backend needed for MVP |
+| State | useState / localStorage | No backend needed for MVP |
 | Deployment | Vercel | One-click deploy, free tier |
 | Repo | GitHub (public) | Source of truth |
+| Node | v22 (use `nvm use 22`) | Required for Vite 8+ |
 
-**API Key Note:** Claude API key will be stored in `.env` as `VITE_ANTHROPIC_API_KEY`. Never commit `.env` to GitHub. Add to Vercel environment variables.
+**API Key:** Stored in `.env` as `VITE_ANTHROPIC_API_KEY`. Never commit `.env`. Add to Vercel env vars.
 
 ---
 
-## 📁 FOLDER STRUCTURE
+## DESIGN SYSTEM
+
+### Aesthetic
+
+Premium, warm, editorial. NOT a typical dating app. NOT generic dark-mode tech.
+
+Think: luxury magazine meets your most thoughtful friend. Typography-driven, not icon-heavy. Organic shapes, not sharp corners everywhere.
+
+### Reference Apps (study these for inspiration)
+
+- **Known app** — dark backgrounds, bold serif headlines, editorial photography, glassmorphism cards
+- **Wavelength app** — warm cream (#F5F0EB) backgrounds, serif display font with italics for emphasis, polaroid-style photo cards, soft gradient blobs (pink-purple-blue), cloud textures
+- **Ditto.ai** — extreme simplicity, casual AI tone, date poster format
+- **Hinge** — clean white signup screens, one field per screen, thin progress bar, pill/chip selectors
+
+### Color Palette
+
+| Token | Value | Usage |
+|---|---|---|
+| `--dark` | `#0D0D0D` | Landing page background, dark sections |
+| `--cream` | `#F5F0EB` | Signup screens, dashboard background, light sections |
+| `--rose` | `#C94B4B` | Primary accent, CTAs, highlights |
+| `--amber` | `#D4956A` | Secondary accent, labels, tags |
+| `--dark-green` | `#2D3B2D` | Buttons (like Wavelength's dark CTA buttons) |
+| `--light-text` | `#FAFAFA` | Text on dark backgrounds |
+| `--dark-text` | `#1A1A1A` | Text on light/cream backgrounds |
+| `--muted` | `#6B7280` | Secondary text, placeholders |
+| `--card-bg` | `rgba(255,255,255,0.06)` | Card backgrounds on dark |
+| `--card-border` | `rgba(255,255,255,0.1)` | Card borders on dark |
+
+### Typography
+
+| Role | Font | Weight | Usage |
+|---|---|---|---|
+| Display/Headlines | Playfair Display | 400-700, use *italic* for emphasis words | Page titles, section headers, match names |
+| Body | DM Sans | 400-600 | Everything else: buttons, labels, paragraphs |
+
+Load via Google Fonts in index.html:
+```
+Playfair Display: 400, 400i, 500, 600, 700
+DM Sans: 400, 500, 600, 700
+```
+
+### Design Patterns
+
+- **Signup screens:** Cream background, one field centered, big Playfair heading, DM Sans label, pill/chip selectors for options, thin progress bar at top, single CTA button at bottom
+- **Dashboard:** Cream background, tab bar at top (like Wavelength's "Wave / Matches"), cards with subtle shadows
+- **Chat screens:** Clean white/cream background, chat bubbles with rounded corners, AI messages left-aligned in light gray, user messages right-aligned in rose/dark
+- **Match cards:** Full-bleed or polaroid-style photos, Playfair name + age, AI explanation paragraph below, rounded corners (16-24px)
+- **Buttons:** Rounded-full (pill shape), dark-green or rose fill, white text, 48px height minimum for touch targets
+- **Spacing:** Generous whitespace everywhere. When in doubt, add more space.
+- **Animations:** Subtle fade-ins on page transitions. Loading states with gentle pulse/bounce. Nothing flashy.
+
+---
+
+## MVP FLOW — COMPLETE SCREEN-BY-SCREEN SPEC
+
+The MVP has 6 major parts, broken into individual screens below.
+
+---
+
+### PART 1: LANDING PAGE
+
+**Route:** `/`
+**Background:** Dark (`#0D0D0D`)
+**Purpose:** Convince someone this isn't another Tinder clone. Make them click "Login."
+
+#### Section 1.1: Navigation Bar
+- Fixed at top, transparent/blur background
+- Left: "Crushky" in Playfair Display, bold, white
+- Right: "Login" button (pill shape, rose background, white text)
+- On scroll: nav gets subtle dark background with blur
+
+#### Section 1.2: Hero
+- Center-aligned text block with generous vertical padding (min 100vh)
+- Small label above headline: "AI-POWERED DATING" in amber, uppercase, letter-spaced, DM Sans 12px
+- Main headline in Playfair Display, large (48-72px responsive):
+  - Line 1: "Talk to AI."
+  - Line 2: "Meet your person." (this line in rose color)
+- Subtext below in DM Sans, light-text at 60% opacity, max-width 600px:
+  - "No swiping. No awkward openers. Just one honest conversation with our AI, and we'll find the person who actually gets you."
+- CTA button: "Find Your Match" — rose background, white text, pill shape, large (18px text, generous padding)
+
+#### Section 1.3: How It Works
+- Section heading: "How Crushky Works" in Playfair Display, white, centered
+- 3 cards in a row (stack on mobile):
+
+**Card 1:**
+- Number: "01" in rose, Playfair Display, large
+- Title: "Have a Conversation" in white, DM Sans semibold
+- Body: "Chat with our AI for a few minutes. It asks the questions your best friend would — the real ones." in white at 60% opacity
+
+**Card 2:**
+- Number: "02"
+- Title: "We Find Your Match"
+- Body: "Our AI understands who you actually are, not just what you look like. It finds someone who complements you."
+
+**Card 3:**
+- Number: "03"
+- Title: "Know Why You Click"
+- Body: "No guessing. We tell you exactly why you two would work — shared values, energy, humor, everything."
+
+- Cards: dark card background with subtle border, rounded-2xl, generous padding
+
+#### Section 1.4: Value Proposition (optional, add if time permits)
+- A section inspired by Known's bold statements:
+  - "Not a game. Not a job. Not a gamble."
+  - "Crushky is different. Built on knowing you first."
+- Large Playfair Display text, centered, white, with italic emphasis on key words
+
+#### Section 1.5: Footer
+- Simple border-top, centered text
+- "2026 Crushky. Built with love and AI." in muted white
+- Optional: links to Instagram, X
+
+---
+
+### PART 2: SIGNUP FLOW (8 steps, Hinge-style)
+
+**Route:** `/signup` (single route, step state managed internally)
+**Background:** Cream (`#F5F0EB`) for ALL signup screens
+**Text color:** Dark (`#1A1A1A`)
+
+#### General Signup UI Pattern (applies to ALL steps):
+- **Progress bar:** Thin (3px) bar at very top of screen, fills left-to-right, rose color, shows current step / total steps
+- **Back arrow:** Top-left, simple `<` arrow, dark text
+- **Heading:** Playfair Display, 28-32px, dark, centered or left-aligned
+- **Subtext** (optional): DM Sans, muted color, below heading
+- **Input area:** Centered in middle of screen
+- **CTA button:** Fixed at bottom, full-width (with padding), pill shape, dark-green or rose fill, white text, "Continue"
+- **CTA disabled state:** When field is empty, button is faded/gray, not clickable
+- **Spacing:** Lots of vertical space between heading and input. This should feel calm, not cramped.
+
+#### Step 2.1: First Name
+- Heading: "What's your first name?"
+- Input: Single text field, large font (20px+), minimal styling (just bottom border or clean rounded box on cream bg)
+- Placeholder: "Your first name"
+- Validation: Required, min 2 chars
+
+#### Step 2.2: Date of Birth
+- Heading: "When's your birthday?"
+- Input: Date picker or three dropdowns (Day / Month / Year)
+- Subtext: "You must be 18+ to use Crushky"
+- Validation: Must be 18+
+
+#### Step 2.3: Gender
+- Heading: "How do you identify?"
+- Options: Three pill/chip buttons arranged horizontally
+  - "Man" | "Woman" | "Non-binary"
+- Selected state: filled with rose or dark-green, white text
+- Unselected: outlined, dark text on cream
+
+#### Step 2.4: Looking For
+- Heading: "Who are you looking for?"
+- Options: Three pill/chip buttons
+  - "Men" | "Women" | "Everyone"
+- Same selected/unselected styling as gender
+
+#### Step 2.5: City
+- Heading: "Where are you based?"
+- Input: Text field with autocomplete/suggestions for Indian cities
+- Placeholder: "Search your city"
+- For MVP: simple text input is fine, no need for real autocomplete
+- Popular options as chips below: "Mumbai" "Delhi" "Bangalore" "Pune" "Hyderabad" "Chennai"
+
+#### Step 2.6: Height
+- Heading: "How tall are you?"
+- Input: Slider or picker showing height in cm (140-210 range) or ft/in toggle
+- For MVP: simple dropdown or number input with cm is fine
+- Placeholder: "Height in cm"
+
+#### Step 2.7: College / Work
+- Heading: "What do you do?"
+- Two fields stacked:
+  - "College/University" — text input, placeholder: "e.g., IIT Bombay"
+  - "Job title / Company" — text input, placeholder: "e.g., Product Manager at Google"
+- Subtext: "Share one or both"
+- Either field filled = can continue
+
+#### Step 2.8: Photos (3 slots)
+- Heading: "Add your best photos"
+- Subtext: "Add at least 1 photo to continue"
+- Layout: 3 photo slots in a row (or 2+1 grid)
+  - Empty slot: dashed border, "+" icon, cream/light background
+  - Filled slot: shows uploaded image with small "x" to remove
+- For MVP: file input that accepts images, store as base64 in localStorage or just show preview
+- Validation: At least 1 photo required
+
+#### After Step 8: Save all data to localStorage as `crushky_user` object, navigate to `/dashboard`
+
+---
+
+### PART 3: DASHBOARD (Main Screen)
+
+**Route:** `/dashboard`
+**Background:** Cream (`#F5F0EB`)
+**Purpose:** The home base. Two main sections accessed via tabs.
+
+#### Dashboard Layout:
+
+**Top Bar:**
+- Left: "Crushky" logo in Playfair Display, dark text
+- Right: User avatar (small circle, from uploaded photo) + settings gear icon
+
+**Tab Bar (below top bar):**
+- Two tabs, horizontally centered, pill-style toggle (like Wavelength's "Wave / Matches"):
+  - Tab 1: "Crushky AI" (with small sparkle/AI icon)
+  - Tab 2: "My Companion" (with small chat/heart icon)
+- Active tab: filled background (dark-green or rose), white text
+- Inactive tab: transparent, muted text
+
+---
+
+#### Tab 1: "Crushky AI" — States
+
+**State A: First Time (hasn't talked to AI yet)**
+- Center of screen, vertically centered content:
+- Illustration or soft gradient blob (like Wavelength's pink-purple gradient)
+- Heading: "Time to talk to Crushky" in Playfair Display, dark
+- Subtext: "After this chat, your AI will know enough to start finding your person." in DM Sans, muted
+- Instructions card (rounded, subtle shadow):
+  - "1. Find a quiet, comfortable space"
+  - "2. This takes about 5 minutes"
+- Two buttons at bottom:
+  - Secondary: "Remind me later" — outlined, dark text
+  - Primary: "Start talking" — dark-green or rose fill, white text
+- Small note: "Everything you share stays private" with lock icon
+
+**State B: AI chat completed, matches found**
+- Shows match cards (see PART 5)
+- Header: "Your matches" or "People you should meet"
+- Scrollable list of match cards
+
+**State C: No matches yet (AI still processing — cosmetic delay for demo)**
+- "Crushky is finding your people..."
+- Animated loading (subtle pulse dots)
+- Transition to State B after 2-3 seconds
+
+---
+
+#### Tab 2: "My Companion"
+
+**Purpose:** AI virtual friend. Users can chat anytime about dating, life, anything.
+
+**Layout:**
+- Full chat interface (like WhatsApp/iMessage)
+- AI avatar at top: "Crushky" with a small icon
+- Chat area: scrollable messages
+- Input bar at bottom: text input + send button + mic icon (mic can be non-functional for MVP, just show the icon)
+
+**AI Companion Behavior:**
+- System prompt makes it a warm, supportive friend
+- Remembers context within the conversation (not across sessions for MVP)
+- Can discuss dating advice, help prep for dates, general emotional support
+- Casual tone, not clinical
+
+**AI Companion System Prompt:**
+```
+You are Crushky's AI companion — a warm, witty, and genuinely caring friend. You're like that one friend who gives amazing dating advice, remembers everything, and never judges. You can talk about anything: dating, relationships, life decisions, or just how someone's day went. Keep your responses conversational and short (2-3 sentences usually). Use humor naturally. Never be preachy or give unsolicited advice — wait to be asked. You're a friend, not a therapist.
+```
+
+---
+
+### PART 4: AI CHAT ONBOARDING
+
+**Route:** `/chat`
+**Background:** White or very light cream
+**Purpose:** AI asks 3-4 warm questions to understand the user, then generates matches.
+
+#### Chat UI Layout:
+- **Top bar:** "Crushky AI" title centered, back arrow left, progress indicator right (e.g., "1/4" or a small progress bar)
+- **Chat area:** Scrollable, messages appear one at a time
+- **Input bar at bottom:**
+  - Text input (rounded, placeholder: "Type your answer...")
+  - Send button (rose circle with arrow icon)
+  - Mic icon button (to the left of input — for MVP, can trigger browser speech-to-text API or be non-functional with a "Coming soon" toast)
+
+#### Chat Bubble Styling:
+- **AI messages:** Left-aligned, light gray/cream bubble, rounded corners with bottom-left square, DM Sans 15px, dark text
+- **User messages:** Right-aligned, rose or dark-green bubble, rounded corners with bottom-right square, white text
+- **AI typing indicator:** Three bouncing dots in a gray bubble
+
+#### AI Conversation Flow (3-4 questions):
+
+The AI should ask exactly 3-4 questions, reacting warmly to each answer before asking the next. Questions should feel natural, not like a form.
+
+**System Prompt for Onboarding AI:**
+```
+You are Crushky's AI matchmaker. You are warm, witty, and perceptive — like a brilliant friend who happens to be great at reading people. Your job is to get to know the user through natural conversation so you can find their perfect match.
+
+Rules:
+- Ask ONE question at a time
+- Keep responses short (max 2 sentences before your question)
+- Never be clinical or robotic
+- React genuinely to what they say before asking the next question
+- Ask exactly 4 questions in this order:
+  1. "What does your ideal weekend look like?" (lifestyle/vibe)
+  2. "What are you actually looking for in a relationship — like, honestly?" (intent)
+  3. "What kind of person makes you feel most alive?" (attraction/energy)
+  4. "One thing you'd never compromise on in a partner?" (dealbreakers)
+- After question 4, respond to their answer, then say: "I think I've got a pretty good picture of who you are. Give me a moment to find your people..." and STOP.
+- Start the conversation with a warm greeting like "Hey [name]! I'm so glad you're here. Let's find your person. First up —" and then ask question 1.
+```
+
+**After AI says "Give me a moment...":**
+- Disable input
+- Show a loading/transition animation (2-3 seconds)
+- Auto-navigate to match results (back on dashboard, Crushky AI tab, State B)
+
+**Demo Fallback (when no API key):**
+- Use hardcoded AI responses for each question
+- Same flow, just scripted responses instead of live API calls
+
+---
+
+### PART 5: MATCH RESULTS (on Dashboard, Crushky AI tab)
+
+**Displayed in:** Dashboard → Crushky AI tab (State B)
+**Background:** Cream
+
+#### Match Card Design:
+
+Show 2-3 match cards, scrollable vertically. Each card:
+
+**Card Layout (inspired by Wavelength's match intro style):**
+- Rounded card (16-24px corners), white background, subtle shadow
+- Top: Match photo (large, aspect 4:5, rounded top corners)
+  - Gradient overlay at bottom of photo for text readability
+- Below photo:
+  - Name + Age in Playfair Display bold: "Neha, 24"
+  - Location + College/Work in DM Sans muted: "Mumbai · IIT Bombay · Fintech Analyst"
+  - AI-generated match explanation paragraph (2-3 sentences) in DM Sans, dark text, 14-15px
+  - The explanation should read like a personal letter, similar to how Wavelength's "Wave" introduces matches
+- CTA button at bottom of card: "See Full Profile" — outlined or filled, pill shape
+
+#### AI Match Explanation Style:
+Write match explanations like Wavelength does — personal, specific, like a friend introducing two people:
+
+Example:
+> "You both value depth over surface-level connections. Neha's analytical mind complements your creative energy — she'll challenge you intellectually while keeping things fun. You share the same dry humor and love for late-night conversations, and neither of you can resist a good debate."
+
+---
+
+### PART 6: MATCH PROFILE (Detailed View)
+
+**Route:** `/match/:id`
+**Background:** Cream
+**Purpose:** Full profile of a match with everything the user needs to decide.
+
+#### Profile Layout:
+
+**Top Bar:**
+- Back arrow (left)
+- "Match Profile" or the person's name (center)
+
+**Photo Section:**
+- Large photo at top (or a 2-photo polaroid-style layout like Wavelength)
+- If multiple photos available, horizontal scroll or grid
+
+**Info Section:**
+- Name, Age in Playfair Display: "Neha Sharma, 24"
+- Location: "Mumbai"
+- College: "IIT Bombay"
+- Work: "Fintech Analyst at Razorpay"
+- Height: "5'4""
+
+**Bio Section:**
+- Their bio/personality description written by AI, in quotes, italic Playfair:
+  - e.g., "Can hold a conversation about literally anything for three hours. IIT Bombay grad who ended up in fintech somehow. Will make fun of you to your face and hype you up behind your back."
+
+**Interests:**
+- Horizontal scrollable chips/pills: "Dance" "Chess" "Stand-up Comedy" "Investing" etc.
+
+**Compatibility Section:**
+- Card with rose/warm background
+- Heading: "Why You Two Click" in Playfair
+- AI explanation paragraph (same as on match card but can be longer here)
+
+**Relationship Preferences:**
+- Two small info cards side by side:
+  - "Looking for: Something real and long-term"
+  - "Love language: Quality Time"
+
+**Where to Meet (Phase 2 teaser or functional):**
+- Section heading: "Where to meet" or "Date spot suggestion"
+- For MVP: show a suggested venue with name, type, area
+  - e.g., "The Bombay Canteen · Casual Dining · Lower Parel"
+  - Small map placeholder or just address text
+  - "Book this date" button (can be non-functional for MVP, just shows a toast "Coming soon!")
+
+---
+
+## SEED DATA (For Demo)
+
+### User Profiles for Matching
+
+In `src/data/seedMatches.js`, create 3 detailed profiles:
+
+**Profile 1 — Neha Sharma:**
+```
+name: "Neha Sharma"
+age: 24
+city: "Mumbai"
+college: "IIT Bombay"
+work: "Fintech Analyst at Razorpay"
+height: "5'4\""
+photos: [use high-quality Unsplash portrait URLs]
+interests: ["Contemporary Dance", "Chess", "Stand-up Comedy", "Investing"]
+lookingFor: "Something real and long-term"
+loveLanguage: "Quality Time"
+bio: "Can hold a conversation about literally anything for three hours. IIT Bombay grad who ended up in fintech somehow. Will make fun of you to your face and hype you up behind your back. Dangerously good at eye contact."
+compatibility: 94
+whyYouMatch: "You both value depth over surface-level connections. Neha's analytical mind complements your creative energy — she'll challenge you intellectually while keeping things fun. You share the same dry humor, love for late-night conversations, and neither of you can resist a good debate. Plus, you both believe the best dates happen in tucked-away cafes, not fancy restaurants."
+dateSuggestion: { venue: "The Bombay Canteen", type: "Casual Dining", area: "Lower Parel, Mumbai" }
+```
+
+**Profile 2 — Priya Malhotra:**
+```
+name: "Priya Malhotra"
+age: 23
+city: "Delhi"
+college: "NID Ahmedabad"
+work: "UX Designer at Swiggy"
+height: "5'6\""
+photos: [Unsplash URLs]
+interests: ["Half-Marathons", "Indie Films", "Pottery", "Travel"]
+lookingFor: "Someone who matches my energy"
+loveLanguage: "Words of Affirmation"
+bio: "I design experiences for a living and run half-marathons for fun. Currently planning my next solo trip and trying to learn pottery without destroying the studio. Looking for someone who can keep up — mentally and physically."
+compatibility: 87
+whyYouMatch: "You're both driven and creative, but in complementary ways. Priya brings visual thinking to your verbal world. She values experiences over things — just like you. Your shared love for travel and trying new things means you'd never run out of adventures together."
+dateSuggestion: { venue: "Champa Gali", type: "Cafe Alley", area: "Saket, Delhi" }
+```
+
+**Profile 3 — Riya Iyer:**
+```
+name: "Riya Iyer"
+age: 25
+city: "Bangalore"
+college: "BITS Pilani"
+work: "ML Engineer at Google"
+height: "5'3\""
+photos: [Unsplash URLs]
+interests: ["Books", "Acoustic Guitar", "Hiking", "Open Source"]
+lookingFor: "Something genuine — no games"
+loveLanguage: "Acts of Service"
+bio: "I train models by day and play acoustic covers by night. Currently reading three books at once. Yes, I finish them all. Looking for someone who thinks 'let's stay in and cook' is a valid date plan."
+compatibility: 91
+whyYouMatch: "You're both unapologetically nerdy and proud of it. Riya's calm, grounded energy balances your intensity perfectly. She'll send you book recommendations at 2am and actually remember what you said three conversations ago. You both hate small talk and love going deep — that's rare, and that's everything."
+dateSuggestion: { venue: "Third Wave Coffee", type: "Coffee Shop", area: "Koramangala, Bangalore" }
+```
+
+---
+
+## FOLDER STRUCTURE
 
 ```
 crushky/
@@ -79,211 +515,154 @@ crushky/
 │   └── favicon.ico
 ├── src/
 │   ├── pages/
-│   │   ├── Landing.jsx          # Hero page
-│   │   ├── Signup.jsx           # Basic signup form
-│   │   ├── Chat.jsx             # AI conversation screen
-│   │   ├── MatchReveal.jsx      # Match card with AI explanation
-│   │   ├── MatchProfile.jsx     # Detailed match profile
-│   │   └── Companion.jsx        # AI companion teaser (locked)
+│   │   ├── Landing.jsx           # Landing page (Part 1)
+│   │   ├── Signup.jsx            # Multi-step signup (Part 2)
+│   │   ├── Dashboard.jsx         # Main dashboard with tabs (Part 3)
+│   │   ├── Chat.jsx              # AI onboarding chat (Part 4)
+│   │   └── MatchProfile.jsx      # Detailed match view (Part 6)
 │   ├── components/
-│   │   ├── ChatBubble.jsx       # Message bubble component
-│   │   ├── MatchCard.jsx        # Match reveal card
-│   │   └── NavBar.jsx           # Simple nav
+│   │   ├── NavBar.jsx            # Landing page nav
+│   │   ├── SignupProgress.jsx    # Progress bar for signup steps
+│   │   ├── ChatBubble.jsx        # Chat message bubble
+│   │   ├── MatchCard.jsx         # Match card for results list (Part 5)
+│   │   ├── TabBar.jsx            # Dashboard tab switcher
+│   │   └── CompanionChat.jsx     # AI companion chat interface
 │   ├── data/
-│   │   └── seedMatches.js       # Hardcoded dummy match profiles for demo
+│   │   └── seedMatches.js        # Hardcoded match profiles
 │   ├── utils/
-│   │   └── claudeApi.js         # API call wrapper for Claude
-│   ├── App.jsx                  # Router setup
-│   ├── main.jsx                 # Entry point
-│   └── index.css                # Global styles + Tailwind
-├── .env                         # API keys (NEVER commit)
-├── .env.example                 # Template for env vars (DO commit)
-├── .gitignore                   # Includes .env
-├── agent.md                     # THIS FILE
+│   │   └── claudeApi.js          # Claude API wrapper
+│   ├── App.jsx                   # Router setup
+│   ├── main.jsx                  # Entry point
+│   └── index.css                 # Global styles + Tailwind
+├── .env                          # API keys (NEVER commit)
+├── .env.example                  # Template for env vars
+├── .gitignore
+├── agent.md                      # THIS FILE
 ├── index.html
 ├── package.json
-├── tailwind.config.js
 └── vite.config.js
 ```
 
 ---
 
-## 🔗 LINKS
+## ROUTES
+
+```
+/              → Landing.jsx
+/signup        → Signup.jsx (all 8 steps managed internally via state)
+/dashboard     → Dashboard.jsx (tabs: Crushky AI + My Companion)
+/chat          → Chat.jsx (AI onboarding, 3-4 questions)
+/match/:id     → MatchProfile.jsx (detailed match view)
+```
+
+---
+
+## IMPLEMENTATION ORDER (Build in this exact order)
+
+### Phase A: Foundation
+1. Scaffold project: Vite + React + Tailwind v4 + React Router v6
+2. Set up index.css with design tokens (colors, fonts)
+3. Set up index.html with Google Fonts
+4. Set up App.jsx with all routes
+5. Create .env.example
+
+### Phase B: Landing Page
+6. Build NavBar component
+7. Build Landing.jsx with all 4-5 sections
+8. Test: should look premium and editorial, NOT generic
+
+### Phase C: Signup Flow
+9. Build SignupProgress component
+10. Build Signup.jsx with all 8 steps
+11. Each step: one question, progress bar, back button, continue button
+12. Save to localStorage on completion, navigate to /dashboard
+13. Test: should feel calm and Hinge-like
+
+### Phase D: Dashboard
+14. Build TabBar component
+15. Build Dashboard.jsx with two tabs
+16. Crushky AI tab — State A (first time, "Start talking" button)
+17. My Companion tab — basic chat interface
+18. Test: should feel like Wavelength's tab layout
+
+### Phase E: AI Chat Onboarding
+19. Build ChatBubble component
+20. Build Chat.jsx with AI conversation (4 questions)
+21. Implement Claude API integration with fallback demo responses
+22. After completion, navigate back to dashboard (State B)
+23. Test: conversation should feel natural, not like a form
+
+### Phase F: Match Results + Profile
+24. Build MatchCard component
+25. Dashboard Crushky AI tab — State B (show match cards)
+26. Build seedMatches.js with 3 profiles
+27. Build MatchProfile.jsx (full detail view)
+28. Test: match explanations should feel personal, like a friend introducing you
+
+### Phase G: Polish
+29. Add page transition animations (subtle fades)
+30. Add loading states
+31. Mobile responsive check (all screens)
+32. Final design polish pass
+
+---
+
+## WHAT WE ARE NOT BUILDING FOR MVP
+
+- Real matchmaking backend (seeded/hardcoded matches only)
+- Real authentication (localStorage mock auth)
+- Payments or subscriptions
+- Actual venue booking (show suggestion only)
+- Native mobile app (web only, mobile-responsive)
+- Voice AI (mic icon present but text-only for now)
+- Cross-session memory for AI companion
+- Photo upload to a server (local preview only)
+
+---
+
+## LINKS
 
 | Resource | URL |
 |---|---|
 | GitHub Repo | https://github.com/vikramaditya26/crushky |
 | Vercel Deploy | https://crushky.vercel.app |
-| Activate AI Fellows | https://www.activatevc.ai/fellows |
-| Known (competitor) | https://www.known.app |
-| Wavelength (competitor, India) | Antler-funded, India |
+| Known (competitor) | https://known.com |
+| Wavelength (competitor) | https://www.heywavelength.com |
+| Ditto (competitor) | https://ditto.ai |
 
 ---
 
-## 🤖 AI CONVERSATION DESIGN
+## GIT WORKFLOW
 
-The AI chat in `/pages/Chat.jsx` calls Claude API with a system prompt that makes it behave like a warm, curious matchmaker. It asks questions in this order:
-
-1. "How's your day going?" (icebreaker)
-2. "Tell me a bit about yourself — what do you do?" (career/vibe)
-3. "What does your ideal weekend look like?" (lifestyle)
-4. "What are you actually looking for — like, honestly?" (relationship intent)
-5. "Do you drink, smoke, or have any strong preferences about that?" (lifestyle compatibility)
-6. "What's something most people wouldn't guess about you?" (depth)
-7. "Describe your last situationship or relationship in three words." (emotional history)
-8. "What kind of person makes you feel most alive?" (attraction)
-9. "One thing you'd never compromise on in a partner?" (dealbreakers)
-10. "Last one — what's your love language?" (compatibility)
-
-After Q10 → transition to MatchReveal page.
-
-**System Prompt for Claude API (in claudeApi.js):**
-```
-You are Crushky's AI matchmaker. You are warm, witty, and perceptive — like a brilliant friend who happens to be great at reading people. Your job is to get to know the user through natural conversation so you can find their perfect match. Ask ONE question at a time. Keep responses short (max 2 sentences before your question). Never be clinical or robotic. React to what they say before asking the next question. After 10 exchanges, say: "I think I know exactly who you should meet. Give me a moment..." and stop.
-```
+- Branch: `main`
+- Always pull before working: `git pull origin main`
+- Commit with clear messages: `git commit -m "feat: add signup flow"`
+- Never commit `.env` file
+- Use Node 22: `nvm use 22` before any npm/npx commands
 
 ---
 
-## 🌱 SEED DATA (For Demo)
-
-In `/data/seedMatches.js` — create 3-4 realistic Indian profiles:
-- Neha, 24, IIT Bombay → Fintech analyst, loves dance + chess, wants long-term
-- Priya, 23, Delhi → UX designer, runs half-marathons, loves indie films
-- Riya, 25, Bangalore → ML engineer, bookworm, plays guitar, wants something real
-
-Match reveal always shows the "best" match with a generated explanation paragraph.
-
----
-
-## 🎨 DESIGN DIRECTION
-
-**Aesthetic:** Premium, warm, editorial. NOT a typical dating app.  
-**Reference:** Known app (dark, elegant) + Wavelength (warm cream/beige)  
-**Color Palette:**
-- Background: `#0D0D0D` (near black) or warm `#F5F0EB` (cream)
-- Accent: Deep rose `#C94B4B` or warm amber `#D4956A`
-- Text: `#FAFAFA` on dark, `#1A1A1A` on light
-- Cards: Glassmorphism on dark, solid cream on light
-
-**Typography:**
-- Display: Playfair Display (editorial, romantic)
-- Body: DM Sans (clean, readable)
-
-**Vibe:** Feels like a luxury concierge, not a slot machine.
-
----
-
-## 📋 CURRENT TASK STATUS
+## CURRENT STATUS
 
 | Task | Status | Owner |
 |---|---|---|
-| GitHub repo created | ✅ Done | Aditya |
-| Local git repo initialized in `/Desktop/Crushky` | ✅ Done | Codex |
-| Initial repo safety files (`.gitignore`) added | ✅ Done | Codex |
-| agent.md written | ✅ Done | Claude Chat |
-| Project scaffolded (Vite + React + Tailwind v4 + React Router v6) | ✅ Done | Claude Code |
-| Landing page (hero + 3-step how-it-works + footer) | ✅ Done | Claude Code |
-| Signup page (name, age, gender, looking for) | ✅ Done | Claude Code |
-| Chat page (Claude API + demo fallback with 10 scripted Qs) | ✅ Done | Claude Code |
-| Match reveal page (loading animation + match card) | ✅ Done | Claude Code |
-| Match profile page (full profile with interests, compatibility, why-you-click) | ✅ Done | Claude Code |
-| Companion page (locked, coming soon teaser) | ✅ Done | Claude Code |
-| Seed match data (3 Indian profiles: Neha, Priya, Riya) | ✅ Done | Claude Code |
-| NavBar, ChatBubble, MatchCard components | ✅ Done | Claude Code |
-| Claude API util (sendMessage wrapper with system prompt) | ✅ Done | Claude Code |
-| .env.example created | ✅ Done | Claude Code |
-| Pushed to GitHub | ✅ Done | Claude Code |
-| Vercel connected to GitHub | ⬜ TODO | Aditya |
-| Deploy to Vercel (add VITE_ANTHROPIC_API_KEY env var) | ⬜ TODO | Aditya |
-| Write-up (300 words) | ⬜ TODO | Claude Chat |
-| Submit to Activate AI Fellows | ⬜ TODO | Aditya |
+| GitHub repo created | Done | Aditya |
+| agent.md written (detailed) | Done | Claude Code |
+| Project scaffolded (Vite + React + Tailwind + Router) | Done | Claude Code |
+| Landing page (dark, editorial, hero + how-it-works + bold statement + footer) | Done | Claude Code |
+| Signup flow (8 steps, Hinge-style, cream bg) | Done | Claude Code |
+| Dashboard with tabs (Crushky AI + My Companion) | Done | Claude Code |
+| AI Chat onboarding (4 questions, cream bg, mic icon) | Done | Claude Code |
+| Match results on dashboard (3 cards with photos) | Done | Claude Code |
+| Match profile page (full detail + date suggestion + book button) | Done | Claude Code |
+| AI Companion chat (full chat interface) | Done | Claude Code |
+| Seed match data (3 profiles: Neha, Priya, Riya with date suggestions) | Done | Claude Code |
+| Claude API util (supports custom system prompts, demo fallback) | Done | Claude Code |
+| Design system (dark-green, cream, rose, Playfair+DM Sans) | Done | Claude Code |
+| Deploy to Vercel | TODO | Aditya |
 
 ---
 
-## 🔧 GITHUB SETUP INSTRUCTIONS (For Agents)
-
-### For Claude Code:
-Claude Code should have GitHub access already configured. To push:
-```bash
-cd ~/Desktop/Crushky
-git init
-git remote add origin https://github.com/vikramaditya26/crushky.git
-git add .
-git commit -m "initial commit"
-git push -u origin main
-```
-
-### For Codex:
-Codex needs a GitHub Personal Access Token. Aditya should:
-1. Go to github.com → Settings → Developer Settings → Personal Access Tokens → Tokens (classic)
-2. Generate new token → check `repo` scope → copy token
-3. Paste token into Codex when it asks for GitHub credentials
-4. Codex can then clone: `git clone https://github.com/vikramaditya26/crushky.git`
-
-### For Both Agents — Git Workflow:
-- Always pull before working: `git pull origin main`
-- Commit with clear messages: `git commit -m "feat: add chat page"`
-- Never commit `.env` file
-- Main branch = `main` (not master)
-
-### Current Repo State (Updated by Codex on May 15, 2026)
-- Local folder `/Users/aditya/Desktop/Crushky` originally only contained `AGENT.md`.
-- Local git repository has now been initialized on branch `main`.
-- Git user is configured on this machine as `vikramaditya26 <vikram.aditya.connect@gmail.com>`.
-- `.gitignore` has been added with `.env`, `node_modules`, `dist`, `.vercel`, and `.DS_Store`.
-- GitHub remote URL verified: `https://github.com/vikramaditya26/crushky.git`
-- Remote appeared reachable but had no visible refs at the time of setup, so treat it as likely empty unless a later agent sees otherwise.
-- Untracked folder `crushky-temp/` is present in the repo root and looks like a separate Vite scaffold. Codex did not commit it yet because it may be temporary or may need to be moved into the actual root structure intentionally.
-- Local commit created by Codex: `7cee58c` with message: `chore: bootstrap repo and document agent handoff`
-- Push attempt from this machine reached GitHub but failed with `403 Permission denied` because the active credential resolved to `adityakumar-teachmint`, which does not have write access to `vikramaditya26/crushky`.
-- Before the next push attempt, switch Git credentials to the correct GitHub account or use a PAT that has repo access to `vikramaditya26/crushky`.
-- After the bootstrap commits, a root-level Vite scaffold appeared in `/Users/aditya/Desktop/Crushky` (`package.json`, `src/`, `public/`, `vite.config.js`, etc.) along with an expanded `.gitignore` and local `node_modules/`. This work is currently uncommitted and should be reviewed before any push.
-- GitHub push access was later confirmed from this machine using a PAT for `vikramaditya26`; branch `main` was pushed successfully to `origin` on May 15, 2026.
-- Current remote status: the bootstrap/docs history is on GitHub, but the newer app scaffold files are still only local and uncommitted at the time of this note.
-- Temporary deployment verification change added by Codex on May 15, 2026 was removed after Aditya confirmed `crushky.vercel.app` was updating correctly from GitHub deploys.
-- Local `npm run build` on this machine failed because the installed Node version is `16.20.2`, while Vite 8 requires Node `20.19+` or `22.12+`. `package.json` was updated to `name: crushky` and to request `node >=20.19.0` for deployment/runtime compatibility.
-- Next agent should run `git status`, confirm `origin`, and then continue scaffolding the MVP before committing and pushing.
-- Any major implementation change from here onward should be appended back into this file so parallel agents have a reliable handoff trail.
-
----
-
-## 🚀 VERCEL SETUP INSTRUCTIONS (For Aditya)
-
-1. Go to vercel.com → Log in with GitHub
-2. Click "Add New Project" → Import `crushky` repo
-3. Framework: Vite
-4. Add environment variable: `VITE_ANTHROPIC_API_KEY` = your Claude API key
-5. Deploy → copy the live URL → paste back here and update the Links table above
-
----
-
-## 📝 SHORT WRITE-UP DRAFT (For Activate AI Fellows — 300 words)
-
-> **To be finalized by Claude Chat once MVP is live**
-
-**What I built:**
-Crushky is an AI-first dating app that replaces endless swiping with a single honest conversation. Instead of building a profile and hoping someone swipes right, you talk to Crushky's AI for 10-15 minutes. It learns who you actually are — your vibe, your values, what you're really looking for — and then introduces you to your best match, with a specific explanation of why you two would click.
-
-**Why this:**
-I've watched smart, interesting people fail at dating apps not because they're undatable, but because they're bad at selling themselves in a profile or making small talk with strangers. The real problem isn't finding people — it's that the format forces everyone to be a worse version of themselves. Crushky fixes the format.
-
-**What I'd do with another 10 hours:**
-Add voice conversation (so it feels like talking to a friend, not filling a form), build real matching logic using vector embeddings of conversation transcripts, and add the AI companion feature — a persistent AI friend that remembers your past conversations for users who aren't getting matches yet.
-
-**What I cut:**
-Offline date booking (planned for Phase 2), real user authentication, voice interface, and the premium AI companion tier. The MVP proves one thing: the conversation-first onboarding experience is genuinely better than profile-based swiping.
-
----
-
-## 🧭 FUTURE ROADMAP (Post-MVP)
-
-- **Phase 2:** Voice onboarding (11labs), real matching backend, offline date booking (Zomato/Dineout API)
-- **Phase 3:** AI companion (premium, persistent memory), Spotify/Instagram profile linking
-- **Phase 4:** Native mobile app (React Native), city expansion beyond metro India
-- **Monetization:** AI companion subscription (₹299/mo) + venue partnerships (café/bar commissions on booked dates)
-
----
-
-*Last updated: May 15, 2026 | Maintained by: Claude Chat + Claude Code + Aditya*
-*Status: Full MVP built and pushed to GitHub. All 6 screens working. Next: Aditya deploys to Vercel, Claude Chat finalizes write-up.*
-*Tech notes: Using Node 22 (nvm). Tailwind v4 with @tailwindcss/vite plugin. Chat page works with or without Claude API key (has demo fallback responses).*
+*Last updated: May 17, 2026*
+*Status: Full MVP rebuilt to match spec. All screens working: Landing (dark), Signup (8-step cream), Dashboard (tabs), Chat (4 questions), Match Profile (with date spot), Companion (chat). Ready for deploy.*
+*Tech notes: Node 22 via nvm. Tailwind v4 with @tailwindcss/vite plugin. Chat works with or without API key (has demo fallback). Photos from Unsplash (may not load in preview but work on deployed site).*

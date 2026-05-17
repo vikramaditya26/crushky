@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { seedMatches } from '../data/seedMatches'
-import NavBar from '../components/NavBar'
 
 export default function MatchProfile() {
   const { id } = useParams()
@@ -9,80 +8,81 @@ export default function MatchProfile() {
 
   if (!match) {
     return (
-      <div className="min-h-screen bg-dark flex items-center justify-center">
-        <p className="text-light-text/60">Match not found.</p>
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <p className="text-muted">Match not found.</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-dark">
-      <NavBar />
+    <div className="min-h-screen bg-cream text-dark-text">
+      {/* Top bar */}
+      <div className="px-6 py-4 flex items-center gap-4">
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="text-dark-text/60 hover:text-dark-text text-xl cursor-pointer transition-colors"
+        >
+          &larr;
+        </button>
+        <span className="font-display text-lg font-bold">{match.name}</span>
+      </div>
 
-      <div className="max-w-2xl mx-auto px-6 pt-24 pb-12">
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-          <div className="w-full md:w-64 shrink-0">
-            <img
-              src={match.photo}
-              alt={match.name}
-              className="w-full aspect-[4/5] object-cover rounded-2xl"
-            />
-          </div>
+      <div className="max-w-lg mx-auto px-6 pb-12">
+        {/* Photo */}
+        <div className="rounded-2xl overflow-hidden mb-6">
+          <img src={match.photo} alt={match.name} className="w-full aspect-[4/5] object-cover" />
+        </div>
 
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-1">
-              <h1 className="font-display text-4xl font-bold text-light-text">
-                {match.name}, {match.age}
-              </h1>
-              <span className="bg-rose/20 text-rose text-sm font-bold px-3 py-1 rounded-full">
-                {match.compatibility}% Match
+        {/* Name + basics */}
+        <div className="mb-6">
+          <h1 className="font-display text-3xl font-bold">{match.name}, {match.age}</h1>
+          <p className="text-muted mt-1">{match.city} &middot; {match.college} &middot; {match.work}</p>
+          <p className="text-muted text-sm mt-1">{match.height}</p>
+        </div>
+
+        {/* Bio */}
+        <p className="font-display text-lg italic text-dark-text/80 leading-relaxed mb-8">
+          "{match.bio}"
+        </p>
+
+        {/* Interests */}
+        <div className="mb-8">
+          <h2 className="text-xs text-muted uppercase tracking-[0.15em] mb-3">Interests</h2>
+          <div className="flex flex-wrap gap-2">
+            {match.interests.map((i) => (
+              <span key={i} className="bg-white border border-dark-text/10 px-4 py-2 rounded-full text-sm text-dark-text/80">
+                {i}
               </span>
-            </div>
-            <p className="text-light-text/60 mb-6">
-              {match.job} &middot; {match.location} &middot; {match.college}
-            </p>
-
-            <p className="text-light-text/80 text-lg italic mb-8 leading-relaxed">
-              "{match.bio}"
-            </p>
-
-            <div className="mb-8">
-              <h2 className="text-sm text-light-text/40 uppercase tracking-widest mb-3">Interests</h2>
-              <div className="flex flex-wrap gap-2">
-                {match.interests.map((interest) => (
-                  <span
-                    key={interest}
-                    className="bg-card-dark border border-card-border px-4 py-2 rounded-full text-sm text-light-text/80"
-                  >
-                    {interest}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="bg-card-dark border border-card-border rounded-xl p-4">
-                <p className="text-xs text-light-text/40 uppercase tracking-widest mb-1">Looking For</p>
-                <p className="text-light-text font-medium">{match.lookingFor}</p>
-              </div>
-              <div className="bg-card-dark border border-card-border rounded-xl p-4">
-                <p className="text-xs text-light-text/40 uppercase tracking-widest mb-1">Love Language</p>
-                <p className="text-light-text font-medium">{match.loveLanguage}</p>
-              </div>
-            </div>
-
-            <div className="bg-rose/10 border border-rose/20 rounded-2xl p-6 mb-8">
-              <h2 className="text-sm text-rose uppercase tracking-widest mb-3">Why You Two Click</h2>
-              <p className="text-light-text/80 leading-relaxed">{match.whyYouMatch}</p>
-            </div>
-
-            <button
-              onClick={() => navigate('/match')}
-              className="text-light-text/40 hover:text-light-text text-sm transition-colors cursor-pointer"
-            >
-              &larr; Back to match reveal
-            </button>
+            ))}
           </div>
+        </div>
+
+        {/* Quick info */}
+        <div className="grid grid-cols-2 gap-3 mb-8">
+          <div className="bg-white rounded-xl p-4 border border-dark-text/5">
+            <p className="text-xs text-muted uppercase tracking-wider mb-1">Looking for</p>
+            <p className="text-dark-text font-medium text-sm">{match.lookingFor}</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-dark-text/5">
+            <p className="text-xs text-muted uppercase tracking-wider mb-1">Love language</p>
+            <p className="text-dark-text font-medium text-sm">{match.loveLanguage}</p>
+          </div>
+        </div>
+
+        {/* Why you click */}
+        <div className="bg-rose/8 border border-rose/15 rounded-2xl p-6 mb-8">
+          <h2 className="font-display text-base font-bold text-rose mb-3">Why You Two Click</h2>
+          <p className="text-dark-text/80 text-sm leading-relaxed">{match.whyYouMatch}</p>
+        </div>
+
+        {/* Date suggestion */}
+        <div className="bg-white rounded-2xl p-6 border border-dark-text/5 mb-8">
+          <h2 className="font-display text-base font-bold mb-3">Where to meet</h2>
+          <p className="text-dark-text font-medium">{match.dateSuggestion.venue}</p>
+          <p className="text-muted text-sm">{match.dateSuggestion.type} &middot; {match.dateSuggestion.area}</p>
+          <button className="mt-4 w-full py-3 rounded-full bg-dark-green text-white font-medium text-sm cursor-pointer hover:bg-dark-green/90 transition-colors">
+            Book this date
+          </button>
         </div>
       </div>
     </div>
