@@ -649,20 +649,20 @@ crushky/
 | GitHub repo created | Done | Aditya |
 | agent.md written (detailed) | Done | Claude Code |
 | Project scaffolded (Vite + React + Tailwind + Router) | Done | Claude Code |
-| Landing page (dark, editorial, hero + how-it-works + bold statement + footer) | Done | Claude Code |
+| Landing page (warm cream, phone mockup, gradient blobs, scroll animations) | Done | Claude Code |
 | Signup flow (8 steps, Hinge-style, cream bg) | Done | Claude Code |
 | Dashboard with tabs (Crushky AI + My Companion) | Done | Claude Code |
 | AI Chat onboarding (4 questions, cream bg, mic icon) | Done | Claude Code |
 | Match results on dashboard (3 cards with photos) | Done | Claude Code |
-| Match profile page (full detail + date suggestion + book button) | Done | Claude Code |
-| AI Companion chat (full chat interface) | Done | Claude Code |
+| Match profile page (2-col desktop, booking confirmation with restaurant details) | Done | Claude Code |
+| AI Companion chat (3 avatars: Mira/Arjun/Zara, paywall after 4 msgs at ₹299/mo) | Done | Claude Code |
 | Seed match data (3 profiles: Neha, Priya, Riya with date suggestions) | Done | Claude Code |
 | Claude API util (supports custom system prompts, demo fallback) | Done | Claude Code |
-| Design system (dark-green, cream, rose, Playfair+DM Sans) | Done | Claude Code |
+| Design system (cream bg, gradient blobs, glass cards, animations, responsive) | Done | Claude Code |
 | Deploy to Vercel | TODO | Aditya |
 
 ---
 
-*Last updated: May 17, 2026*
-*Status: Full MVP rebuilt to match spec. All screens working: Landing (dark), Signup (8-step cream), Dashboard (tabs), Chat (4 questions), Match Profile (with date spot), Companion (chat). Ready for deploy.*
-*Tech notes: Node 22 via nvm. Tailwind v4 with @tailwindcss/vite plugin. Chat works with or without API key (has demo fallback). Photos from Unsplash (may not load in preview but work on deployed site).*
+*Last updated: May 21, 2026*
+*Status: Full UI redesign complete. Warm cream aesthetic (inspired by Known + Wavelength), NOT dark/black. All screens verified on both mobile (375px) and desktop (1280px+). Features: gradient blob backgrounds, glass-morphism cards, scroll-reveal animations (IntersectionObserver), fadeInUp/scaleIn/float keyframes, phone mockup on landing, "Book this date" with restaurant confirmation details (venue, time, seating, price), AI Companion with 3 avatar choices (Mira/Arjun/Zara) and premium paywall (₹299/month after 4 messages). Ready for deploy.*
+*Tech notes: Node 22 via nvm. Tailwind v4 with @tailwindcss/vite plugin. Chat works with or without API key (has demo fallback). Photos from Unsplash. CSS animations defined in index.css with utility classes (.animate-fade-in-up, .animate-float, .blob-gradient, .glass-card, delay classes).*
