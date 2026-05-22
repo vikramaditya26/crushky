@@ -84,7 +84,7 @@ export default function CompanionChat() {
             <button
               key={av.name}
               onClick={() => startChat(av)}
-              className="bg-white rounded-2xl p-6 border border-dark-text/5 text-left hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group anim-up"
+              className="bg-white rounded-2xl p-6 border border-dark-text/5 text-left cursor-pointer group hover-lift au"
               style={{ animationDelay: `${i * 100}ms` }}
             >
               <div className="w-14 h-14 rounded-2xl bg-cream flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
@@ -136,7 +136,7 @@ export default function CompanionChat() {
           </div>
         )}
         {showPaywall && (
-          <div className="anim-up mt-4 glass-card rounded-2xl p-6 text-center mx-4">
+          <div className="au mt-4 glass rounded-2xl p-6 text-center mx-4">
             <div className="text-3xl mb-3">&#128274;</div>
             <h3 className="font-display text-lg font-bold mb-2">Upgrade to Premium</h3>
             <p className="text-muted text-sm mb-4 leading-relaxed">

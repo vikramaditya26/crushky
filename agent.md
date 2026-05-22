@@ -666,3 +666,11 @@ crushky/
 *Last updated: May 21, 2026*
 *Status: Full UI redesign complete. Warm cream aesthetic (inspired by Known + Wavelength), NOT dark/black. All screens verified on both mobile (375px) and desktop (1280px+). Features: gradient blob backgrounds, glass-morphism cards, scroll-reveal animations (IntersectionObserver), fadeInUp/scaleIn/float keyframes, phone mockup on landing, "Book this date" with restaurant confirmation details (venue, time, seating, price), AI Companion with 3 avatar choices (Mira/Arjun/Zara) and premium paywall (₹299/month after 4 messages). Ready for deploy.*
 *Tech notes: Node 22 via nvm. Tailwind v4 with @tailwindcss/vite plugin. Chat works with or without API key (has demo fallback). Photos from Unsplash. CSS animations defined in index.css with utility classes (.animate-fade-in-up, .animate-float, .blob-gradient, .glass-card, delay classes).*
+
+---
+
+## CODEX HANDOFF NOTE — MAY 22, 2026
+
+- Committing and pushing the latest tracked local changes on `main`.
+- Files included in this batch: `src/pages/Landing.jsx`, `src/pages/Signup.jsx`, `src/pages/Dashboard.jsx`, `src/pages/Chat.jsx`, `src/pages/MatchProfile.jsx`, `src/components/MatchCard.jsx`, `src/components/CompanionChat.jsx`, `src/data/seedMatches.js`, `src/index.css`, and this `agent.md`.
+- `.claude/` remains intentionally untracked and is not part of the push.
