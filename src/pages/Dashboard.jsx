@@ -16,7 +16,7 @@ export default function Dashboard() {
       <div className="bg-cream/80 backdrop-blur-lg border-b border-dark-text/5 sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-6 md:px-10 pt-5 pb-4">
           <div className="flex items-center justify-between mb-4">
-            <span className="font-display text-xl md:text-2xl font-bold">Crushky</span>
+            <span className="font-display text-xl font-bold">Crushky</span>
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-rose-soft to-amber overflow-hidden flex items-center justify-center text-sm font-semibold text-white">
               {user.name ? user.name[0].toUpperCase() : 'U'}
             </div>
@@ -47,10 +47,9 @@ export default function Dashboard() {
       {/* Tab Content */}
       <div className="max-w-4xl mx-auto px-6 md:px-10">
         {tab === 'ai' && !hasCompleted && (
-          <div className="flex flex-col items-center justify-center min-h-[70vh] text-center animate-fade-in">
-            {/* Gradient blob */}
+          <div className="flex flex-col items-center justify-center min-h-[70vh] text-center anim-up">
             <div className="relative mb-8">
-              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-rose/20 via-amber/15 to-rose-soft/20 animate-pulse-soft" />
+              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-rose/20 via-amber/15 to-rose-soft/20 anim-pulse" />
               <div className="absolute inset-0 w-28 h-28 rounded-full bg-gradient-to-tr from-amber/10 to-rose/10 blur-xl" />
             </div>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-3">
@@ -79,7 +78,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => navigate('/chat')}
-                className="flex-1 py-3.5 rounded-full bg-dark-green text-white font-semibold cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg hover:-translate-y-0.5"
+                className="flex-1 py-3.5 rounded-full bg-dark-green text-white font-semibold cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg"
               >
                 Start talking &#10148;
               </button>
@@ -88,7 +87,7 @@ export default function Dashboard() {
         )}
 
         {tab === 'ai' && hasCompleted && (
-          <div className="py-8 animate-fade-in">
+          <div className="py-8">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="font-display text-xl md:text-2xl font-bold">People you should meet</h2>
@@ -97,7 +96,7 @@ export default function Dashboard() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
               {seedMatches.map((match, i) => (
-                <div key={match.id} className="animate-scale-in opacity-0" style={{ animationDelay: `${i * 150}ms` }}>
+                <div key={match.id} className="anim-scale" style={{ animationDelay: `${i * 120}ms` }}>
                   <MatchCard match={match} />
                 </div>
               ))}
@@ -106,9 +105,7 @@ export default function Dashboard() {
         )}
 
         {tab === 'companion' && (
-          <div className="animate-fade-in">
-            <CompanionChat />
-          </div>
+          <CompanionChat />
         )}
       </div>
     </div>

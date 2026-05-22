@@ -108,12 +108,12 @@ export default function Chat() {
       <div className="flex-1 overflow-y-auto px-6 md:px-10 py-6">
         <div className="max-w-2xl mx-auto">
           {messages.map((msg, i) => (
-            <div key={i} className="animate-fade-in">
+            <div key={i} className="anim-in">
               <ChatBubble message={msg.content} isUser={msg.role === 'user'} />
             </div>
           ))}
           {isTyping && (
-            <div className="flex justify-start mb-4 animate-fade-in">
+            <div className="flex justify-start mb-4 anim-in">
               <div className="bg-white border border-dark-text/5 rounded-2xl rounded-bl-sm px-5 py-3.5 shadow-sm">
                 <div className="flex gap-1.5">
                   <span className="w-2 h-2 bg-dark-text/20 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />

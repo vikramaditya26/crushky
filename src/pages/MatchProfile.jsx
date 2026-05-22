@@ -32,10 +32,9 @@ export default function MatchProfile() {
       </div>
 
       <div className="max-w-4xl mx-auto px-6 md:px-10 py-8">
-        {/* Desktop: side by side. Mobile: stacked */}
         <div className="grid md:grid-cols-[360px_1fr] lg:grid-cols-[400px_1fr] gap-8 md:gap-12">
           {/* Left: Photo + quick info */}
-          <div className="animate-fade-in-up">
+          <div>
             <div className="rounded-2xl overflow-hidden shadow-lg">
               <img src={match.photo} alt={match.name} className="w-full aspect-[3/4] object-cover" />
             </div>
@@ -52,8 +51,7 @@ export default function MatchProfile() {
           </div>
 
           {/* Right: Details */}
-          <div className="animate-fade-in-up delay-200 opacity-0">
-            {/* Name + basics */}
+          <div>
             <div className="mb-6">
               <h1 className="font-display text-3xl md:text-4xl font-bold">{match.name}, {match.age}</h1>
               <p className="text-muted mt-2">
@@ -74,7 +72,7 @@ export default function MatchProfile() {
               <h2 className="text-[10px] text-muted uppercase tracking-[0.15em] mb-3 font-semibold">Interests</h2>
               <div className="flex flex-wrap gap-2">
                 {match.interests.map((interest) => (
-                  <span key={interest} className="bg-white border border-dark-text/8 px-4 py-2 rounded-full text-sm text-dark-text/70 hover:bg-dark-green/5 hover:border-dark-green/20 transition-colors">
+                  <span key={interest} className="bg-white border border-dark-text/8 px-4 py-2 rounded-full text-sm text-dark-text/70">
                     {interest}
                   </span>
                 ))}
@@ -101,12 +99,12 @@ export default function MatchProfile() {
                 {!showBooking ? (
                   <button
                     onClick={() => setShowBooking(true)}
-                    className="mt-4 w-full py-3.5 rounded-full bg-dark-green text-white font-semibold text-sm cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg hover:-translate-y-0.5"
+                    className="mt-4 w-full py-3.5 rounded-full bg-dark-green text-white font-semibold text-sm cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg"
                   >
                     Book this date
                   </button>
                 ) : (
-                  <div className="mt-4 animate-fade-in-up space-y-4">
+                  <div className="mt-4 anim-up space-y-4">
                     <div className="bg-cream rounded-xl p-4">
                       <div className="flex justify-between items-start">
                         <div>

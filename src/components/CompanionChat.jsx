@@ -12,9 +12,9 @@ const DEMO_REPLIES = [
 ]
 
 const AI_AVATARS = [
-  { name: "Mira", role: "Dating Coach", emoji: "&#x1F338;", desc: "Helps you prepare for dates and build confidence" },
-  { name: "Arjun", role: "Relationship Guide", emoji: "&#x1F9ED;", desc: "Advice on communication and understanding your partner" },
-  { name: "Zara", role: "Self-Growth Mentor", emoji: "&#x1F31F;", desc: "Focus on personal growth and becoming your best self" },
+  { name: "Mira", role: "Dating Coach", emoji: "\u{1F338}", desc: "Helps you prepare for dates and build confidence" },
+  { name: "Arjun", role: "Relationship Guide", emoji: "\u{1F9ED}", desc: "Advice on communication and understanding your partner" },
+  { name: "Zara", role: "Self-Growth Mentor", emoji: "\u{2728}", desc: "Focus on personal growth and becoming your best self" },
 ]
 
 export default function CompanionChat() {
@@ -74,7 +74,7 @@ export default function CompanionChat() {
 
   if (!selectedAvatar) {
     return (
-      <div className="py-8 animate-fade-in">
+      <div className="py-8">
         <div className="text-center mb-8">
           <h2 className="font-display text-2xl md:text-3xl font-bold">Choose your <span className="italic text-rose">companion</span></h2>
           <p className="text-muted text-sm mt-2">Pick an AI friend to chat with</p>
@@ -84,10 +84,12 @@ export default function CompanionChat() {
             <button
               key={av.name}
               onClick={() => startChat(av)}
-              className="bg-white rounded-2xl p-6 border border-dark-text/5 text-left hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-scale-in opacity-0"
+              className="bg-white rounded-2xl p-6 border border-dark-text/5 text-left hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group anim-up"
               style={{ animationDelay: `${i * 100}ms` }}
             >
-              <div className="w-14 h-14 rounded-2xl bg-cream flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform" dangerouslySetInnerHTML={{ __html: av.emoji }} />
+              <div className="w-14 h-14 rounded-2xl bg-cream flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                {av.emoji}
+              </div>
               <h3 className="font-display text-lg font-bold text-dark-text">{av.name}</h3>
               <p className="text-rose text-xs font-medium mt-0.5">{av.role}</p>
               <p className="text-muted text-xs mt-2 leading-relaxed">{av.desc}</p>
@@ -108,7 +110,9 @@ export default function CompanionChat() {
         >
           &larr;
         </button>
-        <div className="w-8 h-8 rounded-full bg-cream flex items-center justify-center text-base" dangerouslySetInnerHTML={{ __html: selectedAvatar.emoji }} />
+        <div className="w-8 h-8 rounded-full bg-cream flex items-center justify-center text-base">
+          {selectedAvatar.emoji}
+        </div>
         <div>
           <p className="font-semibold text-sm text-dark-text">{selectedAvatar.name}</p>
           <p className="text-[10px] text-muted">{selectedAvatar.role}</p>
@@ -122,17 +126,17 @@ export default function CompanionChat() {
         ))}
         {isTyping && (
           <div className="flex justify-start mb-4">
-            <div className="bg-dark-text/5 rounded-2xl rounded-bl-sm px-5 py-3.5">
+            <div className="bg-white border border-dark-text/5 rounded-2xl rounded-bl-sm px-5 py-3.5">
               <div className="flex gap-1.5">
-                <span className="w-2 h-2 bg-dark-text/30 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-2 h-2 bg-dark-text/30 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-2 h-2 bg-dark-text/30 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <span className="w-2 h-2 bg-dark-text/20 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-2 h-2 bg-dark-text/20 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-2 h-2 bg-dark-text/20 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           </div>
         )}
         {showPaywall && (
-          <div className="animate-fade-in-up mt-4 glass-card rounded-2xl p-6 text-center mx-4">
+          <div className="anim-up mt-4 glass-card rounded-2xl p-6 text-center mx-4">
             <div className="text-3xl mb-3">&#128274;</div>
             <h3 className="font-display text-lg font-bold mb-2">Upgrade to Premium</h3>
             <p className="text-muted text-sm mb-4 leading-relaxed">
