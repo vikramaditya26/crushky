@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import ChatBubble from '../components/ChatBubble'
 
 const DEMO_CONVERSATION = [
-  { role: 'assistant', content: "Hey Aditya! I'm so glad you're here. Let's find your person. ✨\n\nFirst up — what does your ideal weekend look like?" },
-  { role: 'user', content: "Honestly? Wake up late, grab filter coffee from a tucked-away cafe, maybe hit a bookstore or just walk around with no plan. If I'm feeling it, a late-night jam session with friends. I hate anything loud or forced." },
-  { role: 'assistant', content: "You're a slow-morning, no-agenda kind of person — I love that. You value peace but not loneliness. So what are you actually looking for in a relationship? Like, honestly?" },
-  { role: 'user', content: "Someone who doesn't need me to perform. Like, we can sit in silence and it's still comfortable. But also someone who challenges me intellectually — I want those 2am conversations about random deep stuff. No small talk." },
-  { role: 'assistant', content: "Depth over everything. You want someone who sees through the surface. That's rare and beautiful. What kind of person makes you feel most alive? What energy draws you in?" },
-  { role: 'user', content: "Calm confidence. Someone who knows who they are and doesn't need validation. Creative people who build things — whether that's art, code, or a business. And honestly? A great sense of humor. If she can roast me and make me laugh, I'm done." },
-  { role: 'assistant', content: "Sharp humor, quiet intensity, creative fire. I'm getting a really clear picture of you, Aditya. Last one — what's one thing you'd absolutely never compromise on in a partner?" },
-  { role: 'user', content: "Honesty. I can't do games or manipulation. If something's wrong, just tell me. I'd rather hear something hard than be lied to. That's non-negotiable." },
-  { role: 'assistant', content: "Radical honesty — that tells me everything about your character. I think I've got a really clear picture of who you are, and more importantly, who you need.\n\nGive me a moment to find your people... 🌟" },
+  { role: 'assistant', content: "Hey Aditya! Welcome yaar, let's find your person. ✨\n\nStraight up — what does your ideal weekend look like?" },
+  { role: 'user', content: "honestly? late uthna, filter coffee leke kisi tucked-away cafe mein baith jaana. bookstore ya bas aise hi ghoomna with no plan. friends ke saath late-night jam session if I'm feeling it. loud jagah bilkul nahi" },
+  { role: 'assistant', content: "You're a slow-morning, no-agenda kind of person — love that energy. Peace chahiye but not loneliness. Accha tell me, relationship mein actually kya dhundh rahe ho? Honestly bolo." },
+  { role: 'user', content: "someone who doesn't need me to perform yaar. like we can sit in silence and it's still comfortable. but also someone who challenges me intellectually — 2am pe random deep conversations wali. small talk se door hi rehna hai" },
+  { role: 'assistant', content: "Depth over everything. You want someone who sees through the surface. That's actually rare. Ok so what kind of person makes you feel alive? Kaunsi energy attract karti hai?" },
+  { role: 'user', content: "calm confidence. someone who knows who they are, validation ki zaroorat nahi. creative log who build things — chahe art ho, code ho ya business. and honestly? agar wo mujhe roast karke hasa de, then I'm done. bas." },
+  { role: 'assistant', content: "Sharp humor, quiet intensity, creative fire. I'm getting a really clear picture of you Aditya. Last one — ek cheez batao jo tum partner mein kabhi compromise nahi karoge?" },
+  { role: 'user', content: "honesty. games and manipulation nahi chalega. kuch galat hai toh seedha bol do. I'd rather hear something hard than be lied to. ye non-negotiable hai mere liye" },
+  { role: 'assistant', content: "Radical honesty — ye bahut kuch bata deta hai about your character. I think I've got a really clear picture of who you are, and more importantly, who you need.\n\nEk second, tumhare log dhundh rahi hoon... 🌟" },
 ]
 
 export default function Chat() {

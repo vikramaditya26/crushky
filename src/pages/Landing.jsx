@@ -76,16 +76,16 @@ export default function Landing() {
                       <p className="text-[9px] text-muted">Getting to know you</p>
                     </div>
                     <div className="bg-white border border-dark-text/5 rounded-2xl rounded-bl-sm px-3 py-2">
-                      <p className="text-[11px] text-dark-text/80 leading-relaxed">What does your ideal weekend look like? ✨</p>
+                      <p className="text-[11px] text-dark-text/80 leading-relaxed">Ideal weekend kaisa dikhta hai? ✨</p>
                     </div>
                     <div className="bg-dark-green rounded-2xl rounded-br-sm px-3 py-2 ml-auto max-w-[80%]">
-                      <p className="text-[11px] text-white leading-relaxed">Long walks, good coffee, maybe a bookstore...</p>
+                      <p className="text-[11px] text-white leading-relaxed">filter coffee, bookstore, no plans bas</p>
                     </div>
                     <div className="bg-white border border-dark-text/5 rounded-2xl rounded-bl-sm px-3 py-2">
-                      <p className="text-[11px] text-dark-text/80 leading-relaxed">You value calm over chaos. What kind of person makes you feel alive?</p>
+                      <p className="text-[11px] text-dark-text/80 leading-relaxed">Calm over chaos. Kaunsi energy attract karti hai?</p>
                     </div>
                     <div className="bg-dark-green rounded-2xl rounded-br-sm px-3 py-2 ml-auto max-w-[75%]">
-                      <p className="text-[11px] text-white leading-relaxed">Someone curious and kind</p>
+                      <p className="text-[11px] text-white leading-relaxed">someone curious and kind tbh</p>
                     </div>
                     <div className="bg-white border border-dark-text/5 rounded-2xl rounded-bl-sm px-3 py-2">
                       <p className="text-[11px] text-dark-text/80 leading-relaxed">I know exactly who you should meet... 🌟</p>
@@ -96,7 +96,7 @@ export default function Landing() {
               {/* Floating match card */}
               <div className="absolute -bottom-3 -left-16 glass rounded-xl px-3.5 py-2.5 shadow-lg au d6 w-52">
                 <div className="flex items-center gap-3">
-                  <img src="https://images.unsplash.com/photo-1611432579699-484f7990b127?w=80&h=80&fit=crop&crop=face" alt="" className="w-10 h-10 rounded-full object-cover" />
+                  <img src="https://images.unsplash.com/photo-1622782045716-a05bcc4f5ae8?w=80&h=80&fit=crop&crop=face" alt="" className="w-10 h-10 rounded-full object-cover" />
                   <div>
                     <p className="font-display text-sm font-bold">Neha, 24</p>
                     <p className="text-[10px] text-rose font-semibold">94% match</p>

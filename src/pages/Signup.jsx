@@ -40,8 +40,8 @@ export default function Signup() {
     name: 'Aditya', dob: '2003-08-15', gender: 'Man', lookingFor: 'Women', city: 'Mumbai',
     height: "5'10\"", college: 'IIT Bombay', work: 'Product at Razorpay', spotify: 'aditya.vibes', instagram: 'aditya.kumar_',
     photos: [
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=530&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=530&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1653055645127-54ec96add7b5?w=400&h=530&fit=crop&crop=face',
+      'https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?w=400&h=530&fit=crop&crop=face',
     ],
   })
 
