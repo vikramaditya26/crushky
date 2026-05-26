@@ -37,8 +37,12 @@ export default function Signup() {
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({
-    name: '', dob: '', gender: '', lookingFor: '', city: '',
-    height: '', college: '', work: '', spotify: '', instagram: '', photos: [],
+    name: 'Aditya', dob: '2003-08-15', gender: 'Man', lookingFor: 'Women', city: 'Mumbai',
+    height: "5'10\"", college: 'IIT Bombay', work: 'Product at Razorpay', spotify: 'aditya.vibes', instagram: 'aditya.kumar_',
+    photos: [
+      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=530&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=530&fit=crop&crop=face',
+    ],
   })
 
   const set = (key, val) => setForm((p) => ({ ...p, [key]: val }))

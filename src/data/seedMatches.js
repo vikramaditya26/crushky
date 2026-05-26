@@ -22,6 +22,15 @@ export const seedMatches = [
     compatBreakdown: { values: 96, humor: 91, energy: 88, depth: 98 },
     whyYouMatch: "You both value depth over surface-level connections. Neha's analytical mind complements your creative energy. She'll challenge you intellectually while keeping things fun. You share the same dry humor and love for late-night conversations.",
     dateSuggestion: { venue: "The Bombay Canteen", type: "Casual Dining", area: "Lower Parel, Mumbai", photo: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=300&fit=crop" },
+    sampleChat: [
+      { from: 'them', text: "So I heard you're the kind of person who can sit in a cafe for 4 hours. Same. What's your go-to order?" },
+      { from: 'you', text: "Filter coffee, no sugar. If they have a pour-over, even better. You?" },
+      { from: 'them', text: "Masala chai, always. I know that's basic but I will defend it with my life" },
+      { from: 'you', text: "Okay that's actually valid. Chai at 4am hits different though" },
+      { from: 'them', text: "4am chai means either an all-nighter or an existential crisis. Which one?" },
+      { from: 'you', text: "Little bit of both honestly. Usually involves questioning my career while building something new" },
+      { from: 'them', text: "A man after my own heart. We should do that together sometime" },
+    ],
   },
   {
     id: 2,
@@ -46,6 +55,15 @@ export const seedMatches = [
     compatBreakdown: { values: 84, humor: 79, energy: 95, depth: 82 },
     whyYouMatch: "You're both driven and creative, but in complementary ways. Priya brings visual thinking to your verbal world. She values experiences over things. Your shared love for travel means you'd never run out of adventures.",
     dateSuggestion: { venue: "Champa Gali", type: "Cafe Alley", area: "Saket, Delhi", photo: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=300&fit=crop" },
+    sampleChat: [
+      { from: 'them', text: "Your profile says you love bookstores. Okay name your top 3 books right now, no thinking" },
+      { from: 'you', text: "Sapiens, Norwegian Wood, and The Alchemist. Basic but they changed me" },
+      { from: 'them', text: "Norwegian Wood is NOT basic. Okay you passed the vibe check" },
+      { from: 'you', text: "Wait what would have been a fail?" },
+      { from: 'them', text: "If you said Rich Dad Poor Dad unironically" },
+      { from: 'you', text: "I'm literally crying. That was my favorite book at 16" },
+      { from: 'them', text: "Growth is a beautiful thing. I'll allow it since you recovered" },
+    ],
   },
   {
     id: 3,
@@ -70,5 +88,14 @@ export const seedMatches = [
     compatBreakdown: { values: 93, humor: 86, energy: 78, depth: 97 },
     whyYouMatch: "You're both unapologetically nerdy and proud of it. Riya's calm, grounded energy balances your intensity perfectly. She'll send you book recommendations at 2am and actually remember what you said three conversations ago.",
     dateSuggestion: { venue: "Third Wave Coffee", type: "Coffee Shop", area: "Koramangala, Bangalore", photo: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=300&fit=crop" },
+    sampleChat: [
+      { from: 'them', text: "I saw you like long walks with no plan. I do that too but I always end up at a bookstore somehow" },
+      { from: 'you', text: "That's not a bug that's a feature. Which bookstore?" },
+      { from: 'them', text: "Blossom Book House in Bangalore. It's chaotic and perfect" },
+      { from: 'you', text: "I've heard about it! I need to visit next time I'm in Bangalore" },
+      { from: 'them', text: "I'll be your tour guide. But only if you can keep up with my pace of reading 3 books at once" },
+      { from: 'you', text: "I can barely finish one without getting distracted. Teach me your ways" },
+      { from: 'them', text: "Step 1: Put your phone in another room. Step 2: There is no step 2" },
+    ],
   },
 ]

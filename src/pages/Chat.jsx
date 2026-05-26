@@ -1,14 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ChatBubble from '../components/ChatBubble'
-import { sendMessage } from '../utils/claudeApi'
 
-const DEMO_RESPONSES = [
-  null,
-  "Love that! Sounds like you really know how to recharge. Okay next one — what are you actually looking for in a relationship? Like, honestly?",
-  "I appreciate the honesty. So what kind of person makes you feel most alive? Like what energy draws you in?",
-  "Beautiful answer. Last one — what's one thing you'd absolutely never compromise on in a partner?",
-  "I think I've got a pretty good picture of who you are. Give me a moment to find your people...",
+const DEMO_CONVERSATION = [
+  { role: 'assistant', content: "Hey Aditya! I'm so glad you're here. Let's find your person. ✨\n\nFirst up — what does your ideal weekend look like?" },
+  { role: 'user', content: "Honestly? Wake up late, grab filter coffee from a tucked-away cafe, maybe hit a bookstore or just walk around with no plan. If I'm feeling it, a late-night jam session with friends. I hate anything loud or forced." },
+  { role: 'assistant', content: "You're a slow-morning, no-agenda kind of person — I love that. You value peace but not loneliness. So what are you actually looking for in a relationship? Like, honestly?" },
+  { role: 'user', content: "Someone who doesn't need me to perform. Like, we can sit in silence and it's still comfortable. But also someone who challenges me intellectually — I want those 2am conversations about random deep stuff. No small talk." },
+  { role: 'assistant', content: "Depth over everything. You want someone who sees through the surface. That's rare and beautiful. What kind of person makes you feel most alive? What energy draws you in?" },
+  { role: 'user', content: "Calm confidence. Someone who knows who they are and doesn't need validation. Creative people who build things — whether that's art, code, or a business. And honestly? A great sense of humor. If she can roast me and make me laugh, I'm done." },
+  { role: 'assistant', content: "Sharp humor, quiet intensity, creative fire. I'm getting a really clear picture of you, Aditya. Last one — what's one thing you'd absolutely never compromise on in a partner?" },
+  { role: 'user', content: "Honesty. I can't do games or manipulation. If something's wrong, just tell me. I'd rather hear something hard than be lied to. That's non-negotiable." },
+  { role: 'assistant', content: "Radical honesty — that tells me everything about your character. I think I've got a really clear picture of who you are, and more importantly, who you need.\n\nGive me a moment to find your people... 🌟" },
 ]
 
 export default function Chat() {
@@ -17,67 +20,67 @@ export default function Chat() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  const [questionNum, setQuestionNum] = useState(0)
+  const [autoPlaying, setAutoPlaying] = useState(true)
+  const [autoIndex, setAutoIndex] = useState(0)
   const endRef = useRef(null)
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  // Auto-play the demo conversation
   useEffect(() => {
-    const greeting = `Hey${user.name ? ' ' + user.name : ''}! I'm so glad you're here. Let's find your person. ✨\n\nFirst up — what does your ideal weekend look like?`
+    if (!autoPlaying || autoIndex >= DEMO_CONVERSATION.length) return
+
+    const msg = DEMO_CONVERSATION[autoIndex]
+    const isAssistant = msg.role === 'assistant'
+    const delay = autoIndex === 0 ? 600 : isAssistant ? 1200 : 800
+
+    // Show typing indicator before assistant messages
+    if (isAssistant && autoIndex > 0) {
+      setIsTyping(true)
+      const typingTimer = setTimeout(() => {
+        setIsTyping(false)
+        setMessages(prev => [...prev, msg])
+        setAutoIndex(i => i + 1)
+      }, delay)
+      return () => clearTimeout(typingTimer)
+    }
+
     const timer = setTimeout(() => {
-      setMessages((prev) => {
-        if (prev.length > 0) return prev
-        return [{ role: 'assistant', content: greeting }]
-      })
-    }, 600)
+      setMessages(prev => [...prev, msg])
+      setAutoIndex(i => i + 1)
+    }, delay)
     return () => clearTimeout(timer)
-  }, [])
+  }, [autoPlaying, autoIndex])
 
-  const handleSend = async () => {
-    if (!input.trim() || isTyping) return
-    const text = input.trim()
-    setInput('')
-    const newQ = questionNum + 1
-    const updated = [...messages, { role: 'user', content: text }]
-    setMessages(updated)
-    setQuestionNum(newQ)
-    setIsTyping(true)
-
-    if (newQ >= 4) {
-      setTimeout(() => {
-        setMessages((prev) => [...prev, { role: 'assistant', content: DEMO_RESPONSES[4] }])
-        setIsTyping(false)
-        setTimeout(() => {
-          localStorage.setItem('crushky_chat_done', 'true')
-          navigate('/dashboard')
-        }, 2500)
-      }, 1500)
-      return
+  // When all messages are shown, navigate after a pause
+  useEffect(() => {
+    if (autoIndex >= DEMO_CONVERSATION.length && autoPlaying) {
+      const timer = setTimeout(() => {
+        localStorage.setItem('crushky_chat_done', 'true')
+        navigate('/dashboard')
+      }, 2500)
+      return () => clearTimeout(timer)
     }
+  }, [autoIndex, autoPlaying])
 
-    const hasKey = import.meta.env.VITE_ANTHROPIC_API_KEY
-    if (hasKey) {
-      const apiMsgs = updated.map((m) => ({ role: m.role, content: m.content }))
-      const reply = await sendMessage(apiMsgs)
-      if (reply) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: reply }])
-        setIsTyping(false)
-        return
-      }
-    }
+  const progress = Math.min((Math.floor(messages.filter(m => m.role === 'user').length) / 4) * 100, 100)
+  const questionNum = messages.filter(m => m.role === 'user').length
 
+  // Skip button to jump ahead
+  const handleSkip = () => {
+    setAutoPlaying(false)
+    setIsTyping(false)
+    setMessages(DEMO_CONVERSATION)
     setTimeout(() => {
-      setMessages((prev) => [...prev, { role: 'assistant', content: DEMO_RESPONSES[newQ] }])
-      setIsTyping(false)
-    }, 1000)
+      localStorage.setItem('crushky_chat_done', 'true')
+      navigate('/dashboard')
+    }, 1500)
   }
 
-  const progress = Math.min((questionNum / 4) * 100, 100)
-
   return (
-    <div className="min-h-screen bg-cream text-dark-text flex flex-col">
+    <div className="min-h-screen bg-cream text-dark-text flex flex-col grain">
       {/* Top bar */}
       <div className="bg-cream/80 backdrop-blur-lg border-b border-dark-text/5 sticky top-0 z-40 px-6 md:px-10 py-4">
         <div className="max-w-2xl mx-auto">
@@ -92,6 +95,14 @@ export default function Chat() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              {autoPlaying && autoIndex < DEMO_CONVERSATION.length && (
+                <button
+                  onClick={handleSkip}
+                  className="text-muted hover:text-dark-text text-xs font-medium cursor-pointer transition-colors px-3 py-1.5 rounded-full border border-dark-text/10 hover:border-dark-text/20"
+                >
+                  Skip demo &rarr;
+                </button>
+              )}
               <span className="text-muted text-xs font-medium">{questionNum}/4</span>
               <div className="w-20 h-1.5 bg-dark-text/8 rounded-full overflow-hidden">
                 <div
@@ -103,6 +114,16 @@ export default function Chat() {
           </div>
         </div>
       </div>
+
+      {/* Demo banner */}
+      {autoPlaying && (
+        <div className="bg-amber-light/40 border-b border-amber/20 px-6 py-2.5">
+          <div className="max-w-2xl mx-auto flex items-center justify-center gap-2">
+            <span className="text-amber text-xs">&#9679;</span>
+            <p className="text-dark-text/60 text-xs font-medium">MVP Demo &mdash; Auto-playing a sample conversation</p>
+          </div>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 md:px-10 py-6">
@@ -127,7 +148,7 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Input */}
+      {/* Input (disabled during auto-play) */}
       <div className="bg-cream/80 backdrop-blur-lg border-t border-dark-text/5 px-6 md:px-10 py-4">
         <div className="max-w-2xl mx-auto flex gap-3">
           <button className="w-10 h-10 rounded-full border border-dark-text/10 flex items-center justify-center text-dark-text/30 shrink-0 cursor-pointer hover:bg-white hover:shadow-sm transition-all">
@@ -137,14 +158,12 @@ export default function Chat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Type your answer..."
-            disabled={questionNum >= 4}
-            className="flex-1 bg-white border border-dark-text/10 rounded-full px-5 py-3 text-dark-text text-sm outline-none focus:border-dark-green/40 focus:shadow-sm transition-all placeholder:text-dark-text/25"
+            placeholder={autoPlaying ? "Demo in progress..." : "Type your answer..."}
+            disabled={autoPlaying}
+            className="flex-1 bg-white border border-dark-text/10 rounded-full px-5 py-3 text-dark-text text-sm outline-none focus:border-dark-green/40 focus:shadow-sm transition-all placeholder:text-dark-text/25 disabled:opacity-50"
           />
           <button
-            onClick={handleSend}
-            disabled={!input.trim() || isTyping || questionNum >= 4}
+            disabled={autoPlaying}
             className="w-10 h-10 rounded-full bg-dark-green text-white flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-30 hover:bg-dark-green/90 transition-all hover:shadow-md"
           >
             &#10148;

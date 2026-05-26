@@ -257,6 +257,46 @@ export default function MatchProfile() {
                 )}
               </div>
             </div>
+            {/* Chat with match */}
+            {match.sampleChat && (
+              <div className="sr bg-white rounded-2xl border border-dark-text/5 overflow-hidden mb-6">
+                <div className="px-6 py-4 border-b border-dark-text/5 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img src={match.photo} alt="" className="w-8 h-8 rounded-full object-cover" />
+                    <div>
+                      <h2 className="font-display text-sm font-bold">Chat with {match.name.split(' ')[0]}</h2>
+                      <p className="text-[10px] text-muted">Preview conversation</p>
+                    </div>
+                  </div>
+                  <span className="bg-dark-green/10 text-dark-green text-[10px] font-semibold px-2.5 py-1 rounded-full">Active now</span>
+                </div>
+                <div className="p-4 space-y-2.5 max-h-[360px] overflow-y-auto">
+                  {match.sampleChat.map((msg, i) => (
+                    <div key={i} className={`flex ${msg.from === 'you' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[80%] px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                        msg.from === 'you'
+                          ? 'bg-dark-green text-white rounded-2xl rounded-br-sm'
+                          : 'bg-cream text-dark-text/80 rounded-2xl rounded-bl-sm'
+                      }`}>
+                        {msg.text}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="px-4 py-3 border-t border-dark-text/5">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder={`Message ${match.name.split(' ')[0]}...`}
+                      className="flex-1 bg-cream border border-dark-text/8 rounded-full px-4 py-2.5 text-sm outline-none placeholder:text-dark-text/25"
+                    />
+                    <button className="w-9 h-9 rounded-full bg-dark-green text-white flex items-center justify-center shrink-0 cursor-pointer hover:bg-dark-green/90 transition-all text-sm">
+                      &#10148;
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -5,9 +5,10 @@ import CompanionChat from '../components/CompanionChat'
 import { seedMatches } from '../data/seedMatches'
 
 const PERSONALITY_CARDS = [
-  { title: "Work & lifestyle", body: "You live to build, centering everything around your creative career. You value deep work, long walks, and tucked-away cafes over loud bars.", icon: "✦" },
-  { title: "Dating energy", body: "You're looking for someone who matches your intensity intellectually but brings calm to the chaos. Deep conversations over surface-level small talk.", icon: "♡" },
-  { title: "Communication style", body: "Direct but thoughtful. You'd rather have one honest conversation than ten surface-level ones. You remember what people tell you.", icon: "◎" },
+  { title: "Work & lifestyle", body: "You live to build, centering everything around your creative career. Filter coffee over chai, bookstores over bars, and late-night jam sessions over clubs. You need someone who respects your quiet intensity.", icon: "✦" },
+  { title: "Dating energy", body: "You want depth, not performance. Comfortable silences matter more to you than forced conversation. You're drawn to calm confidence, creative minds, and people with sharp humor who can roast you and make you laugh.", icon: "♡" },
+  { title: "Communication style", body: "Radically honest. You'd rather hear something hard than be lied to. You remember what people tell you three conversations later, and you expect the same. Games and manipulation are instant dealbreakers.", icon: "◎" },
+  { title: "Red flags you avoid", body: "People who need constant validation, surface-level small talk, anyone who says 'vibes' unironically. You want substance over aesthetic, and you can spot inauthenticity from a mile away.", icon: "⚑" },
 ]
 
 export default function Dashboard() {

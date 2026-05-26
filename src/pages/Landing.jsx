@@ -28,7 +28,10 @@ export default function Landing() {
       {/* ─── Nav ─── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/70 backdrop-blur-xl border-b border-dark-text/5">
         <div className="max-w-[1100px] mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-          <span className="font-display text-xl font-bold tracking-tight">Crushky</span>
+          <div className="flex items-center gap-3">
+            <span className="font-display text-xl font-bold tracking-tight">Crushky</span>
+            <span className="bg-rose/10 text-rose text-[10px] font-semibold px-2.5 py-1 rounded-full border border-rose/20">MVP Demo</span>
+          </div>
           <button onClick={() => navigate('/signup')} className="bg-dark-green text-white text-sm font-medium px-5 py-2 rounded-full cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-md">
             Get Started
           </button>

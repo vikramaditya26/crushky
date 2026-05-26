@@ -674,3 +674,10 @@ crushky/
 - Committing and pushing the latest tracked local changes on `main`.
 - Files included in this batch: `src/pages/Landing.jsx`, `src/pages/Signup.jsx`, `src/pages/Dashboard.jsx`, `src/pages/Chat.jsx`, `src/pages/MatchProfile.jsx`, `src/components/MatchCard.jsx`, `src/components/CompanionChat.jsx`, `src/data/seedMatches.js`, `src/index.css`, and this `agent.md`.
 - `.claude/` remains intentionally untracked and is not part of the push.
+
+## CODEX HANDOFF NOTE — MAY 26, 2026
+
+- Committing and pushing the latest tracked local changes on `main`.
+- Files included in this batch: `src/pages/Landing.jsx`, `src/pages/Signup.jsx`, `src/pages/Dashboard.jsx`, `src/pages/Chat.jsx`, `src/pages/MatchProfile.jsx`, `src/data/seedMatches.js`, and this `agent.md`.
+- Diff summary for this batch: additional chat flow/content updates, dashboard adjustments, landing tweaks, richer match profile details, signup refinements, and expanded seeded match data.
+- `.claude/` remains intentionally untracked and is not part of the push.
