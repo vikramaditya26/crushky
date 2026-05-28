@@ -25,22 +25,39 @@ function CompatBar({ label, value, delay = 0 }) {
   )
 }
 
+const QUICK_ACTIONS = [
+  { icon: '📸', label: 'Share Instagram' },
+  { icon: '🎵', label: 'Share Spotify' },
+  { icon: '📅', label: 'Plan a date' },
+  { icon: '📍', label: 'Share location' },
+]
+
 export default function MatchProfile() {
   const { id } = useParams()
   const navigate = useNavigate()
   const match = seedMatches.find((m) => m.id === Number(id))
+  const [tab, setTab] = useState('chat')
   const [showBooking, setShowBooking] = useState(false)
-  const [activePhoto, setActivePhoto] = useState(0)
-  const pageRef = useRef(null)
+  const [messages, setMessages] = useState([])
+  const [input, setInput] = useState('')
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [selectedDay, setSelectedDay] = useState(null)
+  const endRef = useRef(null)
+
+  // Load sample chat as initial messages
+  useEffect(() => {
+    if (match?.sampleChat) {
+      setMessages(match.sampleChat.map((msg) => ({
+        from: msg.from,
+        text: msg.text,
+        type: 'text',
+      })))
+    }
+  }, [match?.id])
 
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target) } }),
-      { threshold: 0.12 }
-    )
-    pageRef.current?.querySelectorAll('.sr').forEach((el) => obs.observe(el))
-    return () => obs.disconnect()
-  }, [])
+    endRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   if (!match) {
     return (
@@ -50,125 +67,325 @@ export default function MatchProfile() {
     )
   }
 
-  const allPhotos = match.photos || [match.photo]
+  const firstName = match.name.split(' ')[0]
+
+  const handleSend = () => {
+    if (!input.trim()) return
+    setMessages((prev) => [...prev, { from: 'you', text: input.trim(), type: 'text' }])
+    setInput('')
+    // Simulate reply
+    setTimeout(() => {
+      const replies = [
+        `Haha that's so true! Tell me more about that.`,
+        `I was literally thinking the same thing today.`,
+        `Okay wait, that's actually really interesting.`,
+        `You're fun to talk to, you know that? 😄`,
+      ]
+      setMessages((prev) => [...prev, {
+        from: 'them',
+        text: replies[Math.floor(Math.random() * replies.length)],
+        type: 'text',
+      }])
+    }, 1200)
+  }
+
+  const handleShareInstagram = () => {
+    setMessages((prev) => [
+      ...prev,
+      { from: 'you', text: '', type: 'instagram', handle: 'aditya.kumar_' },
+    ])
+    setTimeout(() => {
+      setMessages((prev) => [...prev, {
+        from: 'them',
+        text: `Just followed you! Your travel photos are amazing btw.`,
+        type: 'text',
+      }])
+    }, 1000)
+  }
+
+  const handleShareSpotify = () => {
+    setMessages((prev) => [
+      ...prev,
+      { from: 'you', text: '', type: 'spotify', handle: 'aditya.vibes' },
+    ])
+    setTimeout(() => {
+      setMessages((prev) => [...prev, {
+        from: 'them',
+        text: `Omg we have such similar taste! Adding your playlist now.`,
+        type: 'text',
+      }])
+    }, 1000)
+  }
+
+  const handlePlanDate = () => {
+    setShowDatePicker(true)
+  }
+
+  const handleConfirmDate = (day) => {
+    setSelectedDay(day)
+    setShowDatePicker(false)
+    setMessages((prev) => [
+      ...prev,
+      { from: 'you', text: '', type: 'date-plan', venue: match.dateSuggestion.venue, area: match.dateSuggestion.area, day },
+    ])
+    setTimeout(() => {
+      setMessages((prev) => [...prev, {
+        from: 'them',
+        text: `${day} works perfectly! Can't wait. See you at ${match.dateSuggestion.venue}! 🎉`,
+        type: 'text',
+      }])
+    }, 1200)
+  }
+
+  const handleQuickAction = (label) => {
+    if (label === 'Share Instagram') handleShareInstagram()
+    else if (label === 'Share Spotify') handleShareSpotify()
+    else if (label === 'Plan a date') handlePlanDate()
+    else if (label === 'Share location') {
+      setMessages((prev) => [
+        ...prev,
+        { from: 'you', text: `📍 Mumbai, Maharashtra`, type: 'text' },
+      ])
+    }
+  }
+
+  const tabs = [
+    { id: 'chat', label: 'Chat', icon: '💬' },
+    { id: 'profile', label: 'Profile', icon: '👤' },
+  ]
+
+  const DAYS = ['This Saturday', 'This Sunday', 'Next Friday', 'Next Saturday']
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-cream text-dark-text grain">
-      {/* Floating orbs */}
-      <div className="orb w-72 h-72 bg-rose-light/20 top-[20%] right-[5%] apg" />
-      <div className="orb w-56 h-56 bg-amber-light/25 bottom-[30%] left-[5%] ad" />
+    <div className="min-h-screen bg-cream text-dark-text flex flex-col">
+      {/* ─── Top Bar ─── */}
+      <div className="bg-cream/70 backdrop-blur-xl border-b border-dark-text/5 sticky top-0 z-40">
+        <div className="max-w-3xl mx-auto px-5 md:px-10">
+          {/* Header row */}
+          <div className="flex items-center gap-3 py-3">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="w-9 h-9 rounded-full bg-white border border-dark-text/10 flex items-center justify-center text-dark-text/60 hover:text-dark-text cursor-pointer transition-all hover:shadow-sm shrink-0"
+            >
+              &larr;
+            </button>
+            <img src={match.photo} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="font-display text-base font-bold truncate">{match.name}, {match.age}</p>
+              <p className="text-[10px] text-dark-green font-medium">Active now</p>
+            </div>
+            <span className="bg-rose/10 text-rose font-bold text-xs px-2.5 py-1 rounded-full shrink-0">{match.compatibility}%</span>
+          </div>
 
-      {/* Top bar */}
-      <div className="bg-cream/70 backdrop-blur-xl border-b border-dark-text/5 sticky top-0 z-40 px-6 md:px-10 py-4">
-        <div className="max-w-4xl mx-auto flex items-center gap-4">
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="w-9 h-9 rounded-full bg-white border border-dark-text/10 flex items-center justify-center text-dark-text/60 hover:text-dark-text cursor-pointer transition-all hover:shadow-sm"
-          >
-            &larr;
-          </button>
-          <span className="font-display text-lg font-bold">{match.name}</span>
-          <div className="ml-auto flex items-center gap-2">
-            {match.spotify && (
-              <span className="text-xs text-muted bg-white px-3 py-1 rounded-full border border-dark-text/5">🎵 {match.spotify}</span>
-            )}
-            {match.instagram && (
-              <span className="text-xs text-muted bg-white px-3 py-1 rounded-full border border-dark-text/5">📸 @{match.instagram}</span>
-            )}
+          {/* Tab bar */}
+          <div className="flex gap-1 bg-dark-text/5 rounded-full p-1 mb-3">
+            {tabs.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`flex-1 py-2 rounded-full text-sm font-medium transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  tab === t.id ? 'bg-dark-green text-white shadow-sm' : 'text-muted hover:text-dark-text/60'
+                }`}
+              >
+                <span className="text-xs">{t.icon}</span> {t.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 md:px-10 py-8 relative z-10">
-        <div className="grid md:grid-cols-[360px_1fr] lg:grid-cols-[400px_1fr] gap-8 md:gap-12">
-
-          {/* Left: Photos + quick info */}
-          <div className="au">
-            {/* Main photo */}
-            <div className="rounded-2xl overflow-hidden shadow-lg hover-lift">
-              <img src={allPhotos[activePhoto]} alt={match.name} className="w-full aspect-[3/4] object-cover" />
+      {/* ─── CHAT TAB ─── */}
+      {tab === 'chat' && (
+        <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full" style={{ height: 'calc(100vh - 140px)' }}>
+          {/* Messages area */}
+          <div className="flex-1 overflow-y-auto px-5 md:px-10 py-4">
+            {/* Match intro card */}
+            <div className="au bg-gradient-to-br from-rose-light/30 to-amber-light/20 rounded-2xl p-4 mb-5 text-center">
+              <img src={match.photo} alt="" className="w-14 h-14 rounded-full object-cover mx-auto mb-2 border-2 border-white shadow-sm" />
+              <p className="font-display text-sm font-bold">{match.name}, {match.age}</p>
+              <p className="text-muted text-xs">{match.city} &middot; {match.compatibility}% match</p>
+              <p className="text-dark-text/50 text-xs mt-2 max-w-xs mx-auto leading-relaxed">
+                You matched because: {match.whyYouMatch.split('.')[0]}.
+              </p>
             </div>
 
-            {/* Photo thumbnails */}
-            {allPhotos.length > 1 && (
-              <div className="flex gap-3 mt-4 justify-center">
-                {allPhotos.map((p, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActivePhoto(i)}
-                    className={`polaroid cursor-pointer transition-all hover-tilt ${activePhoto === i ? 'ring-2 ring-rose/40 scale-105' : 'opacity-60 hover:opacity-100'}`}
-                    style={{ transform: `rotate(${i === 0 ? -3 : i === 1 ? 2 : -1}deg)` }}
-                  >
-                    <img src={p} alt="" className="w-16 h-20 object-cover" />
-                  </button>
-                ))}
+            {/* Chat messages */}
+            <div className="space-y-2.5">
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.from === 'you' ? 'justify-end' : 'justify-start'} ai`}>
+                  {msg.from !== 'you' && (
+                    <img src={match.photo} alt="" className="w-7 h-7 rounded-full object-cover mr-2 mt-1 shrink-0" />
+                  )}
+                  <div className={`max-w-[75%] ${
+                    msg.from === 'you' ? '' : ''
+                  }`}>
+                    {/* Regular text message */}
+                    {msg.type === 'text' && (
+                      <div className={`px-4 py-2.5 text-[13px] leading-relaxed ${
+                        msg.from === 'you'
+                          ? 'bg-dark-green text-white rounded-2xl rounded-br-sm'
+                          : 'bg-white border border-dark-text/5 text-dark-text/80 rounded-2xl rounded-bl-sm'
+                      }`}>
+                        {msg.text}
+                      </div>
+                    )}
+
+                    {/* Instagram share card */}
+                    {msg.type === 'instagram' && (
+                      <div className="bg-gradient-to-br from-[#E1306C]/10 to-[#F77737]/10 border border-[#E1306C]/20 rounded-2xl rounded-br-sm px-4 py-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-[#E1306C]/15 flex items-center justify-center text-sm">📸</div>
+                          <div>
+                            <p className="text-[11px] text-muted">Shared Instagram</p>
+                            <p className="text-sm font-semibold text-dark-text">@{msg.handle}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Spotify share card */}
+                    {msg.type === 'spotify' && (
+                      <div className="bg-[#1DB954]/8 border border-[#1DB954]/20 rounded-2xl rounded-br-sm px-4 py-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-[#1DB954]/15 flex items-center justify-center text-sm">🎵</div>
+                          <div>
+                            <p className="text-[11px] text-muted">Shared Spotify</p>
+                            <p className="text-sm font-semibold text-dark-text">{msg.handle}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Date plan card */}
+                    {msg.type === 'date-plan' && (
+                      <div className="bg-dark-green text-white rounded-2xl rounded-br-sm px-4 py-3">
+                        <p className="text-[10px] text-white/60 mb-1">Date planned</p>
+                        <p className="text-sm font-semibold">{msg.venue}</p>
+                        <p className="text-[12px] text-white/70 mt-0.5">{msg.area}</p>
+                        <div className="mt-2 pt-2 border-t border-white/15 flex items-center gap-2">
+                          <span className="text-xs">📅</span>
+                          <span className="text-[12px]">{msg.day}, 7:30 PM</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Date picker overlay in chat */}
+            {showDatePicker && (
+              <div className="as mt-4 bg-white rounded-2xl border border-dark-text/5 p-5 shadow-lg">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-display text-sm font-bold">Plan a date</h3>
+                    <p className="text-muted text-xs">{match.dateSuggestion.venue} &middot; {match.dateSuggestion.area}</p>
+                  </div>
+                  <button onClick={() => setShowDatePicker(false)} className="text-muted hover:text-dark-text cursor-pointer text-lg">&times;</button>
+                </div>
+                {match.dateSuggestion.photo && (
+                  <div className="rounded-xl overflow-hidden mb-4 h-28">
+                    <img src={match.dateSuggestion.photo} alt="" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <p className="text-xs text-muted mb-3 font-medium">Pick a day</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {DAYS.map((day) => (
+                    <button
+                      key={day}
+                      onClick={() => handleConfirmDate(day)}
+                      className="py-2.5 rounded-xl border-2 border-dark-text/8 text-sm font-medium text-dark-text/70 cursor-pointer hover:border-dark-green/40 hover:bg-dark-green/5 transition-all"
+                    >
+                      {day}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-muted text-[11px]">
+                  <span>💰</span>
+                  <span>Avg. &#x20b9;1,200 for two &middot; {match.dateSuggestion.type}</span>
+                </div>
               </div>
             )}
 
-            {/* Quick info cards */}
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <div className="bg-white rounded-xl p-4 border border-dark-text/5 hover-lift">
-                <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Looking for</p>
-                <p className="text-dark-text font-medium text-sm">{match.lookingFor}</p>
-              </div>
-              <div className="bg-white rounded-xl p-4 border border-dark-text/5 hover-lift">
-                <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Love language</p>
-                <p className="text-dark-text font-medium text-sm">{match.loveLanguage}</p>
-              </div>
-            </div>
-
-            {/* Social links */}
-            {(match.spotify || match.instagram) && (
-              <div className="mt-4 space-y-2">
-                {match.spotify && (
-                  <div className="bg-white rounded-xl p-3.5 border border-dark-text/5 flex items-center gap-3 hover-lift cursor-pointer">
-                    <div className="w-9 h-9 rounded-full bg-[#1DB954]/10 flex items-center justify-center text-base">🎵</div>
-                    <div>
-                      <p className="text-xs font-semibold text-dark-text">Spotify</p>
-                      <p className="text-[11px] text-muted">{match.spotify}</p>
-                    </div>
-                  </div>
-                )}
-                {match.instagram && (
-                  <div className="bg-white rounded-xl p-3.5 border border-dark-text/5 flex items-center gap-3 hover-lift cursor-pointer">
-                    <div className="w-9 h-9 rounded-full bg-[#E1306C]/10 flex items-center justify-center text-base">📸</div>
-                    <div>
-                      <p className="text-xs font-semibold text-dark-text">Instagram</p>
-                      <p className="text-[11px] text-muted">@{match.instagram}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            <div ref={endRef} />
           </div>
 
-          {/* Right: Details */}
-          <div>
-            {/* Name + info */}
-            <div className="au mb-6">
-              <h1 className="font-display text-3xl md:text-4xl font-bold">{match.name}, {match.age}</h1>
-              <p className="text-muted mt-2">
-                {match.city} &middot; {match.college} &middot; {match.work}
-              </p>
-              <p className="text-muted text-sm mt-1">{match.height}</p>
+          {/* Quick actions bar */}
+          <div className="px-5 md:px-10 py-2 border-t border-dark-text/5 bg-cream/80">
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {QUICK_ACTIONS.map((a) => (
+                <button
+                  key={a.label}
+                  onClick={() => handleQuickAction(a.label)}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-dark-text/8 text-xs font-medium text-dark-text/60 cursor-pointer hover:border-dark-green/30 hover:text-dark-text transition-all shrink-0"
+                >
+                  <span>{a.icon}</span> {a.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Message input */}
+          <div className="px-5 md:px-10 py-3 border-t border-dark-text/5 bg-cream">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder={`Message ${firstName}...`}
+                className="flex-1 bg-white border border-dark-text/10 rounded-full px-5 py-3 text-sm outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/25"
+              />
+              <button
+                onClick={handleSend}
+                disabled={!input.trim()}
+                className="w-10 h-10 rounded-full bg-dark-green text-white flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-30 hover:bg-dark-green/90 transition-all text-sm"
+              >
+                &#10148;
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── PROFILE TAB ─── */}
+      {tab === 'profile' && (
+        <div className="flex-1 max-w-3xl mx-auto w-full px-5 md:px-10 py-6 overflow-y-auto">
+          <div className="au">
+            {/* Main photo */}
+            <div className="rounded-2xl overflow-hidden shadow-lg mb-5">
+              <img src={match.photo} alt={match.name} className="w-full aspect-[4/5] object-cover max-h-[420px]" />
             </div>
 
-            {/* Overall compatibility */}
-            <div className="sr bg-gradient-to-br from-rose-light/40 to-amber-light/30 rounded-2xl p-6 mb-6">
+            {/* Name + basics */}
+            <div className="mb-6">
+              <h1 className="font-display text-3xl font-bold">{match.name}, {match.age}</h1>
+              <p className="text-muted mt-1.5">{match.city} &middot; {match.height}</p>
+            </div>
+
+            {/* Bio quote */}
+            <div className="bg-white rounded-2xl p-5 border border-dark-text/5 mb-5">
+              <p className="font-display text-base italic text-dark-text/80 leading-relaxed">
+                &ldquo;{match.bio}&rdquo;
+              </p>
+            </div>
+
+            {/* Compatibility score */}
+            <div className="bg-gradient-to-br from-rose-light/40 to-amber-light/30 rounded-2xl p-5 mb-5">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="font-display text-base font-bold">Compatibility Score</h2>
-                <span className="font-display text-3xl font-bold text-rose">{match.compatibility}%</span>
+                <h2 className="font-display text-sm font-bold">Compatibility</h2>
+                <span className="font-display text-2xl font-bold text-rose">{match.compatibility}%</span>
               </div>
-              <div className="h-3 bg-white/50 rounded-full overflow-hidden">
+              <div className="h-2.5 bg-white/50 rounded-full overflow-hidden">
                 <div className="compat-bar h-full" style={{ width: `${match.compatibility}%` }} />
               </div>
             </div>
 
             {/* Compatibility breakdown */}
             {match.compatBreakdown && (
-              <div className="sr bg-white rounded-2xl p-6 border border-dark-text/5 mb-6">
-                <h2 className="text-xs text-muted font-semibold uppercase tracking-[0.15em] mb-5">Compatibility Breakdown</h2>
-                <div className="space-y-4">
+              <div className="bg-white rounded-2xl p-5 border border-dark-text/5 mb-5">
+                <h2 className="text-xs text-muted font-semibold uppercase tracking-[0.15em] mb-4">Breakdown</h2>
+                <div className="space-y-3.5">
                   <CompatBar label="Shared Values" value={match.compatBreakdown.values} delay={0} />
                   <CompatBar label="Humor Match" value={match.compatBreakdown.humor} delay={100} />
                   <CompatBar label="Energy Level" value={match.compatBreakdown.energy} delay={200} />
@@ -177,129 +394,93 @@ export default function MatchProfile() {
               </div>
             )}
 
-            {/* Bio */}
-            <div className="sr bg-white rounded-2xl p-6 border border-dark-text/5 mb-6">
-              <p className="font-display text-base md:text-lg italic text-dark-text/80 leading-relaxed">
-                &ldquo;{match.bio}&rdquo;
-              </p>
+            {/* Why you click */}
+            <div className="bg-gradient-to-br from-rose/8 to-amber/5 border border-rose/10 rounded-2xl p-5 mb-5">
+              <h2 className="font-display text-sm font-bold text-rose mb-2 flex items-center gap-2">
+                <span>✨</span> Why You Two Click
+              </h2>
+              <p className="text-dark-text/70 text-sm leading-relaxed">{match.whyYouMatch}</p>
+            </div>
+
+            {/* Info grid */}
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <div className="bg-white rounded-xl p-4 border border-dark-text/5">
+                <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Career</p>
+                <p className="text-dark-text font-medium text-sm">{match.work}</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-dark-text/5">
+                <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Education</p>
+                <p className="text-dark-text font-medium text-sm">{match.college}</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-dark-text/5">
+                <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Looking for</p>
+                <p className="text-dark-text font-medium text-sm">{match.lookingFor}</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-dark-text/5">
+                <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Love language</p>
+                <p className="text-dark-text font-medium text-sm">{match.loveLanguage}</p>
+              </div>
             </div>
 
             {/* Interests */}
-            <div className="sr mb-6">
+            <div className="mb-5">
               <h2 className="text-xs text-muted font-semibold uppercase tracking-[0.15em] mb-3">Interests</h2>
               <div className="flex flex-wrap gap-2">
                 {match.interests.map((interest) => (
-                  <span key={interest} className="bg-white border border-dark-text/8 px-4 py-2 rounded-full text-sm text-dark-text/70 hover-lift cursor-default">
+                  <span key={interest} className="bg-white border border-dark-text/8 px-4 py-2 rounded-full text-sm text-dark-text/70">
                     {interest}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Why you click */}
-            <div className="sr bg-gradient-to-br from-rose/8 to-amber/5 border border-rose/10 rounded-2xl p-6 mb-6">
-              <h2 className="font-display text-base font-bold text-rose mb-3 flex items-center gap-2">
-                <span>✨</span> Why You Two Click
-              </h2>
-              <p className="text-dark-text/70 text-sm leading-relaxed">{match.whyYouMatch}</p>
+            {/* Social links */}
+            <div className="space-y-2.5 mb-5">
+              {match.spotify && (
+                <div className="bg-white rounded-xl p-4 border border-dark-text/5 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#1DB954]/10 flex items-center justify-center text-base">🎵</div>
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-dark-text">Spotify</p>
+                    <p className="text-[11px] text-muted">{match.spotify}</p>
+                  </div>
+                </div>
+              )}
+              {match.instagram && (
+                <div className="bg-white rounded-xl p-4 border border-dark-text/5 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#E1306C]/10 flex items-center justify-center text-base">📸</div>
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-dark-text">Instagram</p>
+                    <p className="text-[11px] text-muted">@{match.instagram}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Date suggestion */}
-            <div className="sr bg-white rounded-2xl border border-dark-text/5 overflow-hidden mb-6">
-              {/* Restaurant photo */}
+            <div className="bg-white rounded-2xl border border-dark-text/5 overflow-hidden mb-8">
               {match.dateSuggestion.photo && (
-                <div className="relative h-40 overflow-hidden">
-                  <img src={match.dateSuggestion.photo} alt={match.dateSuggestion.venue} className="w-full h-full object-cover" />
+                <div className="relative h-36 overflow-hidden">
+                  <img src={match.dateSuggestion.photo} alt="" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                 </div>
               )}
-              <div className="p-6">
-                <h2 className="font-display text-base font-bold flex items-center gap-2 mb-3">
-                  🍽 Where to meet
+              <div className="p-5">
+                <h2 className="font-display text-sm font-bold flex items-center gap-2 mb-2">
+                  🍽 AI-suggested date spot
                 </h2>
-                <p className="text-dark-text font-semibold text-lg">{match.dateSuggestion.venue}</p>
-                <p className="text-muted text-sm mt-1">{match.dateSuggestion.type} &middot; {match.dateSuggestion.area}</p>
-
-                {!showBooking ? (
-                  <button
-                    onClick={() => setShowBooking(true)}
-                    className="mt-4 w-full py-3.5 rounded-full bg-dark-green text-white font-semibold text-sm cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg"
-                  >
-                    Book this date
-                  </button>
-                ) : (
-                  <div className="mt-4 au space-y-4">
-                    <div className="bg-cream rounded-xl p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-semibold text-dark-text">Date with {match.name.split(' ')[0]}</p>
-                          <p className="text-muted text-sm mt-1">Saturday, 7:30 PM</p>
-                        </div>
-                        <span className="bg-dark-green/10 text-dark-green text-xs font-semibold px-3 py-1 rounded-full">Confirmed</span>
-                      </div>
-                      <div className="mt-3 pt-3 border-t border-dark-text/5 space-y-2">
-                        <div className="flex items-start gap-2">
-                          <span className="text-muted text-sm">📍</span>
-                          <p className="text-sm text-dark-text/70">{match.dateSuggestion.area}</p>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-muted text-sm">🕗</span>
-                          <p className="text-sm text-dark-text/70">Table for 2, window seating</p>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-muted text-sm">💰</span>
-                          <p className="text-sm text-dark-text/70">Avg. &#x20b9;1,200 for two</p>
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-center text-muted text-xs">We'll send you a reminder before your date 🎉</p>
-                  </div>
-                )}
+                <p className="text-dark-text font-semibold">{match.dateSuggestion.venue}</p>
+                <p className="text-muted text-xs mt-0.5">{match.dateSuggestion.type} &middot; {match.dateSuggestion.area}</p>
+                <button
+                  onClick={() => { setTab('chat'); setTimeout(() => handlePlanDate(), 300) }}
+                  className="mt-4 w-full py-3 rounded-full bg-dark-green text-white font-semibold text-sm cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg"
+                >
+                  Plan this date
+                </button>
               </div>
             </div>
-            {/* Chat with match */}
-            {match.sampleChat && (
-              <div className="sr bg-white rounded-2xl border border-dark-text/5 overflow-hidden mb-6">
-                <div className="px-6 py-4 border-b border-dark-text/5 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <img src={match.photo} alt="" className="w-8 h-8 rounded-full object-cover" />
-                    <div>
-                      <h2 className="font-display text-sm font-bold">Chat with {match.name.split(' ')[0]}</h2>
-                      <p className="text-[10px] text-muted">Preview conversation</p>
-                    </div>
-                  </div>
-                  <span className="bg-dark-green/10 text-dark-green text-[10px] font-semibold px-2.5 py-1 rounded-full">Active now</span>
-                </div>
-                <div className="p-4 space-y-2.5 max-h-[360px] overflow-y-auto">
-                  {match.sampleChat.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.from === 'you' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[80%] px-3.5 py-2.5 text-[13px] leading-relaxed ${
-                        msg.from === 'you'
-                          ? 'bg-dark-green text-white rounded-2xl rounded-br-sm'
-                          : 'bg-cream text-dark-text/80 rounded-2xl rounded-bl-sm'
-                      }`}>
-                        {msg.text}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="px-4 py-3 border-t border-dark-text/5">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder={`Message ${match.name.split(' ')[0]}...`}
-                      className="flex-1 bg-cream border border-dark-text/8 rounded-full px-4 py-2.5 text-sm outline-none placeholder:text-dark-text/25"
-                    />
-                    <button className="w-9 h-9 rounded-full bg-dark-green text-white flex items-center justify-center shrink-0 cursor-pointer hover:bg-dark-green/90 transition-all text-sm">
-                      &#10148;
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

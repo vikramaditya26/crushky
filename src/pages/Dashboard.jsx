@@ -5,19 +5,53 @@ import CompanionChat from '../components/CompanionChat'
 import { seedMatches } from '../data/seedMatches'
 
 const DEMO_CONVERSATION = [
-  { role: 'assistant', content: "Hey! I'm Crushky, your AI matchmaker. Let's find your person.\n\nWhat does your ideal weekend look like?" },
+  // Opening
+  { role: 'assistant', content: "Hey! I'm Crushky, your AI matchmaker. I'm going to ask you a few real questions — not the surface-level stuff. Ready to find your person?" },
+  { role: 'user', content: "Let's do it." },
+
+  // Round 1: Lifestyle
+  { role: 'assistant', content: "Cool. First up — what does your ideal weekend look like? And be honest, not the Instagram version." },
   { role: 'user', content: "Wake up late, grab coffee from some hidden cafe, maybe a bookstore. Late-night jam session with friends if I'm in the mood. Nothing loud or forced." },
-  { role: 'assistant', content: "Slow mornings, no agenda, peace without loneliness. I love that. What are you actually looking for in a relationship?" },
+  { role: 'assistant', content: "Slow mornings, no agenda, peace without loneliness. I already know a lot about you from just that. What kind of music are you into?" },
+  { role: 'user', content: "Prateek Kuhad, The Local Train, some Coldplay when I'm feeling emotional. Basically anything acoustic or indie." },
+
+  // Round 2: Values
+  { role: 'assistant', content: "Good taste. Now let's go deeper — what are you actually looking for in a relationship? Not the dating app bio version." },
   { role: 'user', content: "Someone who doesn't need me to perform. We can sit in silence and it's still comfortable. But also someone who challenges me — I want those 2am deep conversations." },
-  { role: 'assistant', content: "Depth over everything. That's rare. What kind of person makes you feel most alive?" },
+  { role: 'assistant', content: "Depth over everything. That's rare and honestly refreshing. Most people say 'someone funny' and leave it at that. You want real connection." },
+
+  // >>> MATCH 1 REVEALS HERE (after msg index 8, which is user msg #4)
+
+  // Round 3: Personality
+  { role: 'assistant', content: "Okay getting warmer. What kind of person makes you feel most alive? Think about the best conversations you've had." },
   { role: 'user', content: "Calm confidence. Someone who knows who they are. Creative people who build things. And honestly, if she can roast me and make me laugh — I'm done." },
-  { role: 'assistant', content: "Sharp humor, quiet intensity, creative fire. Last question — what's one thing you'd never compromise on?" },
+  { role: 'assistant', content: "Sharp humor, quiet intensity, creative fire. You're not looking for someone to complete you — you want someone who matches your energy. I respect that." },
+
+  // Round 4: Dealbreakers
+  { role: 'assistant', content: "One more thing — what's the one thing you'd never compromise on? The absolute dealbreaker." },
   { role: 'user', content: "Honesty. No games, no manipulation. I'd rather hear something hard than be lied to. That's non-negotiable." },
-  { role: 'assistant', content: "That tells me everything I need to know about you. I've found your people. Check your matches." },
+  { role: 'assistant', content: "Honesty as a core value. That filters out a lot of people — and that's a good thing. You know exactly what you want." },
+
+  // >>> MATCH 2 REVEALS HERE (after msg index 14, which is user msg #6)
+
+  // Round 5: Fun/quirky
+  { role: 'assistant', content: "Okay, rapid fire. Controversial food opinion — go." },
+  { role: 'user', content: "Maggi is better than any pasta. I will die on this hill." },
+  { role: 'assistant', content: "Bold. Correct, but bold. Last one — if you could have dinner with anyone, dead or alive, who?" },
+  { role: 'user', content: "Steve Jobs. I want to know what it felt like to believe you could change the world and then actually do it." },
+
+  // >>> MATCH 3 REVEALS HERE (after msg index 19, which is user msg #8)
+
+  { role: 'assistant', content: "That tells me everything. You value vision, authenticity, and quiet ambition. I've analyzed your personality across 12 dimensions and found your top matches. Check them out — I think you'll be surprised how well these click." },
 ]
 
-// Which match to reveal after which user message (0-indexed user msg count)
-const MATCH_REVEALS = [1, 2, 3]
+// Match reveals tied to conversation message index (0-based)
+// Match 1 after 9 messages, Match 2 after 15, Match 3 after 20
+const MATCH_REVEAL_AT_INDEX = [
+  { matchIdx: 0, afterMsgIndex: 8 },
+  { matchIdx: 1, afterMsgIndex: 14 },
+  { matchIdx: 2, afterMsgIndex: 19 },
+]
 
 function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
   return (
@@ -56,7 +90,6 @@ export default function Dashboard() {
   const [messages, setMessages] = useState([])
   const [autoIndex, setAutoIndex] = useState(0)
   const [isTyping, setIsTyping] = useState(false)
-  const [userMsgCount, setUserMsgCount] = useState(0)
   const endRef = useRef(null)
 
   // Match state
@@ -75,13 +108,16 @@ export default function Dashboard() {
 
     const msg = DEMO_CONVERSATION[autoIndex]
     const isAssistant = msg.role === 'assistant'
-    const delay = autoIndex === 0 ? 800 : isAssistant ? 1400 : 900
+    // Slower pacing for a more natural feel
+    const delay = autoIndex === 0 ? 1000 : isAssistant ? 1800 : 1100
 
     if (isAssistant && autoIndex > 0) {
       setIsTyping(true)
       const t = setTimeout(() => {
         setIsTyping(false)
         setMessages(prev => [...prev, msg])
+        // Check for match reveal after this message
+        checkMatchReveal(autoIndex)
         setAutoIndex(i => i + 1)
       }, delay)
       return () => clearTimeout(t)
@@ -89,23 +125,22 @@ export default function Dashboard() {
 
     const t = setTimeout(() => {
       setMessages(prev => [...prev, msg])
-      if (msg.role === 'user') {
-        const newCount = userMsgCount + 1
-        setUserMsgCount(newCount)
-        // Check if we should reveal a match
-        const matchIdx = MATCH_REVEALS.indexOf(newCount)
-        if (matchIdx !== -1 && seedMatches[matchIdx]) {
-          setTimeout(() => {
-            setRevealedMatches(prev => [...prev, seedMatches[matchIdx]])
-            setNewReveal(seedMatches[matchIdx].id)
-            setTimeout(() => setNewReveal(null), 2000)
-          }, 600)
-        }
-      }
+      checkMatchReveal(autoIndex)
       setAutoIndex(i => i + 1)
     }, delay)
     return () => clearTimeout(t)
   }, [autoIndex])
+
+  const checkMatchReveal = (msgIndex) => {
+    const reveal = MATCH_REVEAL_AT_INDEX.find(r => r.afterMsgIndex === msgIndex)
+    if (reveal && seedMatches[reveal.matchIdx]) {
+      setTimeout(() => {
+        setRevealedMatches(prev => [...prev, seedMatches[reveal.matchIdx]])
+        setNewReveal(seedMatches[reveal.matchIdx].id)
+        setTimeout(() => setNewReveal(null), 2500)
+      }, 800)
+    }
+  }
 
   const handleShortlist = (id) => {
     setShortlisted(prev => [...prev, id])
@@ -123,7 +158,7 @@ export default function Dashboard() {
   const tabs = [
     { id: 'talk', label: 'Talk', icon: '✦' },
     { id: 'matches', label: `Matches${shortlisted.length ? ` (${shortlisted.length})` : ''}`, icon: '♡' },
-    { id: 'companion', label: 'Companion', icon: '◈' },
+    { id: 'companion', label: 'Friend', icon: '◈' },
   ]
 
   return (
@@ -162,17 +197,39 @@ export default function Dashboard() {
           {/* Demo banner */}
           <div className="bg-amber-light/40 border-b border-amber/20 px-5 py-2">
             <p className="text-dark-text/50 text-[11px] font-medium text-center">
-              MVP Demo &mdash; Auto-playing a sample conversation. Matches appear as you talk.
+              MVP Demo &mdash; Auto-playing a sample conversation. Matches appear as you go deeper.
             </p>
           </div>
 
           <div className="flex-1 overflow-y-auto px-5 md:px-10 py-5">
             <div className="max-w-2xl mx-auto space-y-1">
-              {messages.map((msg, i) => (
-                <div key={i} className="ai">
-                  <ChatBubble message={msg.content} isUser={msg.role === 'user'} />
-                </div>
-              ))}
+              {messages.map((msg, i) => {
+                // Check if a match card should appear after this message
+                const revealHere = MATCH_REVEAL_AT_INDEX.find(r => r.afterMsgIndex === i)
+                const matchForReveal = revealHere ? revealedMatches.find(m => m.id === seedMatches[revealHere.matchIdx]?.id) : null
+
+                return (
+                  <div key={i}>
+                    <div className="ai">
+                      <ChatBubble message={msg.content} isUser={msg.role === 'user'} />
+                    </div>
+                    {/* Match reveal card inline after specific messages */}
+                    {matchForReveal && !skipped.includes(matchForReveal.id) && (
+                      <div className="py-3">
+                        <p className="text-rose text-xs font-semibold mb-2 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 bg-rose rounded-full animate-pulse" /> New match found
+                        </p>
+                        <MatchRevealCard
+                          match={matchForReveal}
+                          onShortlist={handleShortlist}
+                          onSkip={handleSkip}
+                          isNew={newReveal === matchForReveal.id}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
 
               {isTyping && (
                 <div className="flex justify-start mb-3 ai">
@@ -185,21 +242,6 @@ export default function Dashboard() {
                   </div>
                 </div>
               )}
-
-              {/* Match reveal cards inline */}
-              {pendingMatches.map((match) => (
-                <div key={match.id} className="py-3">
-                  <p className="text-rose text-xs font-semibold mb-2 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-rose rounded-full animate-pulse" /> New match found
-                  </p>
-                  <MatchRevealCard
-                    match={match}
-                    onShortlist={handleShortlist}
-                    onSkip={handleSkip}
-                    isNew={newReveal === match.id}
-                  />
-                </div>
-              ))}
 
               <div ref={endRef} />
             </div>
@@ -273,7 +315,6 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* Pending matches not yet shortlisted */}
               {pendingMatches.length > 0 && (
                 <div>
                   <h2 className="font-display text-lg font-bold mb-1">Pending</h2>
