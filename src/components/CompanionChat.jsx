@@ -85,9 +85,7 @@ const SESSIONS = [
 function AnimatedBg({ accent = '#C94B4B' }) {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Shifting gradient base */}
       <div className="absolute inset-0 companion-bg" />
-      {/* Floating color blobs */}
       <div className="absolute rounded-full animate-blob" style={{
         width: '280px', height: '280px',
         background: `radial-gradient(circle, ${accent}15 0%, transparent 70%)`,
@@ -107,15 +105,124 @@ function AnimatedBg({ accent = '#C94B4B' }) {
   )
 }
 
+// ── Mic Icon SVG ──
+function MicIcon({ color = '#C94B4B', size = 26 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+      <line x1="12" y1="19" x2="12" y2="23"/>
+      <line x1="8" y1="23" x2="16" y2="23"/>
+    </svg>
+  )
+}
+
+// ── Voice Entry Screen (per companion) ──
+function CompanionVoiceEntry({ companion, onStart }) {
+  const [listening, setListening] = useState(false)
+
+  const handleTap = () => {
+    setListening(true)
+    setTimeout(() => onStart(), 2200)
+  }
+
+  return (
+    <div className="relative flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 120px)' }}>
+      <AnimatedBg accent={companion.accent} />
+
+      {/* Ambient glow behind photo */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full"
+          style={{ background: `radial-gradient(circle, ${companion.accent}08 0%, transparent 70%)` }} />
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center au">
+        {/* Companion photo with rings */}
+        <div className="relative flex items-center justify-center mb-8">
+          {listening && (
+            <>
+              <div className="voice-ring-outer absolute rounded-full"
+                style={{ width: '148px', height: '148px', top: '-14px', left: '-14px', border: `1.5px solid ${companion.accent}35` }} />
+              <div className="voice-ring-mid absolute rounded-full"
+                style={{ width: '148px', height: '148px', top: '-14px', left: '-14px', border: `1.5px solid ${companion.accent}20` }} />
+            </>
+          )}
+          <div className="relative w-28 h-28 rounded-full overflow-hidden shrink-0"
+            style={{
+              border: `3px solid ${companion.accent}50`,
+              boxShadow: listening ? `0 0 0 0 ${companion.accent}00` : '0 8px 32px rgba(0,0,0,0.12)',
+            }}>
+            <img src={companion.photo} alt={companion.name}
+              className={`w-full h-full object-cover object-top ${listening ? 'mic-breath' : ''}`} />
+            {/* Waveform overlay when listening */}
+            {listening && (
+              <div className="absolute inset-0 flex items-end justify-center pb-3"
+                style={{ background: `linear-gradient(to top, ${companion.accent}cc 0%, transparent 60%)` }}>
+                <div className="flex items-end gap-[3px]">
+                  {[1,2,3,4,5].map(i => (
+                    <span key={i} className="wave-bar rounded-full bg-white"
+                      style={{ height: '16px', width: '3px', animationDelay: `${i * 80}ms` }} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {listening ? (
+          <div className="text-center">
+            <p className="font-display text-2xl italic text-dark-text/80 mb-2">Listening…</p>
+            <p className="text-dark-text/35 text-sm">Getting to know you</p>
+          </div>
+        ) : (
+          <div className="text-center px-4">
+            <p className="font-display text-2xl font-bold text-dark-text mb-1">{companion.name}</p>
+            <p className="text-dark-text/40 text-sm mb-1">{companion.vibe}</p>
+            <div className="flex items-center justify-center gap-1.5 mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+              <p className="text-green-600/70 text-xs">Online now</p>
+            </div>
+
+            {/* Mic tap button */}
+            <button
+              onClick={handleTap}
+              className="w-20 h-20 rounded-full flex items-center justify-center cursor-pointer transition-all hover:scale-105 mb-4 mx-auto"
+              style={{
+                background: `${companion.accent}15`,
+                border: `2px solid ${companion.accent}35`,
+              }}>
+              <MicIcon color={companion.accent} size={30} />
+            </button>
+
+            <button
+              onClick={handleTap}
+              className="text-cream px-8 py-3.5 rounded-full text-sm font-semibold cursor-pointer transition-all hover:shadow-lg hover:opacity-90"
+              style={{ background: companion.accent }}>
+              Tap to talk ✦
+            </button>
+            <p className="text-dark-text/25 text-xs mt-4 cursor-pointer hover:text-dark-text/40 transition-colors"
+              onClick={onStart}>
+              or type instead →
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ══════════════════════════════════════
 export default function CompanionChat() {
   const [selected, setSelected] = useState(null)
+  const [chatStarted, setChatStarted] = useState(false)
   const [chatTab, setChatTab] = useState('chat')
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [showInput, setShowInput] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [msgCount, setMsgCount] = useState(0)
+  const [isListening, setIsListening] = useState(false)
   const [isVoiceActive, setIsVoiceActive] = useState(false)
   const inputRef = useRef(null)
   const endRef = useRef(null)
@@ -125,16 +232,29 @@ export default function CompanionChat() {
 
   const companion = COMPANIONS.find(c => c.id === selected)
 
-  const handleSelect = (id) => {
+  const startChat = (id) => {
     const comp = COMPANIONS.find(c => c.id === id)
-    setSelected(id)
+    setChatStarted(true)
     setChatTab('chat')
     setMessages([])
     setMsgCount(0)
     setShowInput(false)
+    setIsListening(false)
     setTimeout(() => {
-      setMessages([{ role: 'assistant', content: comp.greeting }])
+      setIsTyping(true)
+      setTimeout(() => {
+        setIsTyping(false)
+        setMessages([{ role: 'assistant', content: comp.greeting }])
+      }, 1200)
     }, 300)
+  }
+
+  const handleSelect = (id) => {
+    setSelected(id)
+    setChatStarted(false)
+    setMessages([])
+    setShowInput(false)
+    setIsListening(false)
   }
 
   const handleSend = async () => {
@@ -160,6 +280,17 @@ export default function CompanionChat() {
       setMessages(prev => [...prev, { role: 'assistant', content: DEMO_REPLIES[msgCount % DEMO_REPLIES.length] }])
       setIsTyping(false)
     }, 1300)
+  }
+
+  // Mic tap → listening animation → show text input after 2s
+  const handleMicTap = () => {
+    if (isTyping) return
+    setIsListening(true)
+    setShowInput(false)
+    setTimeout(() => {
+      setIsListening(false)
+      setShowInput(true)
+    }, 2000)
   }
 
   const handleSession = (session) => {
@@ -206,15 +337,12 @@ export default function CompanionChat() {
                   src={c.photo} alt={c.name}
                   className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
-                {/* Bottom gradient overlay */}
                 <div className="absolute inset-0"
                   style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.72) 40%, transparent 80%)' }} />
-                {/* Name + vibe */}
                 <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
                   <p className="font-display font-bold text-white text-base leading-tight">{c.name}</p>
                   <p className="text-white/55 text-[10px] mt-0.5">{c.vibe}</p>
                 </div>
-                {/* Online dot */}
                 <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white shadow-sm" />
               </button>
             ))}
@@ -228,12 +356,22 @@ export default function CompanionChat() {
     )
   }
 
-  // ── SCREEN 2: Voice-feel conversation ──
+  // ── SCREEN 2: Voice entry (before chat starts) ──
+  if (!chatStarted) {
+    return (
+      <CompanionVoiceEntry
+        companion={companion}
+        onStart={() => startChat(selected)}
+      />
+    )
+  }
+
+  // ── SCREEN 3: Voice-feel conversation ──
   return (
     <div className="relative flex flex-col" style={{ height: 'calc(100vh - 120px)' }}>
       <AnimatedBg accent={companion.accent} />
 
-      {/* Voice call overlay */}
+      {/* Video call overlay */}
       {isVoiceActive && (
         <div className="absolute inset-0 z-50 flex flex-col items-center justify-center"
           style={{ background: 'rgba(247,242,237,0.96)', backdropFilter: 'blur(20px)' }}>
@@ -259,7 +397,7 @@ export default function CompanionChat() {
       {/* Header */}
       <div className="relative z-10 flex items-center justify-between px-4 py-3"
         style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', background: 'rgba(247,242,237,0.75)', backdropFilter: 'blur(12px)' }}>
-        <button onClick={() => { setSelected(null); setMessages([]) }}
+        <button onClick={() => { setSelected(null); setChatStarted(false); setMessages([]) }}
           className="text-dark-text/40 hover:text-dark-text/70 transition-colors cursor-pointer px-1 py-1">
           ←
         </button>
@@ -298,22 +436,34 @@ export default function CompanionChat() {
       {/* ══ TALKING TAB ══ */}
       {chatTab === 'chat' && (
         <>
-          {/* Companion photo + waveform */}
+          {/* Companion photo at top — voice rings when companion is "speaking" */}
           <div className="relative z-10 flex flex-col items-center pt-5 pb-2 shrink-0">
-            <div className="relative">
-              <img
-                src={companion.photo} alt={companion.name}
-                className="w-16 h-16 rounded-full object-cover object-top shadow-md"
-                style={{ border: `2.5px solid ${companion.accent}45` }}
-              />
+            <div className="relative flex items-center justify-center">
               {isTyping && (
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex items-end gap-[3px] h-4">
-                  {[1,2,3,4,5].map(i => (
-                    <span key={i} className="wave-bar rounded-full"
-                      style={{ width: '3px', height: '12px', background: companion.accent, opacity: 0.65, animationDelay: `${i * 90}ms` }} />
-                  ))}
-                </div>
+                <>
+                  <div className="voice-ring-outer absolute rounded-full"
+                    style={{ width: '80px', height: '80px', top: '-8px', left: '-8px', border: `1.5px solid ${companion.accent}30` }} />
+                  <div className="voice-ring-mid absolute rounded-full"
+                    style={{ width: '80px', height: '80px', top: '-8px', left: '-8px', border: `1.5px solid ${companion.accent}18` }} />
+                </>
               )}
+              <div className="relative w-16 h-16 rounded-full overflow-hidden"
+                style={{ border: `2.5px solid ${companion.accent}45` }}>
+                <img src={companion.photo} alt={companion.name}
+                  className={`w-full h-full object-cover object-top ${isTyping ? 'mic-breath' : ''}`} />
+                {/* Waveform at bottom of photo while companion is responding */}
+                {isTyping && (
+                  <div className="absolute inset-0 flex items-end justify-center pb-1.5"
+                    style={{ background: `linear-gradient(to top, ${companion.accent}bb 0%, transparent 55%)` }}>
+                    <div className="flex items-end gap-[2px]">
+                      {[1,2,3,4,5].map(i => (
+                        <span key={i} className="wave-bar rounded-full bg-white"
+                          style={{ height: '10px', width: '2.5px', animationDelay: `${i * 80}ms` }} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -325,7 +475,7 @@ export default function CompanionChat() {
               </p>
             )}
             {messages.map((msg, i) => (
-              <div key={i} className={`mb-5 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+              <div key={i} className={`mb-5 ai ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                 <p className="text-[10px] font-semibold mb-1 tracking-wide uppercase"
                   style={{ color: msg.role === 'user' ? 'rgba(26,26,26,0.3)' : companion.accent }}>
                   {msg.role === 'user' ? '🎙 You' : companion.name}
@@ -336,7 +486,7 @@ export default function CompanionChat() {
               </div>
             ))}
             {isTyping && (
-              <div className="mb-5 text-left">
+              <div className="mb-5 text-left ai">
                 <p className="text-[10px] font-semibold mb-1.5 tracking-wide uppercase" style={{ color: companion.accent }}>
                   {companion.name}
                 </p>
@@ -351,11 +501,42 @@ export default function CompanionChat() {
             <div ref={endRef} />
           </div>
 
-          {/* Mic / response area */}
-          <div className="relative z-10 shrink-0 pb-5 px-5 pt-3"
-            style={{ background: 'rgba(247,242,237,0.8)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-            {showInput ? (
-              <div className="flex gap-2">
+          {/* ── Bottom: Mic → Listening → Text input ── */}
+          <div className="relative z-10 shrink-0 pb-6 px-5 pt-3"
+            style={{ background: 'rgba(247,242,237,0.85)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+
+            {/* LISTENING state */}
+            {isListening && (
+              <div className="flex flex-col items-center gap-2">
+                <div className="relative flex items-center justify-center">
+                  {/* Expanding rings */}
+                  <div className="voice-ring-outer absolute w-16 h-16 rounded-full"
+                    style={{ border: `1.5px solid ${companion.accent}40` }} />
+                  <div className="voice-ring-mid absolute w-16 h-16 rounded-full"
+                    style={{ border: `1.5px solid ${companion.accent}25` }} />
+                  <button
+                    className="relative w-16 h-16 rounded-full flex items-center justify-center z-10 mic-breath"
+                    style={{
+                      background: `linear-gradient(135deg, ${companion.accent}, ${companion.accent}cc)`,
+                      border: `2px solid ${companion.accent}`,
+                    }}>
+                    {/* Waveform bars inside mic button */}
+                    <div className="flex items-end gap-[3px] h-7 px-2">
+                      {[1,2,3,4,5].map(i => (
+                        <span key={i} className="wave-bar rounded-full bg-white"
+                          style={{ height: '20px', width: '3px', animationDelay: `${i * 80}ms` }} />
+                      ))}
+                    </div>
+                  </button>
+                </div>
+                <p className="font-display text-base italic text-dark-text/70">Listening…</p>
+                <p className="text-dark-text/30 text-xs">Getting to know you</p>
+              </div>
+            )}
+
+            {/* TEXT INPUT state (after listening) */}
+            {showInput && !isListening && (
+              <div className="flex gap-2 au">
                 <input
                   ref={inputRef}
                   type="text"
@@ -365,12 +546,12 @@ export default function CompanionChat() {
                   placeholder="Say something…"
                   className="flex-1 rounded-full px-5 py-3 text-sm text-dark-text outline-none transition-all"
                   style={{
-                    background: 'rgba(255,255,255,0.85)',
-                    border: '1px solid rgba(0,0,0,0.08)',
+                    background: 'rgba(255,255,255,0.9)',
+                    border: `1px solid ${companion.accent}30`,
                   }}
                 />
                 <button onClick={handleSend} disabled={!input.trim() || isTyping}
-                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-30 text-white text-lg"
+                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-30 text-white text-xl font-bold"
                   style={{ background: companion.accent }}>
                   ›
                 </button>
@@ -380,24 +561,24 @@ export default function CompanionChat() {
                   ✕
                 </button>
               </div>
-            ) : (
+            )}
+
+            {/* DEFAULT: Mic tap button */}
+            {!isListening && !showInput && (
               <div className="flex flex-col items-center gap-2">
                 <button
-                  onClick={() => setShowInput(true)}
-                  className="w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-all hover:scale-105"
+                  onClick={handleMicTap}
+                  disabled={isTyping}
+                  className="w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all hover:scale-105 disabled:opacity-40"
                   style={{
-                    background: `${companion.accent}18`,
+                    background: `${companion.accent}15`,
                     border: `2px solid ${companion.accent}40`,
                   }}>
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-                    stroke={companion.accent} strokeWidth="1.8" strokeLinecap="round">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                    <line x1="12" y1="19" x2="12" y2="23"/>
-                    <line x1="8" y1="23" x2="16" y2="23"/>
-                  </svg>
+                  <MicIcon color={companion.accent} size={26} />
                 </button>
-                <p className="text-dark-text/30 text-xs">Tap to respond</p>
+                <p className="text-dark-text/30 text-xs">
+                  {isTyping ? `${companion.name} is talking…` : 'Tap to respond'}
+                </p>
               </div>
             )}
           </div>
