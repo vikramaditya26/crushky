@@ -709,3 +709,11 @@ crushky/
 - Files included in this batch: `src/pages/Signup.jsx`, `src/pages/Dashboard.jsx`, `src/components/CompanionChat.jsx`, `src/components/ChatBubble.jsx`, `src/data/seedMatches.js`, `src/index.css`, and this `agent.md`.
 - Diff summary for this batch: major signup flow changes, companion chat refinements, dashboard updates, chat bubble styling/content polish, expanded seed data, and global CSS additions.
 - `.claude/launch.json` remains intentionally untracked and is not part of the push.
+
+## CODEX HANDOFF NOTE — MAY 29, 2026 (SECOND BATCH)
+
+- Pushing one existing local UI commit plus this follow-up `agent.md` note.
+- Existing local commit in this batch: `3e92216` `redesign: light cream signup, movie/book image pickers, companion two-tab layout`.
+- Files changed by that UI commit: `src/pages/Signup.jsx` and `src/components/CompanionChat.jsx`.
+- Diff summary for that UI commit: signup moved back to a light cream presentation, film/books selection now uses visual poster-cover pickers, and companion chat gained a clearer avatar card layout plus Chat/Extras tabs.
+- `.claude/launch.json` remains intentionally untracked and is not part of the push.
