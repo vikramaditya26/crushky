@@ -717,3 +717,13 @@ crushky/
 - Files changed by that UI commit: `src/pages/Signup.jsx` and `src/components/CompanionChat.jsx`.
 - Diff summary for that UI commit: signup moved back to a light cream presentation, film/books selection now uses visual poster-cover pickers, and companion chat gained a clearer avatar card layout plus Chat/Extras tabs.
 - `.claude/launch.json` remains intentionally untracked and is not part of the push.
+
+## CODEX HANDOFF NOTE — MAY 30, 2026
+
+- Pushing two existing local UI commits plus this follow-up `agent.md` note.
+- Existing local commits in this batch:
+  - `1c504de` `feat: companion redesign, shuffle picks, bio field, AI match bios`
+  - `445ddec` `feat: companion voice-entry screen matches Dashboard Tap to talk flow`
+- Files changed across those UI commits: `src/components/CompanionChat.jsx`, `src/pages/Signup.jsx`, `src/pages/Dashboard.jsx`, `src/data/seedMatches.js`, and `src/index.css`.
+- Diff summary for this batch: companion experience was redesigned around selection + session flows, signup gained shuffleable interest picks plus a bio field, dashboard wording was adjusted, and companion chat now starts from a voice-entry screen that transitions into conversation.
+- `.claude/launch.json` remains intentionally untracked and is not part of the push.
