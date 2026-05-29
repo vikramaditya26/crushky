@@ -81,9 +81,95 @@ function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
   )
 }
 
+// ─── Voice Entry Screen ───
+function VoiceEntry({ onStart }) {
+  const [listening, setListening] = useState(false)
+
+  const handleTap = () => {
+    setListening(true)
+    setTimeout(() => onStart(), 2000)
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 120px)' }}>
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(201,75,75,0.06) 0%, transparent 70%)' }} />
+      </div>
+
+      <div className="relative flex flex-col items-center au">
+        {/* Mic button with rings */}
+        <div className="relative flex items-center justify-center mb-10">
+          {listening && (
+            <>
+              <div className="voice-ring-outer absolute w-24 h-24 rounded-full border border-rose/30" />
+              <div className="voice-ring-mid absolute w-24 h-24 rounded-full border border-rose/20" />
+            </>
+          )}
+          <button
+            onClick={handleTap}
+            className={`relative w-24 h-24 rounded-full flex items-center justify-center cursor-pointer transition-all z-10 ${
+              listening ? 'mic-breath' : 'hover:scale-105'
+            }`}
+            style={{
+              background: listening
+                ? 'linear-gradient(135deg, #C94B4B, #D4956A)'
+                : 'rgba(201,75,75,0.12)',
+              border: '1.5px solid rgba(201,75,75,0.3)',
+            }}
+          >
+            {listening ? (
+              <div className="flex items-end gap-0.5 h-8 px-2">
+                {[1,2,3,4,5].map(i => (
+                  <span key={i} className="wave-bar bg-cream"
+                    style={{ height: '24px', animationDelay: `${i * 80}ms` }} />
+                ))}
+              </div>
+            ) : (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(201,75,75,0.9)" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {listening ? (
+          <div className="text-center">
+            <p className="font-display text-2xl italic text-dark-text/80 mb-2">Listening…</p>
+            <p className="text-muted text-sm">Getting to know you</p>
+          </div>
+        ) : (
+          <div className="text-center">
+            <h2 className="font-display text-3xl italic text-dark-text mb-3">
+              Talk to <span className="text-rose">Crushky</span>
+            </h2>
+            <p className="text-muted text-sm max-w-xs leading-relaxed mb-8">
+              Just speak. I'll ask you real questions and find people who actually match you.
+            </p>
+            <button
+              onClick={handleTap}
+              className="bg-dark-text text-cream px-8 py-3.5 rounded-full text-sm font-semibold cursor-pointer hover:bg-dark-text/90 transition-all hover:shadow-lg"
+            >
+              Tap to talk ✦
+            </button>
+            <p className="text-muted/60 text-xs mt-4 cursor-pointer hover:text-muted transition-colors" onClick={onStart}>
+              or skip to chat instead →
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function Dashboard() {
   const navigate = useNavigate()
   const [tab, setTab] = useState('talk')
+  const [talkStarted, setTalkStarted] = useState(false)
   const user = JSON.parse(localStorage.getItem('crushky_user') || '{}')
 
   // Chat state
@@ -102,8 +188,9 @@ export default function Dashboard() {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, revealedMatches])
 
-  // Auto-play conversation
+  // Auto-play conversation — only starts after voice entry
   useEffect(() => {
+    if (!talkStarted) return
     if (autoIndex >= DEMO_CONVERSATION.length) return
 
     const msg = DEMO_CONVERSATION[autoIndex]
@@ -129,7 +216,7 @@ export default function Dashboard() {
       setAutoIndex(i => i + 1)
     }, delay)
     return () => clearTimeout(t)
-  }, [autoIndex])
+  }, [autoIndex, talkStarted])
 
   const checkMatchReveal = (msgIndex) => {
     const reveal = MATCH_REVEAL_AT_INDEX.find(r => r.afterMsgIndex === msgIndex)
@@ -192,12 +279,18 @@ export default function Dashboard() {
       </div>
 
       {/* ─── TALK TAB ─── */}
-      {tab === 'talk' && (
+      {tab === 'talk' && !talkStarted && (
+        <div className="max-w-3xl mx-auto px-5 md:px-10">
+          <VoiceEntry onStart={() => setTalkStarted(true)} />
+        </div>
+      )}
+
+      {tab === 'talk' && talkStarted && (
         <div className="max-w-3xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 120px)' }}>
           {/* Demo banner */}
           <div className="bg-amber-light/40 border-b border-amber/20 px-5 py-2">
             <p className="text-dark-text/50 text-[11px] font-medium text-center">
-              MVP Demo &mdash; Auto-playing a sample conversation. Matches appear as you go deeper.
+              🎙 Voice session in progress — Crushky is listening and learning about you
             </p>
           </div>
 
@@ -211,7 +304,11 @@ export default function Dashboard() {
                 return (
                   <div key={i}>
                     <div className="ai">
-                      <ChatBubble message={msg.content} isUser={msg.role === 'user'} />
+                      <ChatBubble
+                        message={msg.content}
+                        isUser={msg.role === 'user'}
+                        voiceMode={true}
+                      />
                     </div>
                     {/* Match reveal card inline after specific messages */}
                     {matchForReveal && !skipped.includes(matchForReveal.id) && (

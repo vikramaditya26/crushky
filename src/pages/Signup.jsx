@@ -1,350 +1,706 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const CITIES = ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Hyderabad', 'Chennai']
-const GENDERS = ['Man', 'Woman', 'Non-binary']
-const LOOKING_FOR = ['Women', 'Men', 'Everyone']
+// ─── Interest categories ───
+const CATEGORIES = [
+  {
+    id: 'music', icon: '🎵', label: 'Music',
+    options: ['Indie', 'Bollywood', 'Hip-Hop', 'Classical', 'Jazz', 'Rock', 'Pop', 'Electronic', 'Lo-fi'],
+  },
+  {
+    id: 'film', icon: '🎬', label: 'Film & TV',
+    options: ['Indie Films', 'Bollywood', 'Hollywood', 'Documentaries', 'K-Drama', 'Anime', 'Thrillers', 'Sci-Fi'],
+  },
+  {
+    id: 'books', icon: '📚', label: 'Books',
+    options: ['Literary Fiction', 'Non-fiction', 'Sci-Fi', 'Philosophy', 'Business', 'Poetry', 'Biographies', 'Self-help'],
+  },
+  {
+    id: 'travel', icon: '✈️', label: 'Travel',
+    options: ['Europe', 'Southeast Asia', 'Mountains', 'Beaches', 'Road trips', 'Solo travel', 'Backpacking', 'City breaks'],
+  },
+  {
+    id: 'food', icon: '🍳', label: 'Food',
+    options: ['Street food', 'Fine dining', 'Cooking', 'Cafes', 'Baking', 'Trying cuisines', 'Night food runs', 'Health food'],
+  },
+  {
+    id: 'hobbies', icon: '🎯', label: 'Hobbies',
+    options: ['Running', 'Gaming', 'Photography', 'Writing', 'Yoga', 'Gym', 'Rock climbing', 'Painting'],
+  },
+]
 
 const PROMPTS = [
-  { id: 'weekend', question: "My perfect weekend looks like...", placeholder: "Coffee, bookstore, no plans honestly" },
-  { id: 'geekout', question: "I geek out about...", placeholder: "Indie music, startups, street food hunting" },
-  { id: 'controversial', question: "My controversial opinion is...", placeholder: "Maggi is better than any pasta" },
-  { id: 'firstdate', question: "A perfect first date...", placeholder: "Hidden cafe, great conversation, zero awkwardness" },
-  { id: 'dealbreaker', question: "My biggest dealbreaker...", placeholder: "Playing games. Just be real." },
-  { id: 'secret', question: "Something people don't expect about me...", placeholder: "I can cook better than most restaurants" },
+  { id: 'weekend',      q: 'My perfect weekend looks like...',        ph: 'Coffee, bookstore, no plans honestly' },
+  { id: 'geekout',      q: 'I get genuinely excited about',           ph: 'How startups go from 0 to 1. And street food.' },
+  { id: 'controversial',q: 'Unpopular opinion I will die on:',        ph: 'Maggi is better than any pasta. Period.' },
+  { id: 'firstdate',    q: 'A perfect first date looks like',         ph: 'Hidden cafe, no plan, great conversation' },
+  { id: 'dealbreaker',  q: 'My non-negotiable is',                    ph: 'Honesty. No games, ever.' },
+  { id: 'secret',       q: 'People are surprised to learn I',         ph: "I can cook better than most restaurants" },
 ]
 
-const STEPS = [
-  { title: "Hey there", subtitle: "Let's get you set up in 60 seconds", emoji: "👋" },
-  { title: "Your vibe", subtitle: "Where are you and what do you do?", emoji: "📍" },
-  { title: "The real you", subtitle: "Pick 2-3 prompts. This is what makes you interesting.", emoji: "💬" },
-  { title: "One last thing", subtitle: "A photo and your socials. Both optional.", emoji: "📸" },
+// Demo photos (male lifestyle, aspirational but natural)
+const DEMO_PHOTOS = [
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=320&h=420&fit=crop&crop=face,top',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=320&h=420&fit=crop&crop=face,top',
+  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=320&h=420&fit=crop&crop=faces,top',
 ]
 
-function Chip({ label, selected, onClick, icon }) {
+// ── Small shared components ──
+function DarkInput({ value, onChange, placeholder, type = 'text', className = '', ...rest }) {
+  return (
+    <input
+      type={type}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={`w-full bg-transparent text-cream border-0 border-b border-cream/20 pb-3 outline-none focus:border-rose/60 transition-colors placeholder:text-cream/20 ${className}`}
+      {...rest}
+    />
+  )
+}
+
+function DarkPill({ label, selected, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`px-5 py-3 rounded-2xl text-sm font-medium cursor-pointer transition-all border-2 flex items-center gap-2 ${
+      className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all border cursor-pointer ${
         selected
-          ? 'bg-dark-green text-white border-dark-green shadow-sm scale-[1.02]'
-          : 'bg-white text-dark-text/60 border-dark-text/8 hover:border-dark-green/30 hover:bg-dark-green/3'
+          ? 'bg-rose text-cream border-rose shadow-[0_0_20px_rgba(201,75,75,0.3)]'
+          : 'bg-cream/5 text-cream/50 border-cream/10 hover:border-cream/25 hover:text-cream/70'
       }`}
     >
-      {icon && <span className="text-base">{icon}</span>}
       {label}
     </button>
   )
 }
 
-function ProfilePreview({ form, prompts }) {
-  const age = form.dob ? Math.floor((Date.now() - new Date(form.dob).getTime()) / 31557600000) : '22'
-  const filledPrompts = PROMPTS.filter(p => prompts[p.id]?.trim())
+function InterestChip({ label, selected, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all border cursor-pointer ${
+        selected
+          ? 'bg-gradient-to-r from-rose to-amber text-cream border-transparent shadow-[0_0_12px_rgba(201,75,75,0.25)]'
+          : 'bg-cream/4 text-cream/45 border-cream/8 hover:border-cream/20 hover:text-cream/65'
+      }`}
+    >
+      {label}
+    </button>
+  )
+}
+
+// ── Aurora background orbs ──
+function Aurora() {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
+      <div
+        className="absolute rounded-full"
+        style={{
+          top: '-15%', right: '-10%',
+          width: '55vw', height: '55vw',
+          background: 'radial-gradient(circle, rgba(201,75,75,0.18) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+        }}
+      />
+      <div
+        className="absolute rounded-full"
+        style={{
+          bottom: '-20%', left: '-15%',
+          width: '65vw', height: '65vw',
+          background: 'radial-gradient(circle, rgba(45,59,45,0.35) 0%, transparent 70%)',
+          filter: 'blur(80px)',
+        }}
+      />
+      <div
+        className="absolute rounded-full"
+        style={{
+          top: '40%', left: '30%',
+          width: '40vw', height: '40vw',
+          background: 'radial-gradient(circle, rgba(212,149,106,0.07) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+        }}
+      />
+    </div>
+  )
+}
+
+// ── Step 1: Identity ──
+function Step1({ form, setForm, onNext }) {
+  const [phase, setPhase] = useState(0) // 0: name, 1: details appear
+  const nameRef = useRef()
+
+  useEffect(() => { nameRef.current?.focus() }, [])
+
+  const handleNameKey = (e) => {
+    if (e.key === 'Enter' && form.name.trim().length > 1) setPhase(1)
+  }
+
+  const canContinue = form.name.trim() && form.gender && form.lookingFor
 
   return (
-    <div className="bg-white rounded-2xl border border-dark-text/5 p-5 shadow-sm">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-1.5 h-1.5 rounded-full bg-dark-green" />
-        <span className="text-[10px] text-muted font-medium uppercase tracking-wider">Profile preview</span>
+    <div className="flex flex-col items-center justify-start min-h-screen pt-20 pb-16 px-6 text-center relative z-10">
+      <p className="text-cream/25 text-[10px] tracking-[0.4em] uppercase mb-12">STEP 01 / 04</p>
+
+      {/* Question */}
+      <h1 className="font-display text-3xl md:text-4xl italic text-cream leading-snug mb-10 ru" style={{ animationDelay: '0.1s' }}>
+        First things first —<br />
+        <span className="text-rose/80">what do we call you?</span>
+      </h1>
+
+      {/* Name */}
+      <div className="w-full max-w-xs mb-6 ru" style={{ animationDelay: '0.2s' }}>
+        <DarkInput
+          ref={nameRef}
+          value={form.name}
+          onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+          placeholder="Your name"
+          onKeyDown={handleNameKey}
+          className="text-3xl text-center tracking-wide"
+        />
       </div>
-      <div className="flex items-center gap-4 mb-4">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-soft/50 to-amber/30 flex items-center justify-center text-2xl font-bold text-dark-text/20 shrink-0 overflow-hidden">
-          {form.photos?.[0] ? (
-            <img src={form.photos[0]} alt="" className="w-full h-full object-cover" />
-          ) : (
-            form.name ? form.name[0].toUpperCase() : 'A'
-          )}
-        </div>
-        <div>
-          <h3 className="font-display text-lg font-bold">{form.name || 'Your Name'}, {age}</h3>
-          <p className="text-muted text-xs">
-            {form.city || 'City'} {form.work ? `· ${form.work}` : ''}
-          </p>
-        </div>
-      </div>
-      {filledPrompts.length > 0 && (
-        <div className="space-y-2">
-          {filledPrompts.slice(0, 2).map(p => (
-            <div key={p.id} className="bg-cream rounded-xl px-4 py-3">
-              <p className="text-[10px] text-rose font-semibold mb-1">{p.question}</p>
-              <p className="text-dark-text/70 text-sm">{prompts[p.id]}</p>
+
+      {/* Rest of fields appear after name has content */}
+      {form.name.trim().length > 1 && (
+        <div className="w-full max-w-sm space-y-10 ru" style={{ animationDelay: '0s' }}>
+
+          {/* Birthday */}
+          <div>
+            <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-5">Birthday</p>
+            <div className="flex items-end justify-center gap-2">
+              <div className="text-center">
+                <DarkInput
+                  type="number"
+                  value={form.birthDay}
+                  onChange={e => setForm(f => ({ ...f, birthDay: e.target.value }))}
+                  placeholder="DD"
+                  min="1" max="31"
+                  className="text-2xl text-center w-16"
+                />
+                <p className="text-cream/20 text-[9px] mt-1.5 tracking-widest">DAY</p>
+              </div>
+              <span className="text-cream/15 text-xl mb-5">/</span>
+              <div className="text-center">
+                <DarkInput
+                  type="number"
+                  value={form.birthMonth}
+                  onChange={e => setForm(f => ({ ...f, birthMonth: e.target.value }))}
+                  placeholder="MM"
+                  min="1" max="12"
+                  className="text-2xl text-center w-16"
+                />
+                <p className="text-cream/20 text-[9px] mt-1.5 tracking-widest">MONTH</p>
+              </div>
+              <span className="text-cream/15 text-xl mb-5">/</span>
+              <div className="text-center">
+                <DarkInput
+                  type="number"
+                  value={form.birthYear}
+                  onChange={e => setForm(f => ({ ...f, birthYear: e.target.value }))}
+                  placeholder="YYYY"
+                  min="1990" max="2007"
+                  className="text-2xl text-center w-24"
+                />
+                <p className="text-cream/20 text-[9px] mt-1.5 tracking-widest">YEAR</p>
+              </div>
             </div>
-          ))}
+            <p className="text-cream/20 text-[10px] mt-3">We only show your age, never the date</p>
+          </div>
+
+          {/* Height */}
+          <div>
+            <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-5">Height</p>
+            <div className="flex items-end justify-center gap-3">
+              <div className="text-center">
+                <DarkInput
+                  type="number"
+                  value={form.heightFt}
+                  onChange={e => setForm(f => ({ ...f, heightFt: e.target.value }))}
+                  min="4" max="7"
+                  className="text-4xl text-center w-16"
+                />
+                <p className="text-cream/20 text-[9px] mt-1.5 tracking-widest">FT</p>
+              </div>
+              <span className="text-cream/20 text-3xl mb-6 select-none">'</span>
+              <div className="text-center">
+                <DarkInput
+                  type="number"
+                  value={form.heightIn}
+                  onChange={e => setForm(f => ({ ...f, heightIn: e.target.value }))}
+                  min="0" max="11"
+                  className="text-4xl text-center w-16"
+                />
+                <p className="text-cream/20 text-[9px] mt-1.5 tracking-widest">IN</p>
+              </div>
+              <span className="text-cream/20 text-2xl mb-6 select-none">"</span>
+            </div>
+          </div>
+
+          {/* Gender */}
+          <div>
+            <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-5">I identify as</p>
+            <div className="flex justify-center gap-3 flex-wrap">
+              {['Man', 'Woman', 'Non-binary'].map(g => (
+                <DarkPill key={g} label={g} selected={form.gender === g} onClick={() => setForm(f => ({ ...f, gender: g }))} />
+              ))}
+            </div>
+          </div>
+
+          {/* Looking for */}
+          <div>
+            <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-5">I want to meet</p>
+            <div className="flex justify-center gap-3 flex-wrap">
+              {['Women', 'Men', 'Everyone'].map(l => (
+                <DarkPill key={l} label={l} selected={form.lookingFor === l} onClick={() => setForm(f => ({ ...f, lookingFor: l }))} />
+              ))}
+            </div>
+          </div>
         </div>
       )}
-      {form.spotify && (
-        <div className="flex items-center gap-2 mt-3 text-xs text-muted">
-          <span>🎵</span> <span>{form.spotify}</span>
-        </div>
+
+      {/* Continue */}
+      {canContinue && (
+        <button
+          onClick={onNext}
+          className="mt-14 px-10 py-3.5 rounded-full bg-rose text-cream text-sm font-semibold cursor-pointer transition-all hover:shadow-[0_0_30px_rgba(201,75,75,0.35)] hover:scale-105 ru"
+          style={{ animationDelay: '0s' }}
+        >
+          Continue →
+        </button>
       )}
     </div>
   )
 }
 
-export default function Signup() {
-  const navigate = useNavigate()
-  const [step, setStep] = useState(0)
-  const [entering, setEntering] = useState(true)
-  const [form, setForm] = useState({
-    name: 'Aditya', dob: '2003-08-15', gender: 'Man', lookingFor: 'Women', city: 'Mumbai',
-    height: "5'10\"", college: 'IIT Bombay', work: 'Product at Razorpay', spotify: 'aditya.vibes', instagram: 'aditya.kumar_',
-    photos: [],
-  })
-  const [prompts, setPrompts] = useState({
-    weekend: "Coffee, bookstore, no plans honestly",
-    geekout: "How startups go from 0 to 1. And street food.",
-    controversial: "Maggi is better than any pasta. I will die on this hill.",
-    firstdate: "",
-    dealbreaker: "",
-    secret: "",
-  })
+// ── Step 2: Your World ──
+function Step2({ form, setForm, onNext }) {
+  const cityRef = useRef()
+  useEffect(() => { cityRef.current?.focus() }, [])
 
-  const set = (key, val) => setForm((p) => ({ ...p, [key]: val }))
-  const setPrompt = (key, val) => setPrompts((p) => ({ ...p, [key]: val }))
-  const progress = ((step + 1) / 4) * 100
-  const filledPromptCount = PROMPTS.filter(p => prompts[p.id]?.trim()).length
+  const canContinue = form.city.trim() && form.work.trim()
 
-  useEffect(() => {
-    setEntering(true)
-    const t = setTimeout(() => setEntering(false), 500)
-    return () => clearTimeout(t)
-  }, [step])
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center relative z-10">
+      <p className="text-cream/25 text-[10px] tracking-[0.4em] uppercase mb-12">STEP 02 / 04</p>
 
-  const canContinue = () => {
-    if (step === 0) return form.name.trim() && form.gender
-    if (step === 1) return form.city
-    if (step === 2) return filledPromptCount >= 2
-    return true
+      <h1 className="font-display text-3xl md:text-4xl italic text-cream leading-snug mb-16 ru" style={{ animationDelay: '0.1s' }}>
+        Tell us about<br />
+        <span className="text-amber/80">your world.</span>
+      </h1>
+
+      <div className="w-full max-w-sm space-y-12 ru" style={{ animationDelay: '0.2s' }}>
+
+        <div>
+          <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-4">Where are you?</p>
+          <DarkInput
+            ref={cityRef}
+            value={form.city}
+            onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+            placeholder="Your city"
+            className="text-2xl text-center"
+          />
+        </div>
+
+        <div>
+          <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-4">What do you do?</p>
+          <DarkInput
+            value={form.work}
+            onChange={e => setForm(f => ({ ...f, work: e.target.value }))}
+            placeholder="Your work"
+            className="text-2xl text-center"
+          />
+        </div>
+
+      </div>
+
+      {canContinue && (
+        <button
+          onClick={onNext}
+          className="mt-16 px-10 py-3.5 rounded-full bg-rose text-cream text-sm font-semibold cursor-pointer transition-all hover:shadow-[0_0_30px_rgba(201,75,75,0.35)] hover:scale-105 ru"
+        >
+          Continue →
+        </button>
+      )}
+    </div>
+  )
+}
+
+// ── Step 3: Interests + Prompts ──
+function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
+  const [expandedCat, setExpandedCat] = useState(null)
+  const [activePrompt, setActivePrompt] = useState(null)
+
+  const toggleInterest = (catId, option) => {
+    setInterests(prev => {
+      const cat = prev[catId] || []
+      return { ...prev, [catId]: cat.includes(option) ? cat.filter(x => x !== option) : [...cat, option] }
+    })
   }
 
-  const handleContinue = () => {
-    if (step < 3) return setStep(step + 1)
-    localStorage.setItem('crushky_user', JSON.stringify({ ...form, prompts }))
+  const totalSelected = Object.values(interests).flat().length
+  const filledPrompts = PROMPTS.filter(p => prompts[p.id]?.trim()).length
+  const canContinue = totalSelected >= 3 || filledPrompts >= 1
+
+  return (
+    <div className="flex flex-col items-start min-h-screen px-6 pt-16 pb-24 relative z-10 max-w-sm mx-auto w-full">
+      <p className="text-cream/25 text-[10px] tracking-[0.4em] uppercase mb-8 w-full text-center">STEP 03 / 04</p>
+
+      <h1 className="font-display text-3xl md:text-3xl italic text-cream leading-snug mb-3 w-full text-center ru">
+        What lights<br /><span className="text-sage/80">you up?</span>
+      </h1>
+      <p className="text-cream/30 text-xs text-center w-full mb-10">Pick a few. This is what people see first.</p>
+
+      {/* Interest categories */}
+      <div className="w-full space-y-2 mb-10">
+        {CATEGORIES.map(cat => {
+          const selected = interests[cat.id] || []
+          const isOpen = expandedCat === cat.id
+
+          return (
+            <div key={cat.id}
+              className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
+                isOpen ? 'border-cream/15 bg-cream/4' : 'border-cream/6 bg-cream/2 hover:border-cream/12'
+              }`}
+            >
+              {/* Category header */}
+              <button
+                onClick={() => setExpandedCat(isOpen ? null : cat.id)}
+                className="w-full flex items-center justify-between px-4 py-3.5 cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">{cat.icon}</span>
+                  <span className="text-cream/70 text-sm font-medium">{cat.label}</span>
+                  {selected.length > 0 && (
+                    <span className="bg-rose/80 text-cream text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                      {selected.length}
+                    </span>
+                  )}
+                </div>
+                <span className={`text-cream/25 text-xs transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▾</span>
+              </button>
+
+              {/* Chips */}
+              {isOpen && (
+                <div className="px-4 pb-4 flex flex-wrap gap-2">
+                  {cat.options.map(opt => (
+                    <InterestChip
+                      key={opt}
+                      label={opt}
+                      selected={selected.includes(opt)}
+                      onClick={() => toggleInterest(cat.id, opt)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Prompts */}
+      <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-4 w-full">In your own words</p>
+      <div className="w-full space-y-3 mb-10">
+        {PROMPTS.slice(0, 4).map(prompt => (
+          <div key={prompt.id}
+            className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
+              activePrompt === prompt.id ? 'border-cream/20 bg-cream/4' : 'border-cream/6 bg-cream/2'
+            }`}
+          >
+            <button
+              onClick={() => setActivePrompt(activePrompt === prompt.id ? null : prompt.id)}
+              className="w-full text-left px-4 py-3.5 cursor-pointer"
+            >
+              <p className={`text-sm font-medium transition-colors ${prompts[prompt.id]?.trim() ? 'text-rose/80' : 'text-cream/45'}`}>
+                {prompt.q}
+              </p>
+              {prompts[prompt.id]?.trim() && activePrompt !== prompt.id && (
+                <p className="text-cream/50 text-xs mt-1 line-clamp-1">{prompts[prompt.id]}</p>
+              )}
+            </button>
+            {activePrompt === prompt.id && (
+              <div className="px-4 pb-4">
+                <textarea
+                  value={prompts[prompt.id] || ''}
+                  onChange={e => setPrompts(p => ({ ...p, [prompt.id]: e.target.value }))}
+                  placeholder={prompt.ph}
+                  autoFocus
+                  rows={2}
+                  className="w-full bg-transparent text-cream/80 text-sm outline-none placeholder:text-cream/20 resize-none border-b border-cream/15 pb-2"
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {canContinue && (
+        <button
+          onClick={onNext}
+          className="w-full py-4 rounded-full bg-rose text-cream text-sm font-semibold cursor-pointer transition-all hover:shadow-[0_0_30px_rgba(201,75,75,0.35)]"
+        >
+          Continue →
+        </button>
+      )}
+    </div>
+  )
+}
+
+// ── Step 4: Photos + Socials + Preview ──
+function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, interests, onFinish }) {
+  const age = (() => {
+    if (!form.birthYear) return 22
+    return new Date().getFullYear() - parseInt(form.birthYear)
+  })()
+
+  const filledPrompts = PROMPTS.filter(p => prompts[p.id]?.trim())
+  const totalInterests = Object.values(interests).flat()
+
+  return (
+    <div className="flex flex-col items-center min-h-screen px-5 pt-16 pb-24 relative z-10 max-w-sm mx-auto w-full">
+      <p className="text-cream/25 text-[10px] tracking-[0.4em] uppercase mb-8 text-center w-full">STEP 04 / 04</p>
+
+      <h1 className="font-display text-3xl italic text-cream leading-snug mb-3 text-center w-full ru">
+        Almost there —<br /><span className="text-amber/80">show yourself.</span>
+      </h1>
+      <p className="text-cream/30 text-xs text-center mb-10">Photos are optional for the demo.</p>
+
+      {/* Polaroid photo grid */}
+      <div className="w-full mb-10">
+        <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-5">Photos</p>
+        <div className="flex gap-3 justify-center">
+          {DEMO_PHOTOS.map((photo, i) => {
+            const rotations = [-3, 1.5, -1]
+            const isSelected = selectedPhotos.includes(i)
+            return (
+              <button
+                key={i}
+                onClick={() => setSelectedPhotos(prev =>
+                  prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]
+                )}
+                className="relative cursor-pointer transition-all duration-300"
+                style={{ transform: `rotate(${rotations[i]}deg) ${isSelected ? 'scale(1.04)' : 'scale(1)'}` }}
+              >
+                {/* Polaroid frame */}
+                <div className={`bg-cream/10 border-[1.5px] rounded-lg overflow-hidden backdrop-blur-sm transition-all duration-300 ${
+                  isSelected ? 'border-rose/60 shadow-[0_0_20px_rgba(201,75,75,0.3)]' : 'border-cream/10'
+                }`}
+                  style={{ padding: '6px 6px 20px 6px' }}
+                >
+                  <img
+                    src={photo}
+                    alt={`Photo ${i + 1}`}
+                    className="w-24 h-32 object-cover rounded-sm"
+                  />
+                </div>
+                {isSelected && (
+                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-rose rounded-full flex items-center justify-center text-[9px] text-cream font-bold border-2 border-[#060A0F]">
+                    ✓
+                  </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+        <p className="text-cream/20 text-[10px] text-center mt-4">Click to select. These are demo photos.</p>
+      </div>
+
+      {/* Socials */}
+      <div className="w-full space-y-6 mb-10">
+        <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase">Socials</p>
+        <div className="flex items-end gap-3">
+          <span className="text-cream/30 text-sm mb-3 shrink-0">🎵</span>
+          <div className="flex-1">
+            <p className="text-cream/25 text-[9px] tracking-widest uppercase mb-2">Spotify</p>
+            <DarkInput
+              value={form.spotify}
+              onChange={e => setForm(f => ({ ...f, spotify: e.target.value }))}
+              placeholder="username"
+              className="text-base"
+            />
+          </div>
+        </div>
+        <div className="flex items-end gap-3">
+          <span className="text-cream/30 text-sm mb-3 shrink-0">📸</span>
+          <div className="flex-1">
+            <p className="text-cream/25 text-[9px] tracking-widest uppercase mb-2">Instagram</p>
+            <DarkInput
+              value={form.instagram}
+              onChange={e => setForm(f => ({ ...f, instagram: e.target.value }))}
+              placeholder="@handle"
+              className="text-base"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Live profile preview */}
+      <div className="w-full mb-10">
+        <p className="text-cream/30 text-[10px] tracking-[0.35em] uppercase mb-4">Your profile preview</p>
+        <div className="bg-cream/5 border border-cream/8 rounded-2xl p-5 backdrop-blur-sm">
+          <div className="flex items-center gap-3 mb-4">
+            {selectedPhotos.length > 0 ? (
+              <img
+                src={DEMO_PHOTOS[selectedPhotos[0]]}
+                className="w-14 h-14 rounded-xl object-cover"
+                alt="profile"
+              />
+            ) : (
+              <div className="w-14 h-14 rounded-xl bg-rose/20 flex items-center justify-center text-xl font-bold text-rose">
+                {form.name ? form.name[0].toUpperCase() : 'A'}
+              </div>
+            )}
+            <div>
+              <p className="text-cream font-display font-bold text-lg">{form.name || 'You'}, {age}</p>
+              <p className="text-cream/45 text-xs">{form.city || 'Your city'} · {form.work || 'What you do'}</p>
+            </div>
+          </div>
+
+          {/* Prompts */}
+          {filledPrompts.slice(0, 2).map(p => (
+            <div key={p.id} className="mb-3 bg-cream/4 rounded-xl px-3.5 py-3">
+              <p className="text-rose/60 text-[10px] font-medium mb-0.5">{p.q}</p>
+              <p className="text-cream/70 text-xs">{prompts[p.id]}</p>
+            </div>
+          ))}
+
+          {/* Interests */}
+          {totalInterests.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {totalInterests.slice(0, 5).map(t => (
+                <span key={t} className="bg-cream/6 text-cream/50 text-[10px] px-2.5 py-1 rounded-full border border-cream/8">
+                  {t}
+                </span>
+              ))}
+              {totalInterests.length > 5 && (
+                <span className="text-cream/25 text-[10px] py-1">+{totalInterests.length - 5} more</span>
+              )}
+            </div>
+          )}
+
+          {form.spotify && (
+            <div className="flex items-center gap-2 mt-3 text-cream/35 text-[10px]">
+              <span>🎵</span> <span>{form.spotify}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <button
+        onClick={onFinish}
+        className="w-full py-4 rounded-full text-cream text-base font-semibold cursor-pointer transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(201,75,75,0.3)]"
+        style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}
+      >
+        Let's find your person ✦
+      </button>
+    </div>
+  )
+}
+
+// ══════════════════════════════════
+//   MAIN SIGNUP COMPONENT
+// ══════════════════════════════════
+export default function Signup() {
+  const navigate = useNavigate()
+  const [step, setStep] = useState(1)
+  const [transitioning, setTransitioning] = useState(false)
+  const [visible, setVisible] = useState(true)
+
+  const [form, setForm] = useState({
+    name: 'Aditya',
+    birthDay: '15',
+    birthMonth: '08',
+    birthYear: '2003',
+    gender: 'Man',
+    lookingFor: 'Women',
+    heightFt: '5',
+    heightIn: '10',
+    city: '',
+    work: 'Founders office at Teachmint',
+    spotify: 'aditya.vibes',
+    instagram: 'aditya.kumar_',
+  })
+
+  const [interests, setInterests] = useState({})
+  const [prompts, setPrompts] = useState({
+    weekend: 'Coffee, bookstore, no plans honestly',
+    geekout: 'How startups go from 0 to 1. And street food.',
+    controversial: 'Maggi is better than any pasta. I will die on this hill.',
+  })
+  const [selectedPhotos, setSelectedPhotos] = useState([0, 1, 2])
+
+  const transition = (toStep) => {
+    if (transitioning) return
+    setTransitioning(true)
+    setVisible(false)
+    setTimeout(() => {
+      setStep(toStep)
+      setVisible(true)
+      setTransitioning(false)
+      window.scrollTo(0, 0)
+    }, 350)
+  }
+
+  const handleNext = () => transition(step + 1)
+  const handleBack = () => {
+    if (step === 1) navigate('/')
+    else transition(step - 1)
+  }
+
+  const handleFinish = () => {
+    const userData = {
+      ...form,
+      dob: `${form.birthYear}-${form.birthMonth.padStart(2,'0')}-${form.birthDay.padStart(2,'0')}`,
+      interests,
+      prompts,
+      photos: selectedPhotos,
+    }
+    localStorage.setItem('crushky_user', JSON.stringify(userData))
     navigate('/dashboard')
   }
 
-  const handlePhoto = (e) => {
-    const file = e.target.files?.[0]
-    if (!file || form.photos.length >= 3) return
-    const reader = new FileReader()
-    reader.onload = (ev) => set('photos', [...form.photos, ev.target.result])
-    reader.readAsDataURL(file)
-  }
+  const progress = (step / 4) * 100
 
   return (
-    <div className="min-h-screen bg-cream text-dark-text flex flex-col grain">
-      {/* Top bar */}
-      <div className="px-6 md:px-10 pt-5 pb-4 bg-cream/80 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-lg mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            {step > 0 ? (
-              <button onClick={() => setStep(step - 1)} className="flex items-center gap-1.5 text-dark-text/40 hover:text-dark-text text-sm cursor-pointer transition-colors font-medium">
-                <span className="text-lg">&larr;</span> Back
-              </button>
-            ) : (
-              <button onClick={() => navigate('/')} className="flex items-center gap-1.5 text-dark-text/40 hover:text-dark-text text-sm cursor-pointer transition-colors font-medium">
-                <span className="text-lg">&larr;</span> Home
-              </button>
-            )}
-            <div className="flex items-center gap-2">
-              <span className="font-display text-sm font-bold text-dark-text/30">Crushky</span>
-              <span className="bg-rose/10 text-rose text-[8px] font-bold px-2 py-0.5 rounded-full">MVP</span>
-            </div>
-            <span className="text-dark-text/30 text-xs font-semibold tabular-nums">{step + 1}/4</span>
-          </div>
-          <div className="h-[4px] bg-dark-text/6 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-dark-green via-dark-green to-dark-green/70 rounded-full transition-all duration-700 ease-out" style={{ width: `${progress}%` }} />
-          </div>
-        </div>
+    <div className="min-h-screen relative" style={{ background: '#060A0F' }}>
+      <Aurora />
+
+      {/* Progress line */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-[2px] bg-cream/5">
+        <div
+          className="h-full bg-rose transition-all duration-700 ease-out"
+          style={{ width: `${progress}%` }}
+        />
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col items-center px-6 md:px-10 py-6 overflow-y-auto">
-        <div className={`max-w-lg w-full ${entering ? 'au' : ''}`} key={step}>
-          {/* Step header */}
-          <div className="text-center mb-7">
-            <span className="text-3xl block mb-3">{STEPS[step].emoji}</span>
-            <h2 className="font-display text-2xl md:text-[32px] font-bold">{STEPS[step].title}</h2>
-            <p className="text-muted text-sm mt-1.5">{STEPS[step].subtitle}</p>
-          </div>
+      {/* Back button */}
+      <button
+        onClick={handleBack}
+        className="fixed top-5 left-5 z-50 text-cream/30 text-sm hover:text-cream/70 transition-colors cursor-pointer flex items-center gap-1.5"
+      >
+        ← {step === 1 ? 'Home' : 'Back'}
+      </button>
 
-          {/* ─── Step 0: Basics ─── */}
-          {step === 0 && (
-            <div className="space-y-6">
-              <div>
-                <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-2">First name</label>
-                <input type="text" value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="What should we call you?"
-                  className="w-full bg-white border-2 border-dark-text/8 rounded-2xl px-5 py-3.5 text-dark-text outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/20 text-[15px]" />
-              </div>
-              <div>
-                <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-2">Birthday</label>
-                <input type="date" value={form.dob} onChange={(e) => set('dob', e.target.value)}
-                  className="w-full bg-white border-2 border-dark-text/8 rounded-2xl px-5 py-3.5 text-dark-text outline-none focus:border-dark-green/40 transition-all text-[15px]" />
-                <p className="text-muted text-[11px] mt-1.5 ml-1">We only show your age, never the date</p>
-              </div>
-              <div>
-                <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-3">I identify as</label>
-                <div className="flex flex-wrap gap-2.5">
-                  {GENDERS.map((g) => (
-                    <Chip key={g} label={g} selected={form.gender === g} onClick={() => set('gender', g)}
-                      icon={g === 'Man' ? '♂' : g === 'Woman' ? '♀' : '⚧'} />
-                  ))}
-                </div>
-              </div>
-              <div>
-                <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-3">I want to meet</label>
-                <div className="flex flex-wrap gap-2.5">
-                  {LOOKING_FOR.map((l) => <Chip key={l} label={l} selected={form.lookingFor === l} onClick={() => set('lookingFor', l)} />)}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ─── Step 1: Location & Career ─── */}
-          {step === 1 && (
-            <div className="space-y-6">
-              <div>
-                <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-3">Your city</label>
-                <div className="flex flex-wrap gap-2.5 mb-3">
-                  {CITIES.map((c) => <Chip key={c} label={c} selected={form.city === c} onClick={() => set('city', c)} />)}
-                </div>
-                <input type="text" value={!CITIES.includes(form.city) ? form.city : ''} onChange={(e) => set('city', e.target.value)} placeholder="Or type your city..."
-                  className="w-full bg-white border-2 border-dark-text/8 rounded-2xl px-5 py-3 text-dark-text outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/20 text-sm" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-2">Height</label>
-                  <input type="text" value={form.height} onChange={(e) => set('height', e.target.value)} placeholder="5'8&quot;"
-                    className="w-full bg-white border-2 border-dark-text/8 rounded-2xl px-5 py-3.5 text-dark-text outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/20 text-[15px]" />
-                  <p className="text-muted text-[11px] mt-1 ml-1">Optional</p>
-                </div>
-                <div />
-              </div>
-              <div>
-                <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-2">College</label>
-                <input type="text" value={form.college} onChange={(e) => set('college', e.target.value)} placeholder="Where did you study?"
-                  className="w-full bg-white border-2 border-dark-text/8 rounded-2xl px-5 py-3.5 text-dark-text outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/20 text-[15px]" />
-              </div>
-              <div>
-                <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-2">Work</label>
-                <input type="text" value={form.work} onChange={(e) => set('work', e.target.value)} placeholder="What do you do?"
-                  className="w-full bg-white border-2 border-dark-text/8 rounded-2xl px-5 py-3.5 text-dark-text outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/20 text-[15px]" />
-              </div>
-            </div>
-          )}
-
-          {/* ─── Step 2: Personality Prompts (Hinge-style) ─── */}
-          {step === 2 && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-muted font-medium">{filledPromptCount} of 6 filled &middot; <span className={filledPromptCount >= 2 ? 'text-dark-green font-semibold' : 'text-rose'}>min 2 required</span></p>
-              </div>
-              {PROMPTS.map((p) => (
-                <div key={p.id} className={`bg-white rounded-2xl border-2 transition-all ${
-                  prompts[p.id]?.trim()
-                    ? 'border-dark-green/20 shadow-sm'
-                    : 'border-dark-text/5'
-                }`}>
-                  <div className="px-5 pt-4 pb-1">
-                    <p className="text-rose font-semibold text-sm">{p.question}</p>
-                  </div>
-                  <div className="px-5 pb-4">
-                    <input
-                      type="text"
-                      value={prompts[p.id]}
-                      onChange={(e) => setPrompt(p.id, e.target.value)}
-                      placeholder={p.placeholder}
-                      className="w-full text-dark-text/80 text-[15px] outline-none placeholder:text-dark-text/20 py-2 bg-transparent"
-                    />
-                  </div>
-                  {prompts[p.id]?.trim() && (
-                    <div className="px-5 pb-3">
-                      <span className="text-dark-green text-[10px] font-semibold">✓ Added to profile</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ─── Step 3: Photo + Socials + Preview ─── */}
-          {step === 3 && (
-            <div className="space-y-6">
-              {/* Photo upload */}
-              <div>
-                <label className="text-xs text-dark-text/50 font-semibold uppercase tracking-[0.15em] block mb-3">Your photos</label>
-                <div className="grid grid-cols-3 gap-3">
-                  {[0, 1, 2].map((i) => (
-                    <div key={i} className="relative">
-                      {form.photos[i] ? (
-                        <div className="rounded-2xl overflow-hidden shadow-md hover-lift relative">
-                          <img src={form.photos[i]} alt="" className="w-full aspect-[3/4] object-cover" />
-                          <button onClick={() => set('photos', form.photos.filter((_, j) => j !== i))}
-                            className="absolute top-2 right-2 w-7 h-7 bg-dark-text/60 backdrop-blur-sm text-white rounded-full text-xs flex items-center justify-center cursor-pointer hover:bg-rose transition-colors">
-                            ✕
-                          </button>
-                          {i === 0 && <div className="absolute bottom-2 left-2 bg-dark-green/90 text-white text-[9px] font-semibold px-2 py-0.5 rounded-full">Main</div>}
-                        </div>
-                      ) : (
-                        <label className="block aspect-[3/4] bg-white border-2 border-dashed border-dark-text/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-dark-green/30 hover:bg-dark-green/3 transition-all group">
-                          <div className="text-center">
-                            <div className="w-10 h-10 rounded-full bg-dark-text/5 group-hover:bg-dark-green/10 flex items-center justify-center mx-auto mb-2 transition-colors">
-                              <span className="text-xl text-dark-text/20 group-hover:text-dark-green/40 transition-colors">+</span>
-                            </div>
-                            <span className="text-[11px] text-muted block">{i === 0 ? 'Main photo' : 'Add'}</span>
-                          </div>
-                          <input type="file" accept="image/*" onChange={handlePhoto} className="hidden" />
-                        </label>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-muted text-[11px] mt-2 ml-1">Optional for MVP demo</p>
-              </div>
-
-              {/* Social links */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white rounded-2xl p-4 border-2 border-dark-text/5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-base">🎵</span>
-                    <span className="text-xs font-semibold">Spotify</span>
-                  </div>
-                  <input type="text" value={form.spotify} onChange={(e) => set('spotify', e.target.value)} placeholder="username"
-                    className="w-full bg-cream border border-dark-text/5 rounded-xl px-3 py-2 text-sm outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/20" />
-                </div>
-                <div className="bg-white rounded-2xl p-4 border-2 border-dark-text/5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-base">📸</span>
-                    <span className="text-xs font-semibold">Instagram</span>
-                  </div>
-                  <input type="text" value={form.instagram} onChange={(e) => set('instagram', e.target.value)} placeholder="@username"
-                    className="w-full bg-cream border border-dark-text/5 rounded-xl px-3 py-2 text-sm outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/20" />
-                </div>
-              </div>
-
-              {/* Live profile preview */}
-              <ProfilePreview form={form} prompts={prompts} />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Bottom button area */}
-      <div className="px-6 md:px-10 pb-8 pt-2 bg-gradient-to-t from-cream via-cream to-transparent">
-        <div className="max-w-lg mx-auto space-y-3">
-          <button
-            onClick={handleContinue}
-            disabled={!canContinue()}
-            className="w-full py-4 rounded-2xl bg-dark-green text-white font-semibold cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed hover:bg-dark-green/90 transition-all hover:shadow-lg text-[15px] active:scale-[0.98]"
-          >
-            {step === 3 ? "Let's find your person ✨" : 'Continue'}
-          </button>
-          {step === 2 && (
-            <p className="text-center text-muted text-xs">
-              The more you fill, the better your matches. But 2 is enough to start.
-            </p>
-          )}
-        </div>
+      {/* Step content */}
+      <div
+        className="transition-all duration-350"
+        style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)' }}
+      >
+        {step === 1 && <Step1 form={form} setForm={setForm} onNext={handleNext} />}
+        {step === 2 && <Step2 form={form} setForm={setForm} onNext={handleNext} />}
+        {step === 3 && (
+          <Step3
+            interests={interests} setInterests={setInterests}
+            prompts={prompts} setPrompts={setPrompts}
+            onNext={handleNext}
+          />
+        )}
+        {step === 4 && (
+          <Step4
+            form={form} setForm={setForm}
+            selectedPhotos={selectedPhotos} setSelectedPhotos={setSelectedPhotos}
+            prompts={prompts} interests={interests}
+            onFinish={handleFinish}
+          />
+        )}
       </div>
     </div>
   )
