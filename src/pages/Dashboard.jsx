@@ -245,7 +245,7 @@ export default function Dashboard() {
   const tabs = [
     { id: 'talk', label: 'Talk', icon: '✦' },
     { id: 'matches', label: `Matches${shortlisted.length ? ` (${shortlisted.length})` : ''}`, icon: '♡' },
-    { id: 'companion', label: 'Friend', icon: '◈' },
+    { id: 'companion', label: 'Virtual Friend', icon: '◈' },
   ]
 
   return (

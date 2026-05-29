@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+function shuffleArr(arr) {
+  return [...arr].sort(() => Math.random() - 0.5)
+}
+
 // ─── Movie posters (TMDB public CDN) ───
 const MOVIE_PICKS = [
   { id: 'interstellar',  title: 'Interstellar',    img: 'https://image.tmdb.org/t/p/w185/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg' },
@@ -371,6 +375,28 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
   const [expandedCat, setExpandedCat] = useState(null)
   const [activePrompt, setActivePrompt] = useState(null)
 
+  // Shuffled visible slice per category
+  const [visibleSlice, setVisibleSlice] = useState(() => {
+    const init = {}
+    CATEGORIES.forEach(cat => {
+      init[cat.id] = cat.type === 'images'
+        ? shuffleArr(cat.picks).slice(0, 4)
+        : shuffleArr(cat.options).slice(0, 8)
+    })
+    return init
+  })
+
+  const doShuffle = (e, catId) => {
+    e.stopPropagation()
+    const cat = CATEGORIES.find(c => c.id === catId)
+    setVisibleSlice(prev => ({
+      ...prev,
+      [catId]: cat.type === 'images'
+        ? shuffleArr(cat.picks).slice(0, 4)
+        : shuffleArr(cat.options).slice(0, 8)
+    }))
+  }
+
   const toggleInterest = (catId, option) => {
     setInterests(prev => {
       const cat = prev[catId] || []
@@ -395,6 +421,7 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
         {CATEGORIES.map(cat => {
           const selected = interests[cat.id] || []
           const isOpen = expandedCat === cat.id
+          const visible = visibleSlice[cat.id] || []
 
           return (
             <div key={cat.id}
@@ -422,15 +449,65 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
 
               {isOpen && (
                 <div className="px-4 pb-4">
+                  {/* Shuffle button */}
+                  <div className="flex items-center justify-end mb-2">
+                    <button
+                      onClick={(e) => doShuffle(e, cat.id)}
+                      className="flex items-center gap-1 text-rose/60 text-[11px] font-medium hover:text-rose transition-colors cursor-pointer px-2 py-1 rounded-full hover:bg-rose/5"
+                    >
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                        <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+                      </svg>
+                      Shuffle
+                    </button>
+                  </div>
+
                   {cat.type === 'images' ? (
-                    <ImagePicker
-                      items={cat.picks}
-                      selected={selected}
-                      onToggle={(id) => toggleInterest(cat.id, id)}
-                    />
+                    /* 2×2 poster grid */
+                    <div className="grid grid-cols-2 gap-2">
+                      {visible.map(item => {
+                        const isSel = selected.includes(item.id)
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => toggleInterest(cat.id, item.id)}
+                            className="relative rounded-xl overflow-hidden cursor-pointer transition-all"
+                            style={{
+                              aspectRatio: '2/3',
+                              border: isSel ? '2.5px solid #C94B4B' : '2.5px solid transparent',
+                              boxShadow: isSel ? '0 0 12px rgba(201,75,75,0.25)' : 'none',
+                            }}
+                          >
+                            <img
+                              src={item.img} alt={item.title}
+                              className="w-full h-full object-cover"
+                              onError={e => {
+                                e.currentTarget.style.display = 'none'
+                                const fb = e.currentTarget.nextElementSibling
+                                if (fb) fb.style.display = 'flex'
+                              }}
+                            />
+                            <div className="absolute inset-0 items-center justify-center text-xs text-center p-2 font-semibold text-white leading-tight"
+                              style={{ display: 'none', background: 'linear-gradient(135deg, #2D3B2D, #1a2820)' }}>
+                              {item.title}
+                            </div>
+                            <div className="absolute bottom-0 left-0 right-0 px-2 pt-5 pb-1.5"
+                              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)' }}>
+                              <p className="text-[10px] text-white font-medium leading-tight truncate">{item.title}</p>
+                            </div>
+                            {isSel && (
+                              <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-rose flex items-center justify-center shadow-sm">
+                                <span className="text-white text-[9px] font-bold">✓</span>
+                              </div>
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
                   ) : (
                     <div className="flex flex-wrap gap-2">
-                      {cat.options.map(opt => (
+                      {visible.map(opt => (
                         <Chip
                           key={opt} label={opt}
                           selected={selected.includes(opt)}
@@ -496,7 +573,7 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
 }
 
 // ══════════════════════════════════
-//   STEP 4 — Photos + Preview
+//   STEP 4 — Photos, Bio + Preview
 // ══════════════════════════════════
 function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, interests, onFinish }) {
   const age = form.birthYear ? new Date().getFullYear() - parseInt(form.birthYear) : 22
@@ -546,6 +623,18 @@ function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, inte
           })}
         </div>
         <p className="text-dark-text/25 text-[10px] text-center mt-4">Click to select · These are demo photos</p>
+      </div>
+
+      {/* Bio */}
+      <div className="w-full mb-8">
+        <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-3">Your bio</p>
+        <textarea
+          value={form.bio}
+          onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
+          placeholder="Tell people what makes you, you. Be honest, not perfect."
+          rows={3}
+          className="w-full bg-white border border-dark-text/10 rounded-2xl px-4 py-3 text-sm text-dark-text outline-none focus:border-rose/40 transition-colors placeholder:text-dark-text/20 resize-none"
+        />
       </div>
 
       {/* Socials */}
@@ -639,8 +728,9 @@ export default function Signup() {
     birthDay: '15', birthMonth: '08', birthYear: '2003',
     gender: 'Man', lookingFor: 'Women',
     heightFt: '5', heightIn: '10',
-    city: '',
+    city: 'Bangalore',
     work: 'Founders office at Teachmint',
+    bio: '',
     spotify: 'aditya.vibes',
     instagram: 'aditya.kumar_',
   })

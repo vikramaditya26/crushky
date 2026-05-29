@@ -228,3 +228,22 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   border-radius: 2px;
 }
+
+/* ── Companion animated background ── */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes blob {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(28px, -22px) scale(1.06); }
+  66% { transform: translate(-18px, 14px) scale(0.94); }
+}
+.animate-blob { animation: blob 13s ease-in-out infinite; }
+.animate-blob-2 { animation: blob 16s ease-in-out infinite 2.5s; }
+.animate-blob-3 { animation: blob 19s ease-in-out infinite 5s; }
+.companion-bg {
+  background: linear-gradient(-45deg, #fdf6f0, #faf0f9, #f0f4fd, #f2fbf5, #fdf6f0);
+  background-size: 400% 400%;
+  animation: gradientShift 22s ease infinite;
+}
