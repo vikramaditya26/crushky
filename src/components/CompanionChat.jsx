@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { sendMessage } from '../utils/claudeApi'
+import ChatBubble from './ChatBubble'
 
 // ─── 4 female AI companions ───
 const COMPANIONS = [
@@ -436,80 +437,54 @@ export default function CompanionChat() {
       {/* ══ TALKING TAB ══ */}
       {chatTab === 'chat' && (
         <>
-          {/* Companion photo at top — voice rings when companion is "speaking" */}
-          <div className="relative z-10 flex flex-col items-center pt-5 pb-2 shrink-0">
-            <div className="relative flex items-center justify-center">
-              {isTyping && (
-                <>
-                  <div className="voice-ring-outer absolute rounded-full"
-                    style={{ width: '80px', height: '80px', top: '-8px', left: '-8px', border: `1.5px solid ${companion.accent}30` }} />
-                  <div className="voice-ring-mid absolute rounded-full"
-                    style={{ width: '80px', height: '80px', top: '-8px', left: '-8px', border: `1.5px solid ${companion.accent}18` }} />
-                </>
-              )}
-              <div className="relative w-16 h-16 rounded-full overflow-hidden"
-                style={{ border: `2.5px solid ${companion.accent}45` }}>
-                <img src={companion.photo} alt={companion.name}
-                  className={`w-full h-full object-cover object-top ${isTyping ? 'mic-breath' : ''}`} />
-                {/* Waveform at bottom of photo while companion is responding */}
-                {isTyping && (
-                  <div className="absolute inset-0 flex items-end justify-center pb-1.5"
-                    style={{ background: `linear-gradient(to top, ${companion.accent}bb 0%, transparent 55%)` }}>
-                    <div className="flex items-end gap-[2px]">
-                      {[1,2,3,4,5].map(i => (
-                        <span key={i} className="wave-bar rounded-full bg-white"
-                          style={{ height: '10px', width: '2.5px', animationDelay: `${i * 80}ms` }} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+          {/* "Voice session in progress" banner — same as Talk tab */}
+          <div className="relative z-10 shrink-0"
+            style={{ background: 'rgba(240,217,196,0.35)', borderBottom: '1px solid rgba(212,149,106,0.18)' }}>
+            <p className="text-dark-text/50 text-[11px] font-medium text-center py-2">
+              🎙 Voice session in progress — {companion.name} is listening
+            </p>
           </div>
 
-          {/* Transcript-style conversation */}
-          <div className="relative z-10 flex-1 overflow-y-auto px-5 py-4">
-            {messages.length === 0 && (
-              <p className="text-center text-dark-text/25 text-xs mt-8">
-                {companion.name} is ready to talk…
-              </p>
-            )}
-            {messages.map((msg, i) => (
-              <div key={i} className={`mb-5 ai ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
-                <p className="text-[10px] font-semibold mb-1 tracking-wide uppercase"
-                  style={{ color: msg.role === 'user' ? 'rgba(26,26,26,0.3)' : companion.accent }}>
-                  {msg.role === 'user' ? '🎙 You' : companion.name}
+          {/* Messages — exactly like Talk tab using ChatBubble */}
+          <div className="relative z-10 flex-1 overflow-y-auto px-5 md:px-6 py-5">
+            <div className="max-w-2xl mx-auto space-y-1">
+              {messages.length === 0 && (
+                <p className="text-center text-dark-text/25 text-xs mt-12">
+                  {companion.name} is ready to talk…
                 </p>
-                <p className={`text-sm leading-relaxed ${msg.role === 'user' ? 'text-dark-text/55' : 'text-dark-text/80'}`}>
-                  {msg.content}
-                </p>
-              </div>
-            ))}
-            {isTyping && (
-              <div className="mb-5 text-left ai">
-                <p className="text-[10px] font-semibold mb-1.5 tracking-wide uppercase" style={{ color: companion.accent }}>
-                  {companion.name}
-                </p>
-                <div className="flex gap-1.5 items-center">
-                  {[0, 150, 300].map(d => (
-                    <span key={d} className="w-2 h-2 rounded-full animate-bounce"
-                      style={{ background: companion.accent + '55', animationDelay: `${d}ms` }} />
-                  ))}
+              )}
+              {messages.map((msg, i) => (
+                <div key={i} className="ai">
+                  <ChatBubble
+                    message={msg.content}
+                    isUser={msg.role === 'user'}
+                    voiceMode={true}
+                  />
                 </div>
-              </div>
-            )}
-            <div ref={endRef} />
+              ))}
+              {isTyping && (
+                <div className="flex justify-start mb-3 ai">
+                  <div className="bg-white border border-dark-text/5 rounded-2xl rounded-bl-sm px-5 py-3.5 shadow-sm">
+                    <div className="flex gap-1.5">
+                      <span className="w-2 h-2 bg-dark-text/20 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-2 h-2 bg-dark-text/20 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-2 h-2 bg-dark-text/20 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={endRef} />
+            </div>
           </div>
 
           {/* ── Bottom: Mic → Listening → Text input ── */}
           <div className="relative z-10 shrink-0 pb-6 px-5 pt-3"
             style={{ background: 'rgba(247,242,237,0.85)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
 
-            {/* LISTENING state */}
+            {/* LISTENING state — same rings + waveform as voice entry */}
             {isListening && (
               <div className="flex flex-col items-center gap-2">
                 <div className="relative flex items-center justify-center">
-                  {/* Expanding rings */}
                   <div className="voice-ring-outer absolute w-16 h-16 rounded-full"
                     style={{ border: `1.5px solid ${companion.accent}40` }} />
                   <div className="voice-ring-mid absolute w-16 h-16 rounded-full"
@@ -520,7 +495,6 @@ export default function CompanionChat() {
                       background: `linear-gradient(135deg, ${companion.accent}, ${companion.accent}cc)`,
                       border: `2px solid ${companion.accent}`,
                     }}>
-                    {/* Waveform bars inside mic button */}
                     <div className="flex items-end gap-[3px] h-7 px-2">
                       {[1,2,3,4,5].map(i => (
                         <span key={i} className="wave-bar rounded-full bg-white"
@@ -536,7 +510,7 @@ export default function CompanionChat() {
 
             {/* TEXT INPUT state (after listening) */}
             {showInput && !isListening && (
-              <div className="flex gap-2 au">
+              <div className="flex gap-2 au max-w-2xl mx-auto">
                 <input
                   ref={inputRef}
                   type="text"
@@ -547,7 +521,7 @@ export default function CompanionChat() {
                   className="flex-1 rounded-full px-5 py-3 text-sm text-dark-text outline-none transition-all"
                   style={{
                     background: 'rgba(255,255,255,0.9)',
-                    border: `1px solid ${companion.accent}30`,
+                    border: '1px solid rgba(0,0,0,0.1)',
                   }}
                 />
                 <button onClick={handleSend} disabled={!input.trim() || isTyping}
@@ -569,7 +543,7 @@ export default function CompanionChat() {
                 <button
                   onClick={handleMicTap}
                   disabled={isTyping}
-                  className="w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all hover:scale-105 disabled:opacity-40"
+                  className="w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-all hover:scale-105 disabled:opacity-40"
                   style={{
                     background: `${companion.accent}15`,
                     border: `2px solid ${companion.accent}40`,
