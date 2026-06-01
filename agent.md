@@ -727,3 +727,13 @@ crushky/
 - Files changed across those UI commits: `src/components/CompanionChat.jsx`, `src/pages/Signup.jsx`, `src/pages/Dashboard.jsx`, `src/data/seedMatches.js`, and `src/index.css`.
 - Diff summary for this batch: companion experience was redesigned around selection + session flows, signup gained shuffleable interest picks plus a bio field, dashboard wording was adjusted, and companion chat now starts from a voice-entry screen that transitions into conversation.
 - `.claude/launch.json` remains intentionally untracked and is not part of the push.
+
+## CODEX HANDOFF NOTE — JUNE 1, 2026
+
+- Pushing two existing local UI commits plus this follow-up `agent.md` note.
+- Existing local commits in this batch:
+  - `86cb441` `fix: companion chat uses same ChatBubble UI as Talk tab`
+  - `a9fbc14` `redesign: new landing page — Wavelength × Ditto aesthetic`
+- Files changed across those UI commits: `src/components/CompanionChat.jsx`, `src/pages/Landing.jsx`, `package.json`, and `package-lock.json`.
+- Diff summary for this batch: companion conversation UI was aligned with the main Talk tab bubble system, and the landing page was fully redesigned with a Wavelength × Ditto-inspired aesthetic plus Framer Motion-driven animations.
+- Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.
