@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 
 /* ─── Film grain overlay ──────────────────────────────── */
 const GRAIN = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`
@@ -17,58 +17,6 @@ const CREAM  = '#F0EBE3'
 const INK    = '#1A1410'
 const ROSE   = '#C94B4B'
 const FOREST = '#1E2D1C'
-const WARM   = '#2A1F14'
-
-/* ─── Film strip images (all of them) ────────────────── */
-const STRIP = [
-  '/img/vintage-cafe.jpg',
-  '/img/diner.jpg',
-  '/img/italian.jpg',
-  '/img/black-white.jpg',
-  '/img/london-snow.jpg',
-  '/img/paris-dance.jpg',
-  '/img/rainy-city.jpg',
-  '/img/wes-anderson.jpg',
-  '/img/bicycle.jpg',
-  '/img/picnic-modern.jpg',
-  '/img/swing.jpg',
-  '/img/vespa.jpg',
-  '/img/flower-field.jpg',
-  '/img/drive-in.jpg',
-  '/img/vintage-car.jpg',
-  '/img/wedding-run.jpg',
-  '/img/elevator.jpg',
-  '/img/playing-card.jpg',
-  '/img/field-running.jpg',
-  '/img/purple-field.jpg',
-  '/img/vintage-picnic.jpg',
-  '/img/picnic-film.jpg',
-]
-
-/* ─── Scatter section images ──────────────────────────── */
-const SCATTER = [
-  { src: '/img/vintage-cafe.jpg',   rotate: -5,  top: '2%',  left: '0%',    w: 220, h: 290, delay: 0    },
-  { src: '/img/italian.jpg',        rotate:  4,  top: '10%', left: '18%',   w: 195, h: 255, delay: 0.12 },
-  { src: '/img/rainy-city.jpg',     rotate: -2,  top: '4%',  left: '37%',   w: 210, h: 270, delay: 0.22 },
-  { src: '/img/london-snow.jpg',    rotate:  6,  top: '2%',  right: '18%',  w: 188, h: 248, delay: 0.18 },
-  { src: '/img/picnic-modern.jpg',  rotate: -4,  bottom:'4%',left: '12%',   w: 240, h: 180, delay: 0.28 },
-  { src: '/img/wes-anderson.jpg',   rotate:  3,  top: '15%', right: '0%',   w: 198, h: 260, delay: 0.35 },
-]
-
-/* ─── Testimonials ────────────────────────────────────── */
-const TESTS = [
-  { name:'Aarav S.',  loc:'Mumbai',    init:'A', color:'#2563EB', msg:'First time an app actually understood what I was looking for. Matched in 3 minutes — been dating 2 months now.' },
-  { name:'Meera K.',  loc:'Bangalore', init:'M', color:'#7C3AED', msg:'The AI asked things my friends never thought to ask. She was exactly who I didn\'t know I was looking for.' },
-  { name:'Karan T.',  loc:'Delhi',     init:'K', color:'#059669', msg:'One conversation. No cringe openers. Just a match that made total sense.' },
-]
-
-/* ─── Comparison ──────────────────────────────────────── */
-const CMP = [
-  { f:'Find matches',   old:'Swipe 200+ profiles',  n:'One honest conversation'    },
-  { f:'Compatibility',  old:'Guess from photos',    n:'AI-analysed personality'    },
-  { f:'First message',  old:'"Hey" and pray',       n:'Know exactly why you click' },
-  { f:'Time to match',  old:'Hours of swiping',     n:'3 minutes of talking'       },
-]
 
 /* ─── Helpers ─────────────────────────────────────────── */
 function FadeIn({ children, delay = 0, y = 30, className = '', style = {} }) {
@@ -77,84 +25,261 @@ function FadeIn({ children, delay = 0, y = 30, className = '', style = {} }) {
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}>
+      transition={{ duration: 1.1, delay, ease: [0.16, 1, 0.3, 1] }}>
       {children}
     </motion.div>
   )
 }
 
-/* ─── Film strip marquee ──────────────────────────────── */
-function FilmStrip() {
-  const items = [...STRIP, ...STRIP]
-  return (
-    <div style={{ overflow: 'hidden', background: INK, padding: '20px 0', position: 'relative' }}>
-      {/* sprocket holes top */}
-      <div style={{ position: 'absolute', top: 4, left: 0, right: 0, height: 12,
-        background: `repeating-linear-gradient(90deg, transparent 0, transparent 28px, ${INK} 28px, ${INK} 32px)`,
-        backgroundSize: '32px 100%' }} />
-      {/* sprocket holes bottom */}
-      <div style={{ position: 'absolute', bottom: 4, left: 0, right: 0, height: 12,
-        background: `repeating-linear-gradient(90deg, transparent 0, transparent 28px, ${INK} 28px, ${INK} 32px)`,
-        backgroundSize: '32px 100%' }} />
-
-      <motion.div
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-        style={{ display: 'flex', gap: '12px', paddingLeft: '12px', width: 'max-content' }}>
-        {items.map((src, i) => (
-          <div key={i} style={{
-            width: 140, height: 180, flexShrink: 0, borderRadius: 6,
-            overflow: 'hidden', border: '2px solid rgba(255,255,255,0.12)',
-            transform: `rotate(${i % 3 === 0 ? '-1.5deg' : i % 3 === 1 ? '1deg' : '-0.5deg'})`,
-          }}>
-            <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-        ))}
-      </motion.div>
-    </div>
-  )
-}
-
-/* ─── Scatter photo ───────────────────────────────────── */
-function ScatterPhoto({ src, rotate, top, right, left, bottom, w, h, delay }) {
-  return (
-    <motion.div
-      style={{ position: 'absolute', top, right, left, bottom,
-        rotate: `${rotate}deg`, zIndex: 2 }}
-      initial={{ opacity: 0, y: 50, scale: 0.88 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}>
-      <img src={src} alt=""
-        style={{ width: w, height: h, objectFit: 'cover', display: 'block' }}
-        className="rounded-xl shadow-2xl" />
-    </motion.div>
-  )
-}
-
-/* ─── Hero parallax photo ─────────────────────────────── */
+/* ─── Hero photo (parallax + entrance) ────────────────── */
 function HeroPhoto({ src, style, rotate, delay }) {
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 600], [0, -80])
   return (
     <motion.div
       style={{ rotate: `${rotate}deg`, y, ...style }}
-      initial={{ opacity: 0, scale: 0.92 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.6, delay, ease: [0.16, 1, 0.3, 1] }}>
+      initial={{ opacity: 0, scale: 0.88, y: 40 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 1.8, delay, ease: [0.16, 1, 0.3, 1] }}>
       <img src={src} alt=""
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        className="rounded-2xl shadow-2xl" />
+        style={{ width: '100%', height: '100%', objectFit: 'cover',
+          boxShadow: '0 25px 60px -10px rgba(0,0,0,0.45)' }}
+        className="rounded-2xl" />
     </motion.div>
   )
 }
+
+/* ─── Sticky cross-fade story ─────────────────────────── */
+const STORY = [
+  { src: '/img/rainy-city.jpg',    line1: 'Dating apps show you',     emph: 'faces.'  },
+  { src: '/img/wedding-run.jpg',   line1: 'Crushky finds you a',      emph: 'story.'  },
+  { src: '/img/playing-card.jpg',  line1: 'Not a guess.',             emph: 'A reading.' },
+  { src: '/img/purple-field.jpg',  line1: 'Not a profile.',           emph: 'A person.'  },
+  { src: '/img/field-running.jpg', line1: 'Not a date.',              emph: 'A future.'  },
+]
+
+/* Build a 6-point opacity range covering full [0,1] so clamping isn't needed.
+   Each slot has fade-in, hold, fade-out. First/last extend to the edges. */
+function slotRange(idx, total, holdFrac = 0.6) {
+  const span = 1 / total
+  const start = idx * span
+  const end = start + span
+  const fade = (span * (1 - holdFrac)) / 2
+  const holdIn  = start + fade
+  const holdOut = end - fade
+  if (idx === 0) {
+    return { input: [0, holdOut, end, 1], output: [1, 1, 0, 0] }
+  }
+  if (idx === total - 1) {
+    return { input: [0, start, holdIn, 1], output: [0, 0, 1, 1] }
+  }
+  return {
+    input:  [0, start, holdIn, holdOut, end, 1],
+    output: [0, 0, 1, 1, 0, 0],
+  }
+}
+
+function StoryFrame({ idx, total, src, scrollYProgress }) {
+  const { input, output } = slotRange(idx, total, 0.7)
+  const opacity = useTransform(scrollYProgress, input, output)
+  const span = 1 / total
+  const scale = useTransform(scrollYProgress,
+    [idx * span, (idx + 1) * span],
+    [1.08, 1.0])
+  return (
+    <motion.div className="absolute inset-0" style={{ opacity }}>
+      <motion.img src={src} alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ scale }} />
+    </motion.div>
+  )
+}
+
+function StoryText({ idx, total, line1, emph, scrollYProgress }) {
+  const { input, output } = slotRange(idx, total, 0.55)
+  const opacity = useTransform(scrollYProgress, input, output)
+  const span = 1 / total
+  const start = idx * span
+  const peak  = start + span * 0.5
+  const end   = start + span
+  const y = useTransform(scrollYProgress,
+    [Math.max(0, start - 0.001), start, peak, end, Math.min(1, end + 0.001)],
+    [40, 40, 0, -30, -30])
+  return (
+    <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
+      style={{ opacity, y }}>
+      <p className="font-display font-bold"
+        style={{ fontSize: 'clamp(36px, 7vw, 92px)', color: '#F0EBE3', lineHeight: 1.04 }}>
+        {line1}
+      </p>
+      <p className="font-display font-bold italic"
+        style={{ fontSize: 'clamp(40px, 8.5vw, 110px)', color: '#FDA4AF',
+          lineHeight: 1, marginTop: '0.15em' }}>
+        {emph}
+      </p>
+    </motion.div>
+  )
+}
+
+function StoryScroll() {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end']
+  })
+  return (
+    <section ref={ref} style={{ height: `${STORY.length * 100}vh`, position: 'relative' }}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden" style={{ background: INK }}>
+        {STORY.map((s, i) => (
+          <StoryFrame key={i} idx={i} total={STORY.length}
+            src={s.src} scrollYProgress={scrollYProgress} />
+        ))}
+        <div className="absolute inset-0" style={{ background: 'rgba(10,8,5,0.58)' }} />
+        <Grain opacity={0.05} />
+        {STORY.map((s, i) => (
+          <StoryText key={i} idx={i} total={STORY.length}
+            line1={s.line1} emph={s.emph} scrollYProgress={scrollYProgress} />
+        ))}
+        {/* progress dots */}
+        <div className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-3">
+          {STORY.map((_, i) => (
+            <div key={i} style={{ width: 4, height: 28, background: 'rgba(240,235,227,0.25)',
+              borderRadius: 2 }} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── Scatter section ─────────────────────────────────── */
+const SCATTER = [
+  { src: '/img/london-snow.jpg',   rotate: -5,  top: '0%',  left: '0%',    w: 230, h: 305, delay: 0    },
+  { src: '/img/wes-anderson.jpg',  rotate:  4,  top: '8%',  left: '20%',   w: 200, h: 265, delay: 0.12 },
+  { src: '/img/picnic-modern.jpg', rotate: -2,  top: '2%',  left: '40%',   w: 215, h: 280, delay: 0.22 },
+  { src: '/img/swing.jpg',         rotate:  6,  top: '0%',  right: '18%',  w: 192, h: 252, delay: 0.18 },
+  { src: '/img/elevator.jpg',      rotate: -4,  bottom:'2%',left: '10%',   w: 240, h: 320, delay: 0.28 },
+  { src: '/img/vintage-car.jpg',   rotate:  3,  top: '14%', right: '0%',   w: 205, h: 268, delay: 0.35 },
+]
+
+function ScatterPhoto({ src, rotate, top, right, left, bottom, w, h, delay }) {
+  return (
+    <motion.div
+      style={{ position: 'absolute', top, right, left, bottom,
+        rotate: `${rotate}deg`, zIndex: 2 }}
+      initial={{ opacity: 0, y: 60, scale: 0.85 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 1.2, delay, ease: [0.16, 1, 0.3, 1] }}>
+      <img src={src} alt=""
+        style={{ width: w, height: h, objectFit: 'cover', display: 'block',
+          boxShadow: '0 24px 50px -12px rgba(0,0,0,0.35)' }}
+        className="rounded-xl" />
+    </motion.div>
+  )
+}
+
+/* ─── Marquee text ────────────────────────────────────── */
+function BigMarquee() {
+  const items = ['Talk to AI', 'Meet your person', 'No swiping', 'One conversation', 'No cringe openers']
+  const set = [...items, ...items, ...items]
+  return (
+    <section style={{ background: INK, padding: '5vh 0', overflow: 'hidden',
+      borderTop: '1px solid rgba(240,235,227,0.05)' }}>
+      <motion.div
+        animate={{ x: ['0%', '-33.333%'] }}
+        transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
+        style={{ display: 'flex', whiteSpace: 'nowrap', width: 'max-content', alignItems: 'center' }}>
+        {set.map((t, i) => (
+          <span key={i} className="font-display font-bold"
+            style={{ fontSize: 'clamp(40px, 8vw, 110px)',
+              padding: '0 0.35em', letterSpacing: '-0.02em', lineHeight: 1,
+              fontStyle: i % 2 === 1 ? 'italic' : 'normal',
+              color: i % 2 === 1 ? '#FDA4AF' : CREAM,
+              flexShrink: 0 }}>
+            {t}{' '}
+            <span style={{ opacity: 0.35, fontSize: '0.7em' }}>✦</span>
+          </span>
+        ))}
+      </motion.div>
+    </section>
+  )
+}
+
+/* ─── Steps (full-bleed cinematic) ────────────────────── */
+const STEPS = [
+  { n: '01', bg: '/img/black-white.jpg', title: 'Have a conversation',
+    body: 'Five minutes. The kind of questions your best friend would actually ask. Honest, warm, slightly nosy.' },
+  { n: '02', bg: '/img/picnic-film.jpg', title: 'We find your person',
+    body: 'Our AI reads between every line. It searches for the human who actually clicks with you, not the one who looks the part.' },
+  { n: '03', bg: '/img/vespa.jpg',       title: 'Meet, and know why',
+    body: 'We tell you exactly why you two work. The shared humour. The compatible chaos. The values you both protect.' },
+]
+
+function StepSection({ n, bg, title, body, reverse }) {
+  return (
+    <section className="relative overflow-hidden"
+      style={{ minHeight: '85vh', display: 'flex', alignItems: 'center', background: INK }}>
+      <img src={bg} alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: 0.55 }} />
+      <div className="absolute inset-0"
+        style={{ background: reverse
+          ? 'linear-gradient(80deg, rgba(10,8,5,0.25) 0%, rgba(10,8,5,0.8) 65%, rgba(10,8,5,0.95) 100%)'
+          : 'linear-gradient(280deg, rgba(10,8,5,0.25) 0%, rgba(10,8,5,0.8) 65%, rgba(10,8,5,0.95) 100%)' }} />
+      <Grain opacity={0.05} />
+      <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-12 w-full">
+        <div className={`flex ${reverse ? 'md:justify-end' : 'md:justify-start'}`}>
+          <div style={{ maxWidth: 560 }}>
+            <FadeIn>
+              <p className="font-display"
+                style={{ fontSize: 'clamp(60px, 10vw, 130px)', color: 'rgba(240,235,227,0.15)',
+                  lineHeight: 1, marginBottom: '0.5rem', fontWeight: 700 }}>
+                {n}
+              </p>
+            </FadeIn>
+            <FadeIn delay={0.12}>
+              <h3 className="font-display font-bold"
+                style={{ fontSize: 'clamp(34px, 5.5vw, 64px)', color: CREAM,
+                  lineHeight: 1.05, marginBottom: '1.25rem' }}>
+                {title}
+              </h3>
+            </FadeIn>
+            <FadeIn delay={0.22}>
+              <p style={{ color: 'rgba(240,235,227,0.72)', fontSize: 18,
+                lineHeight: 1.7, maxWidth: 460 }}>
+                {body}
+              </p>
+            </FadeIn>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── Comparison rows ─────────────────────────────────── */
+const CMP = [
+  { f:'Find matches',   old:'Swipe 200+ profiles',  n:'One honest conversation'    },
+  { f:'Compatibility',  old:'Guess from photos',    n:'AI-analysed personality'    },
+  { f:'First message',  old:'"Hey" and pray',       n:'Know exactly why you click' },
+  { f:'Time to match',  old:'Hours of swiping',     n:'Three minutes of talking'   },
+]
 
 /* ══════════════════════════════════════════════════════ */
 export default function Landing() {
   const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
   const { scrollY } = useScroll()
-  const videoRef = useRef(null)
+
+  /* Hero background ken-burns */
+  const heroBgScale = useTransform(scrollY, [0, 800], [1, 1.12])
+  const heroBgY     = useTransform(scrollY, [0, 800], [0, 100])
+
+  /* Statement section accent photos */
+  const stmtScrollY = useScroll().scrollY
+  const stmtY1 = useTransform(stmtScrollY, [600, 2000], [60, -60])
+  const stmtY2 = useTransform(stmtScrollY, [600, 2000], [-40, 80])
 
   useEffect(() => {
     const unsub = scrollY.on('change', v => setScrolled(v > 40))
@@ -162,62 +287,53 @@ export default function Landing() {
   }, [scrollY])
 
   return (
-    <div style={{ background: CREAM, color: INK, overflowX: 'hidden' }}>
+    <div style={{ background: CREAM, color: INK, overflowX: 'clip' }}>
 
       {/* ════ NAV ════════════════════════════════════════ */}
       <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
         style={{
-          background: scrolled ? 'rgba(240,235,227,0.9)' : 'transparent',
+          background: scrolled ? 'rgba(240,235,227,0.92)' : 'transparent',
           backdropFilter: scrolled ? 'blur(20px)' : 'none',
           borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : 'none',
         }}>
         <div className="max-w-6xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
           <motion.span className="font-display text-xl font-bold"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}>
+            transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ color: scrolled ? INK : CREAM, transition: 'color 0.5s' }}>
             Crushky
           </motion.span>
           <motion.button onClick={() => navigate('/signup')}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="cursor-pointer hover:opacity-80 transition-opacity"
-            style={{ background: INK, color: CREAM, fontSize: 14, fontWeight: 600,
-              padding: '10px 22px', borderRadius: 100 }}>
+            style={{ background: scrolled ? INK : CREAM, color: scrolled ? CREAM : INK,
+              fontSize: 14, fontWeight: 600,
+              padding: '10px 22px', borderRadius: 100, transition: 'all 0.5s' }}>
             Get started →
           </motion.button>
         </div>
       </nav>
 
       {/* ════ HERO ═══════════════════════════════════════ */}
-      {/* Full-bleed: Paris dancing sepia as BG, text over dark gradient */}
       <section className="relative min-h-screen flex items-end md:items-center overflow-hidden">
-        {/* BG image */}
-        <div className="absolute inset-0">
+        <motion.div className="absolute inset-0"
+          style={{ scale: heroBgScale, y: heroBgY }}>
           <img src="/img/paris-dance.jpg" alt=""
             className="w-full h-full object-cover object-center" />
-          {/* gradient: dark on left for text, lighter on right */}
           <div className="absolute inset-0"
-            style={{ background: 'linear-gradient(100deg, rgba(26,20,16,0.88) 0%, rgba(26,20,16,0.72) 45%, rgba(26,20,16,0.25) 100%)' }} />
-          <Grain opacity={0.04} />
-        </div>
+            style={{ background: 'linear-gradient(100deg, rgba(20,15,12,0.88) 0%, rgba(20,15,12,0.72) 45%, rgba(20,15,12,0.25) 100%)' }} />
+          <Grain opacity={0.05} />
+        </motion.div>
 
-        {/* Text */}
         <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-0 w-full">
-          <div className="max-w-xl">
-            <motion.p
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              style={{ fontSize: 11, letterSpacing: '0.25em', color: 'rgba(240,235,227,0.55)',
-                fontWeight: 700, textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-              Bangalore · Delhi · Mumbai
-            </motion.p>
-
+          <div className="max-w-2xl">
             <motion.h1
-              initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.4, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: 80 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
               className="font-display font-bold"
-              style={{ fontSize: 'clamp(42px, 7vw, 88px)', lineHeight: 1.02,
-                color: CREAM, marginBottom: '1.5rem' }}>
+              style={{ fontSize: 'clamp(48px, 8vw, 110px)', lineHeight: 0.98,
+                color: CREAM, marginBottom: '1.75rem', letterSpacing: '-0.02em' }}>
               The app that{' '}
               <em style={{ color: '#FDA4AF', fontStyle: 'italic' }}>listens</em>
               <br />before it matches.
@@ -225,24 +341,24 @@ export default function Landing() {
 
             <motion.p
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              style={{ color: 'rgba(240,235,227,0.68)', fontSize: 18, lineHeight: 1.7,
-                maxWidth: 460, marginBottom: '2.5rem' }}>
-              No photos. No swiping. One real conversation with our AI — and we find who you've actually been looking for.
+              transition={{ duration: 1.2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              style={{ color: 'rgba(240,235,227,0.72)', fontSize: 19, lineHeight: 1.65,
+                maxWidth: 480, marginBottom: '2.5rem' }}>
+              No photos. No swiping. One honest conversation with our AI — and we find who you've actually been looking for.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.75 }}
-              style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-start' }}>
+              transition={{ duration: 1, delay: 0.95 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignItems: 'flex-start' }}>
               <button onClick={() => navigate('/signup')}
-                className="cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-2xl"
-                style={{ background: CREAM, color: INK, fontSize: 15, fontWeight: 700,
-                  padding: '15px 36px', borderRadius: 100 }}>
-                Start talking →
+                className="cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-2xl group"
+                style={{ background: CREAM, color: INK, fontSize: 16, fontWeight: 700,
+                  padding: '17px 40px', borderRadius: 100, letterSpacing: '0.01em' }}>
+                Start talking <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
               </button>
-              <p style={{ color: 'rgba(240,235,227,0.38)', fontSize: 12, marginLeft: 4 }}>
-                Free forever · Takes 2 minutes
+              <p style={{ color: 'rgba(240,235,227,0.45)', fontSize: 12, marginLeft: 4, marginTop: 4 }}>
+                Free forever · Two minutes
               </p>
             </motion.div>
           </div>
@@ -251,244 +367,164 @@ export default function Landing() {
         {/* Floating polaroids — desktop only */}
         <div className="hidden lg:block">
           <HeroPhoto src="/img/vintage-cafe.jpg"
-            rotate={-4} delay={0.8}
-            style={{ position: 'absolute', bottom: '8%', right: '6%',
-              width: 220, height: 290, zIndex: 10 }} />
+            rotate={-4} delay={0.9}
+            style={{ position: 'absolute', bottom: '7%', right: '5%',
+              width: 230, height: 305, zIndex: 10 }} />
           <HeroPhoto src="/img/diner.jpg"
-            rotate={5} delay={1.0}
-            style={{ position: 'absolute', top: '15%', right: '18%',
-              width: 180, height: 238, zIndex: 9 }} />
+            rotate={5} delay={1.15}
+            style={{ position: 'absolute', top: '12%', right: '17%',
+              width: 188, height: 248, zIndex: 9 }} />
           <HeroPhoto src="/img/italian.jpg"
-            rotate={-2} delay={1.2}
-            style={{ position: 'absolute', top: '8%', right: '3%',
-              width: 168, height: 222, zIndex: 8 }} />
+            rotate={-2} delay={1.35}
+            style={{ position: 'absolute', top: '6%', right: '2%',
+              width: 175, height: 232, zIndex: 8 }} />
         </div>
+
+        {/* Scroll cue */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, delay: 1.6 }}
+          className="absolute bottom-7 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2">
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ width: 1, height: 40, background: 'rgba(240,235,227,0.35)' }} />
+          <span style={{ fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
+            color: 'rgba(240,235,227,0.45)', fontWeight: 700 }}>
+            scroll
+          </span>
+        </motion.div>
       </section>
 
-      {/* ════ FILM STRIP ═════════════════════════════════ */}
-      <FilmStrip />
+      {/* ════ BIG MARQUEE ════════════════════════════════ */}
+      <BigMarquee />
 
-      {/* ════ STATEMENT (Wavelength-style stagger) ═══════ */}
-      <section className="relative" style={{ background: CREAM, padding: '120px 24px 100px' }}>
+      {/* ════ STATEMENT ══════════════════════════════════ */}
+      <section className="relative overflow-hidden" style={{ background: CREAM, padding: '14vh 24px 12vh' }}>
         <Grain opacity={0.06} />
-        <div className="max-w-5xl mx-auto relative z-10">
+
+        {/* Accent photos — kept in outer margins so they never cross text */}
+        <motion.div className="hidden xl:block absolute"
+          style={{ top: '18%', left: '-2%', width: 165, height: 215,
+            rotate: '-9deg', y: stmtY1, zIndex: 0 }}
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+          viewport={{ once: true }} transition={{ duration: 1.4 }}>
+          <img src="/img/bicycle.jpg" alt=""
+            className="w-full h-full object-cover rounded-xl shadow-2xl" />
+        </motion.div>
+        <motion.div className="hidden xl:block absolute"
+          style={{ bottom: '14%', right: '-2%', width: 175, height: 225,
+            rotate: '7deg', y: stmtY2, zIndex: 0 }}
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+          viewport={{ once: true }} transition={{ duration: 1.4, delay: 0.2 }}>
+          <img src="/img/vintage-picnic.jpg" alt=""
+            className="w-full h-full object-cover rounded-xl shadow-2xl" />
+        </motion.div>
+
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
           {[
-            { t: 'While you\'re swiping left on strangers.', d: 0,    align: 'left'  },
-            { t: 'While you\'re at work, at the gym.',       d: 0.18, align: 'left'  },
-            { t: 'Living your actual life —',                d: 0.33, align: 'left'  },
+            { t: "While you're swiping left on strangers.", d: 0    },
+            { t: "While you're at work, at the gym.",       d: 0.18 },
+            { t: 'Living your actual life —',               d: 0.33 },
           ].map((l, i) => (
             <FadeIn key={i} delay={l.d} y={50}>
               <p className="font-display font-bold"
-                style={{ fontSize: 'clamp(28px, 5.5vw, 60px)', color: INK,
-                  lineHeight: 1.12, marginBottom: '0.15em' }}>
+                style={{ fontSize: 'clamp(28px, 5.2vw, 58px)', color: INK,
+                  lineHeight: 1.12, marginBottom: '0.15em', letterSpacing: '-0.01em' }}>
                 {l.t}
               </p>
             </FadeIn>
           ))}
-          <FadeIn delay={0.5} y={50}>
+          <FadeIn delay={0.55} y={50}>
             <p className="font-display font-bold italic"
-              style={{ fontSize: 'clamp(28px, 5.5vw, 60px)', color: ROSE,
-                lineHeight: 1.12, textAlign: 'right', marginBottom: '3rem' }}>
+              style={{ fontSize: 'clamp(30px, 5.5vw, 64px)', color: ROSE,
+                lineHeight: 1.1, marginTop: '0.3em', marginBottom: '2.5rem' }}>
               Crushky is finding your person.
             </p>
           </FadeIn>
-          <FadeIn delay={0.68}>
+          <FadeIn delay={0.75}>
             <p style={{ color: '#7A7060', fontSize: 17, lineHeight: 1.78, maxWidth: 520,
-              margin: '0 auto', textAlign: 'center' }}>
+              margin: '0 auto' }}>
               Not matching photos. Testing for resonance. Finding the people who think like you, laugh like you, protect their energy the same way you do.
             </p>
           </FadeIn>
         </div>
       </section>
 
-      {/* ════ FULL-BLEED QUOTE (rainy city B&W) ══════════ */}
-      <section className="relative overflow-hidden"
-        style={{ height: '90vh', minHeight: 520 }}>
-        <img src="/img/rainy-city.jpg" alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center" />
-        <div className="absolute inset-0"
-          style={{ background: 'rgba(12,10,8,0.62)' }} />
-        <Grain opacity={0.05} />
+      {/* ════ STICKY CROSS-FADE STORY ════════════════════ */}
+      <StoryScroll />
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 z-10">
-          <FadeIn y={40}>
-            <p style={{ fontSize: 11, letterSpacing: '0.3em', color: 'rgba(240,235,227,0.4)',
-              fontWeight: 700, textTransform: 'uppercase', textAlign: 'center', marginBottom: '1.5rem' }}>
-              Why Crushky
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.15} y={40}>
-            <h2 className="font-display font-bold text-center"
-              style={{ fontSize: 'clamp(32px, 6vw, 72px)', color: CREAM,
-                lineHeight: 1.08, maxWidth: 780 }}>
-              "Dating apps show you faces.
-              <br />
-              <em style={{ color: '#FDA4AF' }}>Crushky finds you a story.</em>"
-            </h2>
-          </FadeIn>
-          <FadeIn delay={0.35}>
-            <button onClick={() => navigate('/signup')}
-              className="cursor-pointer hover:opacity-80 transition-all hover:-translate-y-0.5"
-              style={{ marginTop: '3rem', background: 'transparent', color: CREAM,
-                border: `1.5px solid rgba(240,235,227,0.45)`, fontSize: 14, fontWeight: 600,
-                padding: '13px 32px', borderRadius: 100 }}>
-              Find your match →
-            </button>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ════ PHOTO SCATTER ══════════════════════════════ */}
+      {/* ════ SCATTER (no-pic-twice) ═════════════════════ */}
       <section className="relative overflow-hidden"
-        style={{ background: CREAM, padding: '100px 24px 200px' }}>
+        style={{ background: CREAM, padding: '14vh 24px 22vh' }}>
         <Grain opacity={0.06} />
         <div className="max-w-6xl mx-auto relative z-10">
           <FadeIn>
             <h2 className="font-display font-bold text-center"
-              style={{ fontSize: 'clamp(28px, 5vw, 56px)', color: INK, marginBottom: '4rem' }}>
+              style={{ fontSize: 'clamp(30px, 5.5vw, 64px)', color: INK,
+                marginBottom: '4.5rem', lineHeight: 1.08, letterSpacing: '-0.01em' }}>
               Then you only meet{' '}
               <em style={{ color: ROSE }}>the ones worth meeting.</em>
             </h2>
           </FadeIn>
 
           {/* Desktop scattered */}
-          <div className="hidden lg:block relative" style={{ height: 480 }}>
+          <div className="hidden lg:block relative" style={{ height: 540 }}>
             {SCATTER.map((p, i) => <ScatterPhoto key={i} {...p} />)}
           </div>
 
           {/* Mobile grid */}
           <div className="lg:hidden grid grid-cols-2 gap-4">
-            {SCATTER.slice(0, 4).map((p, i) => (
+            {SCATTER.map((p, i) => (
               <motion.img key={i} src={p.src} alt=""
                 className="rounded-2xl object-cover w-full"
-                style={{ height: 220 }}
-                initial={{ opacity: 0, y: 24 }}
+                style={{ height: 240, transform: `rotate(${i % 2 === 0 ? -1.5 : 1.5}deg)` }}
+                initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: i * 0.1 }}
+                transition={{ duration: 0.8, delay: i * 0.08 }}
               />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ════ VIDEO BG — HOW IT WORKS ════════════════════ */}
-      <section className="relative overflow-hidden" style={{ minHeight: '85vh' }}>
-        {/* Video background */}
-        <video
-          ref={videoRef} autoPlay muted loop playsInline
-          src="/vid/v2.mp4"
-          className="absolute inset-0 w-full h-full object-cover"
-          onError={(e) => { e.target.style.display = 'none' }}
-        />
-        {/* Dark overlay */}
-        <div className="absolute inset-0"
-          style={{ background: 'rgba(10,8,5,0.78)' }} />
-        <Grain opacity={0.04} />
-
-        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-10 py-24">
+      {/* ════ HOW IT WORKS — cinematic steps ═════════════ */}
+      <div>
+        <div className="relative" style={{ background: INK, padding: '12vh 24px 8vh', textAlign: 'center' }}>
+          <Grain opacity={0.06} />
           <FadeIn>
-            <p style={{ fontSize: 11, letterSpacing: '0.25em', color: 'rgba(240,235,227,0.4)',
-              fontWeight: 700, textTransform: 'uppercase', textAlign: 'center', marginBottom: '1rem' }}>
-              3 steps
+            <p style={{ fontSize: 11, letterSpacing: '0.3em', color: 'rgba(240,235,227,0.35)',
+              fontWeight: 700, textTransform: 'uppercase', marginBottom: '1rem' }}>
+              How it works
             </p>
-            <h2 className="font-display font-bold text-center"
-              style={{ fontSize: 'clamp(28px, 4vw, 48px)', color: CREAM, marginBottom: '4rem' }}>
-              How Crushky works
+            <h2 className="font-display font-bold"
+              style={{ fontSize: 'clamp(36px, 6vw, 80px)', color: CREAM,
+                lineHeight: 1.05, letterSpacing: '-0.01em' }}>
+              Three steps.
+              <br />
+              <em style={{ color: '#FDA4AF' }}>One person.</em>
             </h2>
           </FadeIn>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { n: '01', icon: '💬', title: 'Have a conversation',
-                body: 'Talk to our AI for a few minutes. Real questions. No surface-level stuff.' },
-              { n: '02', icon: '✦', title: 'We find your match',
-                body: 'Our AI understands who you actually are, then finds someone who truly complements you.' },
-              { n: '03', icon: '💖', title: 'Know why you click',
-                body: 'We tell you exactly why you two work. Values, energy, humour — everything.' },
-            ].map((s, i) => (
-              <FadeIn key={i} delay={i * 0.15}>
-                <div style={{ border: '1px solid rgba(240,235,227,0.1)', borderRadius: '1.5rem',
-                  padding: '2rem', background: 'rgba(240,235,227,0.06)',
-                  backdropFilter: 'blur(8px)' }}>
-                  <p className="font-display font-bold"
-                    style={{ fontSize: '3rem', color: 'rgba(240,235,227,0.08)', marginBottom: '0.5rem' }}>
-                    {s.n}
-                  </p>
-                  <p style={{ fontSize: '1.6rem', marginBottom: '0.6rem' }}>{s.icon}</p>
-                  <h3 className="font-display font-bold"
-                    style={{ fontSize: '1.2rem', color: CREAM, marginBottom: '0.7rem' }}>
-                    {s.title}
-                  </h3>
-                  <p style={{ color: 'rgba(240,235,227,0.5)', fontSize: 15, lineHeight: 1.72 }}>
-                    {s.body}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
         </div>
-      </section>
-
-      {/* ════ TESTIMONIALS ═══════════════════════════════ */}
-      <section className="relative" style={{ background: WARM, padding: '100px 24px' }}>
-        <Grain opacity={0.04} />
-        {/* Subtle image in bg */}
-        <div className="absolute inset-0 overflow-hidden">
-          <img src="/img/flower-field.jpg" alt=""
-            className="w-full h-full object-cover opacity-10" />
-        </div>
-
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <FadeIn>
-            <h2 className="font-display font-bold text-center"
-              style={{ fontSize: 'clamp(28px, 4vw, 48px)', color: CREAM, marginBottom: '3rem' }}>
-              People who found their{' '}
-              <em style={{ color: '#FDA4AF' }}>person</em>
-            </h2>
-          </FadeIn>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {TESTS.map((t, i) => (
-              <FadeIn key={i} delay={i * 0.13}>
-                <div style={{ background: 'rgba(240,235,227,0.07)',
-                  border: '1px solid rgba(240,235,227,0.1)', borderRadius: '1.5rem',
-                  padding: '1.5rem', backdropFilter: 'blur(12px)' }}>
-                  <div style={{ background: 'rgba(240,235,227,0.1)',
-                    borderRadius: '1rem 1rem 1rem 0.3rem', padding: '1rem 1.25rem', marginBottom: '1.25rem' }}>
-                    <p style={{ color: 'rgba(240,235,227,0.82)', fontSize: 14, lineHeight: 1.65 }}>
-                      "{t.msg}"
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: t.color,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: 'white', fontWeight: 700, fontSize: 14, flexShrink: 0 }}>
-                      {t.init}
-                    </div>
-                    <div>
-                      <p style={{ color: 'white', fontWeight: 600, fontSize: 13 }}>{t.name}</p>
-                      <p style={{ color: 'rgba(240,235,227,0.38)', fontSize: 12 }}>{t.loc}</p>
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
+        {STEPS.map((s, i) => (
+          <StepSection key={i} {...s} reverse={i % 2 === 1} />
+        ))}
+      </div>
 
       {/* ════ COMPARISON ═════════════════════════════════ */}
-      <section className="relative" style={{ background: CREAM, padding: '100px 24px' }}>
+      <section className="relative" style={{ background: CREAM, padding: '14vh 24px' }}>
         <Grain opacity={0.055} />
         <div className="max-w-3xl mx-auto relative z-10">
           <FadeIn>
             <p className="font-display font-bold text-center"
-              style={{ fontSize: 'clamp(18px, 2.8vw, 28px)', color: '#B8A898', marginBottom: '0.2rem' }}>
+              style={{ fontSize: 'clamp(18px, 2.8vw, 28px)', color: '#B8A898',
+                marginBottom: '0.2rem' }}>
               tired of tinder &amp; hinge?
             </p>
             <p className="font-display font-bold italic text-center"
-              style={{ fontSize: 'clamp(30px, 5vw, 54px)', color: ROSE, marginBottom: '3rem' }}>
+              style={{ fontSize: 'clamp(30px, 5vw, 56px)', color: ROSE,
+                marginBottom: '3rem', letterSpacing: '-0.01em' }}>
               Crushky is for you.
             </p>
           </FadeIn>
@@ -530,71 +566,46 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ════ FINAL CTA (drive-in bg) ═════════════════════ */}
-      <section className="relative overflow-hidden" style={{ minHeight: '100vh' }}>
+      {/* ════ FINAL CTA (drive-in bg, no stats) ══════════ */}
+      <section className="relative overflow-hidden flex items-center justify-center"
+        style={{ minHeight: '100vh' }}>
         <img src="/img/drive-in.jpg" alt=""
           className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, rgba(26,20,16,0.95) 0%, rgba(26,20,16,0.70) 50%, rgba(26,20,16,0.35) 100%)' }} />
+          style={{ background: 'linear-gradient(to top, rgba(20,15,12,0.95) 0%, rgba(20,15,12,0.55) 55%, rgba(20,15,12,0.30) 100%)' }} />
         <Grain opacity={0.05} />
 
-        {/* Stats floating in upper portion */}
-        <div className="absolute left-0 right-0 z-10 flex justify-center px-3 md:px-6"
-          style={{ top: '10%' }}>
-          <div className="flex flex-row flex-nowrap justify-center gap-2 md:gap-6">
-            {[
-              { n: '10K+', l: 'Conversations', bg: '#FDE68A', r: -3 },
-              { n: '94%',  l: 'Match rate',    bg: '#FBCFE8', r: 2  },
-              { n: '3 min',l: 'To first match', bg: '#BAE6FD', r: -1 },
-            ].map((s, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, rotate: s.r * 0.5, y: 50, scale: 0.82 }}
-                whileInView={{ opacity: 1, rotate: s.r, y: 0, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.9, delay: i * 0.16, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center"
-                style={{ background: s.bg, borderRadius: '1.25rem',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
-                <div className="px-3 py-3 md:px-7 md:py-5">
-                  <p className="font-display font-bold"
-                    style={{ color: INK, lineHeight: 1, fontSize: 'clamp(20px, 5.5vw, 45px)' }}>{s.n}</p>
-                  <p className="font-semibold"
-                    style={{ color: INK, opacity: 0.65, marginTop: '0.25rem',
-                      fontSize: 'clamp(9px, 2vw, 12px)' }}>
-                    {s.l}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 pb-20 px-6 text-center">
-          <FadeIn y={30}>
+        <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+          <FadeIn y={40}>
+            <p style={{ fontSize: 11, letterSpacing: '0.3em', color: 'rgba(240,235,227,0.5)',
+              fontWeight: 700, textTransform: 'uppercase', marginBottom: '1.5rem' }}>
+              The last dating app you'll need
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.12} y={40}>
             <h2 className="font-display font-bold"
-              style={{ fontSize: 'clamp(32px, 5.5vw, 64px)', color: CREAM, lineHeight: 1.08,
-                marginBottom: '1.5rem' }}>
+              style={{ fontSize: 'clamp(40px, 7.5vw, 96px)', color: CREAM,
+                lineHeight: 1.02, marginBottom: '1.75rem', letterSpacing: '-0.02em' }}>
               The app that <em style={{ color: '#FDA4AF' }}>listens</em>
               <br />before it matches.
             </h2>
           </FadeIn>
-          <FadeIn delay={0.2}>
-            <p style={{ color: 'rgba(240,235,227,0.52)', fontSize: 17, marginBottom: '2rem' }}>
-              People spent time telling Crushky who they really are.
-              <br />Your match gets to meet every single one of them.
+          <FadeIn delay={0.28}>
+            <p style={{ color: 'rgba(240,235,227,0.6)', fontSize: 18, lineHeight: 1.6,
+              marginBottom: '2.5rem', maxWidth: 520, margin: '0 auto 2.5rem' }}>
+              Tell Crushky who you actually are. Your person gets to meet every single bit of you.
             </p>
           </FadeIn>
-          <FadeIn delay={0.35}>
+          <FadeIn delay={0.42}>
             <button onClick={() => navigate('/signup')}
-              className="cursor-pointer transition-all hover:-translate-y-1 hover:shadow-2xl"
-              style={{ background: CREAM, color: INK, fontSize: 16, fontWeight: 700,
-                padding: '16px 42px', borderRadius: 100 }}>
-              Start your conversation →
+              className="cursor-pointer transition-all hover:-translate-y-1 hover:shadow-2xl group"
+              style={{ background: CREAM, color: INK, fontSize: 17, fontWeight: 700,
+                padding: '18px 46px', borderRadius: 100, letterSpacing: '0.01em' }}>
+              Start your conversation <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
             </button>
           </FadeIn>
-          <FadeIn delay={0.5}>
-            <p style={{ color: 'rgba(240,235,227,0.25)', fontSize: 12, marginTop: '1rem' }}>
+          <FadeIn delay={0.56}>
+            <p style={{ color: 'rgba(240,235,227,0.32)', fontSize: 12, marginTop: '1.25rem' }}>
               Free forever · No credit card required
             </p>
           </FadeIn>

@@ -751,3 +751,10 @@ crushky/
 - Files included in this batch: all current files under `image/`, `video/`, `public/img/`, `public/vid/`, and this `agent.md`.
 - Asset counts in this batch at commit time: `image/` 29 files, `video/` 6 files, `public/img/` 23 files, `public/vid/` 5 files.
 - Untracked files still intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.
+
+## CODEX HANDOFF NOTE — JUNE 2, 2026 (LANDING FOLLOW-UP 2)
+
+- Committing and pushing the latest tracked local changes on `main`.
+- Files included in this batch: `src/pages/Landing.jsx` and this `agent.md`.
+- Diff summary for this batch: another follow-up round of landing page layout/content refinements after the June 2 media batch.
+- Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.
