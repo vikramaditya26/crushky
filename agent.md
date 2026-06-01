@@ -737,3 +737,10 @@ crushky/
 - Files changed across those UI commits: `src/components/CompanionChat.jsx`, `src/pages/Landing.jsx`, `package.json`, and `package-lock.json`.
 - Diff summary for this batch: companion conversation UI was aligned with the main Talk tab bubble system, and the landing page was fully redesigned with a Wavelength × Ditto-inspired aesthetic plus Framer Motion-driven animations.
 - Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.
+
+## CODEX HANDOFF NOTE — JUNE 2, 2026
+
+- Committing and pushing the latest tracked local changes on `main`.
+- Files included in this batch: `src/pages/Landing.jsx` and this `agent.md`.
+- Diff summary for this batch: follow-up landing page refinements on top of the June 1 redesign.
+- Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, `Crushky_Seed_Memo.pdf`, the untracked `image/` files, the untracked `video/` files, and the new untracked assets under `public/img/` and `public/vid/`.
