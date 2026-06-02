@@ -63,6 +63,34 @@
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-12px) rotate(1deg); }
 }
+/* Scatter photo drift — each one has its own path so they don't sync */
+@keyframes scatter-float-1 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25%      { transform: translate(7px, -8px) rotate(0.8deg); }
+  50%      { transform: translate(0, -14px) rotate(0deg); }
+  75%      { transform: translate(-7px, -6px) rotate(-0.8deg); }
+}
+@keyframes scatter-float-2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33%      { transform: translate(-9px, 6px) rotate(1deg); }
+  66%      { transform: translate(8px, -10px) rotate(-1deg); }
+}
+@keyframes scatter-float-3 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  40%      { transform: translate(5px, -12px) rotate(0.6deg); }
+  70%      { transform: translate(-5px, -6px) rotate(-0.6deg); }
+}
+@keyframes scatter-float-4 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  30%      { transform: translate(-7px, -7px) rotate(-1deg); }
+  60%      { transform: translate(7px, -3px) rotate(1deg); }
+}
+@keyframes scatter-float-5 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20%      { transform: translate(9px, 4px) rotate(0.7deg); }
+  55%      { transform: translate(-4px, -10px) rotate(-0.7deg); }
+  85%      { transform: translate(6px, 6px) rotate(0.4deg); }
+}
 @keyframes drift {
   0%, 100% { transform: translate(0, 0); }
   25% { transform: translate(10px, -10px); }
