@@ -152,36 +152,61 @@ function StoryScroll() {
   )
 }
 
-/* ─── Scatter section ─────────────────────────────────── */
-const SCATTER = [
-  { src: '/img/elevator.jpg',      rotate: -5, top: '4%',  left: '1%',  w: 215, h: 285, delay: 0,    floatKf: 'scatter-float-1', dur: 11   },
-  { src: '/img/wes-anderson.jpg',  rotate:  4, top: '12%', left: '21%', w: 200, h: 265, delay: 0.12, floatKf: 'scatter-float-2', dur: 13   },
-  { src: '/img/picnic-modern.jpg', rotate: -2, top: '2%',  left: '41%', w: 215, h: 280, delay: 0.22, floatKf: 'scatter-float-3', dur: 9.5  },
-  { src: '/img/swing.jpg',         rotate:  6, top: '11%', left: '62%', w: 192, h: 252, delay: 0.18, floatKf: 'scatter-float-4', dur: 12   },
-  { src: '/img/vintage-car.jpg',   rotate:  3, top: '4%',  right: '1%', w: 205, h: 268, delay: 0.30, floatKf: 'scatter-float-5', dur: 10.5 },
+/* ─── Revolving carousel — 8 photos in a wavy arc ─────── */
+/* Each photo: own size + tilt + vertical offset → arc/wave shape, not a flat line */
+const REEL = [
+  { src: '/img/elevator.jpg',      rotate: -6, floatKf: 'scatter-float-1', dur: 11,   w: 250, h: 330, y: -40 },
+  { src: '/img/vintage-cafe.jpg',  rotate:  5, floatKf: 'scatter-float-2', dur: 13,   w: 220, h: 290, y:  50 },
+  { src: '/img/wes-anderson.jpg',  rotate: -3, floatKf: 'scatter-float-3', dur: 9.5,  w: 270, h: 350, y: -10 },
+  { src: '/img/diner.jpg',         rotate:  6, floatKf: 'scatter-float-4', dur: 12,   w: 215, h: 285, y:  60 },
+  { src: '/img/picnic-modern.jpg', rotate: -5, floatKf: 'scatter-float-5', dur: 10.5, w: 260, h: 340, y: -30 },
+  { src: '/img/italian.jpg',       rotate:  4, floatKf: 'scatter-float-1', dur: 12.5, w: 225, h: 295, y:  40 },
+  { src: '/img/swing.jpg',         rotate: -2, floatKf: 'scatter-float-2', dur: 10,   w: 245, h: 320, y: -25 },
+  { src: '/img/vintage-car.jpg',   rotate:  5, floatKf: 'scatter-float-3', dur: 11.5, w: 230, h: 305, y:  55 },
 ]
 
-function ScatterPhoto({ src, rotate, top, right, left, bottom, w, h, delay, floatKf, dur }) {
+function ReelCard({ src, rotate, floatKf, dur, w, h, y, idx }) {
   return (
-    <motion.div
-      style={{ position: 'absolute', top, right, left, bottom,
-        width: w, height: h, zIndex: 2, rotate: `${rotate}deg` }}
-      initial={{ opacity: 0, y: 60, scale: 0.85 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 1.2, delay, ease: [0.16, 1, 0.3, 1] }}>
-      {/* CSS-animated inner drift — reliable, not blocked by framer */}
+    /* Outer wrapper: holds the wave y-offset + generous horizontal padding (= space) */
+    <div style={{ flexShrink: 0, padding: '0 36px',
+      transform: `translateY(${y}px)` }}>
+      {/* Inner card: rotate + continuous CSS float */}
       <div style={{
-        width: '100%', height: '100%',
+        width: w, height: h,
+        transform: `rotate(${rotate}deg)`,
         animation: `${floatKf} ${dur}s ease-in-out infinite`,
-        animationDelay: `${delay + 0.6}s`,
+        animationDelay: `${(idx % 5) * 0.7}s`,
       }}>
         <img src={src} alt=""
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-            boxShadow: '0 24px 50px -12px rgba(0,0,0,0.35)' }}
+            boxShadow: '0 28px 60px -14px rgba(0,0,0,0.4)' }}
           className="rounded-xl" />
       </div>
-    </motion.div>
+    </div>
+  )
+}
+
+function PhotoReel() {
+  /* Duplicate set so the marquee loop is seamless. ~58s for full cycle. */
+  const set = [...REEL, ...REEL]
+  return (
+    /* Taller container so the wave + drift have room to breathe */
+    <div style={{ overflow: 'hidden', position: 'relative', padding: '60px 0 80px',
+      minHeight: 480 }}>
+      {/* edge fades */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10"
+        style={{ width: 140, background: 'linear-gradient(to right, #F0EBE3, transparent)' }} />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10"
+        style={{ width: 140, background: 'linear-gradient(to left, #F0EBE3, transparent)' }} />
+      <motion.div
+        animate={{ x: ['0%', '-50%'] }}
+        transition={{ duration: 58, repeat: Infinity, ease: 'linear' }}
+        style={{ display: 'flex', alignItems: 'center', width: 'max-content' }}>
+        {set.map((p, i) => (
+          <ReelCard key={i} {...p} idx={i} />
+        ))}
+      </motion.div>
+    </div>
   )
 }
 
@@ -191,9 +216,9 @@ const STEPS = [
   { n: '01', bg: '/img/black-white.jpg', title: 'Have a conversation',
     body: 'Five minutes. The kind of questions your best friend would actually ask. Honest, warm, slightly nosy.' },
   { n: '02', bg: '/img/picnic-film.jpg', title: 'We find your person',
-    body: 'Our AI reads between every line. It searches for the human who actually clicks with you, not the one who looks the part.' },
-  { n: '03', bg: '/img/vespa.jpg',       title: 'Meet, and know why',
-    body: 'We tell you exactly why you two work. The shared humour. The compatible chaos. The values you both protect.' },
+    body: 'Our AI reads between every line — your humour, your weird interests, your values. Then it finds the one human in your city you\'d actually click with.' },
+  { n: '03', bg: '/img/vespa.jpg',       title: "Meet at a spot that's actually you.",
+    body: 'A bookshop, a back-alley cafe, a museum after-hours — we pick the place based on what you both actually love. And we tell you exactly why you two click.' },
 ]
 
 function StepSection({ n, bg, title, body, reverse }) {
@@ -238,6 +263,44 @@ function StepSection({ n, bg, title, body, reverse }) {
   )
 }
 
+/* ─── Statement section — text only on cream ──────────── */
+function StatementSection() {
+  return (
+    <section className="relative overflow-hidden"
+      style={{ background: CREAM, padding: '16vh 24px 14vh' }}>
+      <Grain opacity={0.06} />
+      <div className="max-w-4xl mx-auto relative z-10 text-center">
+        {[
+          { t: "While you're swiping left on strangers.", d: 0    },
+          { t: "While you're at work, at the gym.",       d: 0.18 },
+          { t: 'Living your actual life —',               d: 0.33 },
+        ].map((l, i) => (
+          <FadeIn key={i} delay={l.d} y={50}>
+            <p className="font-display font-bold"
+              style={{ fontSize: 'clamp(28px, 5.2vw, 58px)', color: INK,
+                lineHeight: 1.12, marginBottom: '0.15em', letterSpacing: '-0.01em' }}>
+              {l.t}
+            </p>
+          </FadeIn>
+        ))}
+        <FadeIn delay={0.55} y={50}>
+          <p className="font-display font-bold italic"
+            style={{ fontSize: 'clamp(30px, 5.5vw, 64px)', color: ROSE,
+              lineHeight: 1.1, marginTop: '0.3em', marginBottom: '2.5rem' }}>
+            Crushky is finding your person.
+          </p>
+        </FadeIn>
+        <FadeIn delay={0.75}>
+          <p style={{ color: '#7A7060', fontSize: 17, lineHeight: 1.78, maxWidth: 520,
+            margin: '0 auto' }}>
+            Not matching photos. Testing for resonance. Finding the people who think like you, laugh like you, protect their energy the same way you do.
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
 /* ══════════════════════════════════════════════════════ */
 export default function Landing() {
   const navigate = useNavigate()
@@ -247,11 +310,6 @@ export default function Landing() {
   /* Hero background ken-burns */
   const heroBgScale = useTransform(scrollY, [0, 800], [1, 1.12])
   const heroBgY     = useTransform(scrollY, [0, 800], [0, 100])
-
-  /* Statement section accent photos */
-  const stmtScrollY = useScroll().scrollY
-  const stmtY1 = useTransform(stmtScrollY, [600, 2000], [60, -60])
-  const stmtY2 = useTransform(stmtScrollY, [600, 2000], [-40, 80])
 
   useEffect(() => {
     const unsub = scrollY.on('change', v => setScrolled(v > 40))
@@ -275,15 +333,6 @@ export default function Landing() {
             style={{ color: scrolled ? INK : CREAM, transition: 'color 0.5s' }}>
             Crushky
           </motion.span>
-          <motion.button onClick={() => navigate('/signup')}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="cursor-pointer hover:opacity-80 transition-opacity"
-            style={{ background: scrolled ? INK : CREAM, color: scrolled ? CREAM : INK,
-              fontSize: 14, fontWeight: 600,
-              padding: '10px 22px', borderRadius: 100, transition: 'all 0.5s' }}>
-            Get started →
-          </motion.button>
         </div>
       </nav>
 
@@ -292,10 +341,11 @@ export default function Landing() {
         style={{ background: INK }}>
         <motion.div className="absolute inset-0"
           style={{ scale: heroBgScale, y: heroBgY }}>
+          {/* Dark bg layer shows for <0.5s while video buffers — better than a flash-of-different-photo */}
+          <div className="absolute inset-0" style={{ background: INK }} />
           <video
             autoPlay muted loop playsInline preload="auto"
-            poster="/img/paris-dance.jpg"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-center relative"
             style={{ display: 'block' }}>
             <source src="/vid/v1.mp4" type="video/mp4" />
           </video>
@@ -322,7 +372,7 @@ export default function Landing() {
               transition={{ duration: 1.2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
               style={{ color: 'rgba(240,235,227,0.72)', fontSize: 19, lineHeight: 1.65,
                 maxWidth: 480, marginBottom: '2.5rem' }}>
-              No photos. No swiping. One honest conversation with our AI — and we find who you've actually been looking for.
+              No photos. No swiping. Just one real talk with AI — and a first date worth showing up for.
             </motion.p>
 
             <motion.div
@@ -338,24 +388,12 @@ export default function Landing() {
               <p style={{ color: 'rgba(240,235,227,0.45)', fontSize: 12, marginLeft: 4, marginTop: 4 }}>
                 Free forever · Two minutes
               </p>
+              <p style={{ color: 'rgba(240,235,227,0.55)', fontSize: 12, marginLeft: 4, marginTop: 2,
+                fontStyle: 'italic' }}>
+                For people who'd rather meet than swipe.
+              </p>
             </motion.div>
           </div>
-        </div>
-
-        {/* Floating polaroids — desktop only */}
-        <div className="hidden lg:block">
-          <HeroPhoto src="/img/vintage-cafe.jpg"
-            rotate={-4} delay={0.9}
-            style={{ position: 'absolute', bottom: '7%', right: '5%',
-              width: 230, height: 305, zIndex: 10 }} />
-          <HeroPhoto src="/img/diner.jpg"
-            rotate={5} delay={1.15}
-            style={{ position: 'absolute', top: '12%', right: '17%',
-              width: 188, height: 248, zIndex: 9 }} />
-          <HeroPhoto src="/img/italian.jpg"
-            rotate={-2} delay={1.35}
-            style={{ position: 'absolute', top: '6%', right: '2%',
-              width: 175, height: 232, zIndex: 8 }} />
         </div>
 
         {/* Scroll cue */}
@@ -375,93 +413,28 @@ export default function Landing() {
       </section>
 
       {/* ════ STATEMENT ══════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ background: CREAM, padding: '14vh 24px 12vh' }}>
-        <Grain opacity={0.06} />
-
-        {/* Accent photos — kept in outer margins so they never cross text */}
-        <motion.div className="hidden xl:block absolute"
-          style={{ top: '18%', left: '-2%', width: 165, height: 215,
-            rotate: '-9deg', y: stmtY1, zIndex: 0 }}
-          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-          viewport={{ once: true }} transition={{ duration: 1.4 }}>
-          <img src="/img/bicycle.jpg" alt=""
-            className="w-full h-full object-cover rounded-xl shadow-2xl" />
-        </motion.div>
-        <motion.div className="hidden xl:block absolute"
-          style={{ bottom: '14%', right: '-2%', width: 175, height: 225,
-            rotate: '7deg', y: stmtY2, zIndex: 0 }}
-          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-          viewport={{ once: true }} transition={{ duration: 1.4, delay: 0.2 }}>
-          <img src="/img/vintage-picnic.jpg" alt=""
-            className="w-full h-full object-cover rounded-xl shadow-2xl" />
-        </motion.div>
-
-        <div className="max-w-4xl mx-auto relative z-10 text-center">
-          {[
-            { t: "While you're swiping left on strangers.", d: 0    },
-            { t: "While you're at work, at the gym.",       d: 0.18 },
-            { t: 'Living your actual life —',               d: 0.33 },
-          ].map((l, i) => (
-            <FadeIn key={i} delay={l.d} y={50}>
-              <p className="font-display font-bold"
-                style={{ fontSize: 'clamp(28px, 5.2vw, 58px)', color: INK,
-                  lineHeight: 1.12, marginBottom: '0.15em', letterSpacing: '-0.01em' }}>
-                {l.t}
-              </p>
-            </FadeIn>
-          ))}
-          <FadeIn delay={0.55} y={50}>
-            <p className="font-display font-bold italic"
-              style={{ fontSize: 'clamp(30px, 5.5vw, 64px)', color: ROSE,
-                lineHeight: 1.1, marginTop: '0.3em', marginBottom: '2.5rem' }}>
-              Crushky is finding your person.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.75}>
-            <p style={{ color: '#7A7060', fontSize: 17, lineHeight: 1.78, maxWidth: 520,
-              margin: '0 auto' }}>
-              Not matching photos. Testing for resonance. Finding the people who think like you, laugh like you, protect their energy the same way you do.
-            </p>
-          </FadeIn>
-        </div>
-      </section>
+      <StatementSection />
 
       {/* ════ STICKY CROSS-FADE STORY ════════════════════ */}
       <StoryScroll />
 
-      {/* ════ SCATTER (no-pic-twice) ═════════════════════ */}
+      {/* ════ REVOLVING PHOTO REEL ═══════════════════════ */}
       <section className="relative overflow-hidden"
-        style={{ background: CREAM, padding: '14vh 24px 22vh' }}>
+        style={{ background: CREAM, padding: '12vh 0 14vh' }}>
         <Grain opacity={0.06} />
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="max-w-6xl mx-auto relative z-10 px-6">
           <FadeIn>
             <h2 className="font-display font-bold text-center"
               style={{ fontSize: 'clamp(30px, 5.5vw, 64px)', color: INK,
-                marginBottom: '4.5rem', lineHeight: 1.08, letterSpacing: '-0.01em' }}>
+                marginBottom: '3rem', lineHeight: 1.08, letterSpacing: '-0.01em' }}>
               Then you only meet{' '}
               <em style={{ color: ROSE }}>the ones worth meeting.</em>
             </h2>
           </FadeIn>
-
-          {/* Desktop scattered */}
-          <div className="hidden lg:block relative" style={{ height: 540 }}>
-            {SCATTER.map((p, i) => <ScatterPhoto key={i} {...p} />)}
-          </div>
-
-          {/* Mobile grid */}
-          <div className="lg:hidden grid grid-cols-2 gap-4">
-            {SCATTER.map((p, i) => (
-              <motion.img key={i} src={p.src} alt=""
-                className="rounded-2xl object-cover w-full"
-                style={{ height: 240, transform: `rotate(${i % 2 === 0 ? -1.5 : 1.5}deg)` }}
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.08 }}
-              />
-            ))}
-          </div>
         </div>
+        <FadeIn delay={0.18}>
+          <PhotoReel />
+        </FadeIn>
       </section>
 
       {/* ════ HOW IT WORKS — cinematic steps ═════════════ */}
@@ -514,7 +487,7 @@ export default function Landing() {
           <FadeIn delay={0.28}>
             <p style={{ color: 'rgba(240,235,227,0.6)', fontSize: 18, lineHeight: 1.6,
               marginBottom: '2.5rem', maxWidth: 520, margin: '0 auto 2.5rem' }}>
-              Tell Crushky who you actually are. Your person gets to meet every single bit of you.
+              Skip the small talk. Tell Crushky who you are — we'll send you to meet someone who already gets it.
             </p>
           </FadeIn>
           <FadeIn delay={0.42}>

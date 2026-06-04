@@ -765,3 +765,10 @@ crushky/
 - Files included in this batch: `src/pages/Landing.jsx`, `src/index.css`, `public/vid/v1.mp4`, and this `agent.md`.
 - Diff summary for this batch: another landing iteration with supporting global CSS updates, plus one additional video asset for the public media set.
 - Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.
+
+## CODEX HANDOFF NOTE — JUNE 5, 2026
+
+- Committing and pushing the latest tracked local changes on `main`.
+- Files included in this batch: `src/pages/Landing.jsx` and this `agent.md`.
+- Diff summary for this batch: another follow-up round of landing page structure and copy refinements.
+- Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.
