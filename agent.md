@@ -772,3 +772,10 @@ crushky/
 - Files included in this batch: `src/pages/Landing.jsx` and this `agent.md`.
 - Diff summary for this batch: another follow-up round of landing page structure and copy refinements.
 - Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.
+
+## CODEX HANDOFF NOTE — JUNE 5, 2026 (SIGNUP FOLLOW-UP)
+
+- Committing and pushing the latest tracked local changes on `main`.
+- Files included in this batch: `src/pages/Signup.jsx`, `src/index.css`, and this `agent.md`.
+- Diff summary for this batch: follow-up signup flow refinements with supporting global CSS updates.
+- Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.

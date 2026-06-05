@@ -105,6 +105,27 @@
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+/* Primary CTA — animated multi-stop gradient */
+@keyframes ctaGradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/* Primary CTA — outer soft glow that breathes */
+@keyframes ctaGlow {
+  0%, 100% { box-shadow: 0 8px 24px -8px rgba(201,75,75,0.45),
+                          0 16px 40px -10px rgba(212,149,106,0.30); }
+  50%      { box-shadow: 0 10px 32px -6px rgba(201,75,75,0.65),
+                          0 22px 56px -8px rgba(212,149,106,0.45); }
+}
+/* Primary CTA — sheen sweep */
+@keyframes ctaSheen {
+  0%   { transform: translateX(-160%) skewX(-14deg); opacity: 0; }
+  10%  { opacity: 1; }
+  60%  { opacity: 1; }
+  70%  { transform: translateX(260%)  skewX(-14deg); opacity: 0; }
+  100% { transform: translateX(260%)  skewX(-14deg); opacity: 0; }
+}
 /* ── Voice / Mic animations ── */
 @keyframes voiceRing {
   0% { transform: scale(1); opacity: 0.5; }

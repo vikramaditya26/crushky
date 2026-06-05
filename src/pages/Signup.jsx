@@ -34,26 +34,42 @@ const BOOK_PICKS = [
   { id: 'ikigai',     title: 'Ikigai',            img: 'https://covers.openlibrary.org/b/isbn/9780143130727-M.jpg' },
 ]
 
+// ─── Music artist picks ───
+// Mix of Indian + global Gen Z favourites. Each has a fallback palette so the tile
+// looks intentional even if the photo URL 404s.
+const MUSIC_PICKS = [
+  { id: 'taylor',    title: 'Taylor Swift',    sub: 'Pop',        palette: ['#3D1B2A', '#B85577'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/191125_Taylor_Swift_at_the_2019_American_Music_Awards_%28cropped%29.png/220px-191125_Taylor_Swift_at_the_2019_American_Music_Awards_%28cropped%29.png' },
+  { id: 'bts',       title: 'BTS',             sub: 'K-Pop',      palette: ['#1F1F3D', '#6366D6'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/BTS_2_-_December_2019.jpg/220px-BTS_2_-_December_2019.jpg' },
+  { id: 'arijit',    title: 'Arijit Singh',    sub: 'Bollywood',  palette: ['#2D1B3D', '#7C3A92'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Arijit_Singh_at_an_album_launch_event_for_Pal.jpg/220px-Arijit_Singh_at_an_album_launch_event_for_Pal.jpg' },
+  { id: 'rahman',    title: 'A.R. Rahman',     sub: 'Maestro',    palette: ['#1A3B5C', '#3F7CB0'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/A._R._Rahman_at_the_New_Indian_Express_Group_Devi_Awards_2017.jpg/220px-A._R._Rahman_at_the_New_Indian_Express_Group_Devi_Awards_2017.jpg' },
+  { id: 'diljit',    title: 'Diljit Dosanjh',  sub: 'Punjabi',    palette: ['#2B3A1F', '#7A9F4A'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Diljit_Dosanjh_promoting_Born_to_Shine.jpg/220px-Diljit_Dosanjh_promoting_Born_to_Shine.jpg' },
+  { id: 'prateek',   title: 'Prateek Kuhad',   sub: 'Indie',      palette: ['#3D2D1A', '#C28456'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Prateek_Kuhad.jpg/220px-Prateek_Kuhad.jpg' },
+  { id: 'anuv',      title: 'Anuv Jain',       sub: 'Acoustic',   palette: ['#1B3A3D', '#3F8E94'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Anuv_Jain.jpg/220px-Anuv_Jain.jpg' },
+  { id: 'billie',    title: 'Billie Eilish',   sub: 'Alt-Pop',    palette: ['#1F2D1F', '#6B9A6B'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Billie_Eilish_O2_Shepherd%27s_Bush_Empire_-_15_03_2019_%2832415413367%29.jpg/220px-Billie_Eilish_O2_Shepherd%27s_Bush_Empire_-_15_03_2019_%2832415413367%29.jpg' },
+  { id: 'weeknd',    title: 'The Weeknd',      sub: 'R&B',        palette: ['#2A1B1B', '#A04848'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/The_Weeknd_at_the_Oscars_in_2016_%28cropped%29.jpg/220px-The_Weeknd_at_the_Oscars_in_2016_%28cropped%29.jpg' },
+  { id: 'shreya',    title: 'Shreya Ghoshal',  sub: 'Playback',   palette: ['#3D1F2D', '#B5547A'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Shreya_Ghoshal_2019.jpg/220px-Shreya_Ghoshal_2019.jpg' },
+  { id: 'olivia',    title: 'Olivia Rodrigo',  sub: 'Pop-Rock',   palette: ['#3D1A33', '#A8467C'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Olivia_Rodrigo_2024_%28cropped%29.jpg/220px-Olivia_Rodrigo_2024_%28cropped%29.jpg' },
+  { id: 'karan',     title: 'Karan Aujla',     sub: 'Hip-Hop',    palette: ['#2D2D3D', '#5F6FAA'],
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Karan_Aujla_in_2024.jpg/220px-Karan_Aujla_in_2024.jpg' },
+]
+
 // ─── Interest categories ───
+// User-trimmed list: Music (artists), Movies & TV, Books — no Travel/Food/Hobbies.
 const CATEGORIES = [
-  {
-    id: 'music', icon: '🎵', label: 'Music',
-    options: ['Indie', 'Bollywood', 'Hip-Hop', 'Classical', 'Jazz', 'Rock', 'Pop', 'Electronic', 'Lo-fi'],
-  },
+  { id: 'music', icon: '🎵', label: 'Music',       type: 'images', picks: MUSIC_PICKS },
   { id: 'film',  icon: '🎬', label: 'Movies & TV', type: 'images', picks: MOVIE_PICKS },
-  { id: 'books', icon: '📚', label: 'Books',        type: 'images', picks: BOOK_PICKS  },
-  {
-    id: 'travel', icon: '✈️', label: 'Travel',
-    options: ['Europe', 'Southeast Asia', 'Mountains', 'Beaches', 'Road trips', 'Solo travel', 'Backpacking', 'City breaks'],
-  },
-  {
-    id: 'food', icon: '🍳', label: 'Food',
-    options: ['Street food', 'Fine dining', 'Cooking', 'Cafes', 'Baking', 'Trying cuisines', 'Night food runs', 'Health food'],
-  },
-  {
-    id: 'hobbies', icon: '🎯', label: 'Hobbies',
-    options: ['Running', 'Gaming', 'Photography', 'Writing', 'Yoga', 'Gym', 'Rock climbing', 'Painting'],
-  },
+  { id: 'books', icon: '📚', label: 'Books',       type: 'images', picks: BOOK_PICKS  },
 ]
 
 const PROMPTS = [
@@ -70,6 +86,56 @@ const DEMO_PHOTOS = [
   'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=320&h=420&fit=crop&crop=face,top',
   'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=320&h=420&fit=crop&crop=faces,top',
 ]
+
+// ── Primary CTA — animated gradient + breathing glow + sheen on hover ──
+function PrimaryCTA({ children, onClick, className = '', size = 'md', disabled = false }) {
+  const sizes = {
+    sm: { padding: '12px 28px',  fontSize: 13, gap: 6  },
+    md: { padding: '15px 38px',  fontSize: 14, gap: 7  },
+    lg: { padding: '18px 44px',  fontSize: 15, gap: 8  },
+  }
+  const s = sizes[size] || sizes.md
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`relative overflow-hidden group cursor-pointer transition-transform duration-200 hover:scale-[1.04] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      style={{
+        background: 'linear-gradient(120deg, #C94B4B 0%, #D4956A 50%, #C94B4B 100%)',
+        backgroundSize: '220% 100%',
+        animation: 'ctaGradient 6s ease-in-out infinite, ctaGlow 3s ease-in-out infinite',
+        padding: s.padding,
+        borderRadius: 999,
+        border: 'none',
+        outline: 'none',
+        color: 'white',
+        fontWeight: 600,
+        letterSpacing: '0.02em',
+      }}
+    >
+      {/* Sheen sweep — fires once on hover */}
+      <span
+        aria-hidden
+        className="absolute inset-0 pointer-events-none group-hover:[animation:ctaSheen_1.2s_ease-out]"
+        style={{
+          background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%)',
+          opacity: 0,
+        }}
+      />
+      {/* Inner soft highlight */}
+      <span
+        aria-hidden
+        className="absolute inset-0 pointer-events-none rounded-full"
+        style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -8px 18px rgba(0,0,0,0.06)' }}
+      />
+      <span className="relative flex items-center justify-center"
+        style={{ fontSize: s.fontSize, gap: s.gap }}>
+        {children}
+        <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+      </span>
+    </button>
+  )
+}
 
 // ── Shared input — clean underline on cream bg ──
 const SignupInput = forwardRef(function SignupInput({ value, onChange, placeholder, type = 'text', className = '', ...rest }, ref) {
@@ -118,12 +184,15 @@ function Chip({ label, selected, onClick }) {
   )
 }
 
-// ── Movie / Book visual picker ──
+// ── Movie / Book / Artist visual picker ──
+// When the photo URL 404s we swap to a designed gradient card (per-item palette)
+// so missing artwork still looks intentional, not broken.
 function ImagePicker({ items, selected, onToggle }) {
   return (
     <div className="grid grid-cols-3 gap-2 mt-2 pb-1">
       {items.map(item => {
         const isSel = selected.includes(item.id)
+        const palette = item.palette || ['#2D3B2D', '#1a2820']
         return (
           <button
             key={item.id}
@@ -132,7 +201,7 @@ function ImagePicker({ items, selected, onToggle }) {
             style={{
               aspectRatio: '2/3',
               border: isSel ? '2.5px solid #C94B4B' : '2.5px solid transparent',
-              boxShadow: isSel ? '0 0 12px rgba(201,75,75,0.25)' : 'none',
+              boxShadow: isSel ? '0 0 14px rgba(201,75,75,0.30)' : '0 1px 3px rgba(0,0,0,0.06)',
             }}
           >
             <img
@@ -145,21 +214,34 @@ function ImagePicker({ items, selected, onToggle }) {
                 if (fb) fb.style.display = 'flex'
               }}
             />
-            {/* Fallback when image 404s */}
+            {/* Fallback — designed card */}
             <div
-              className="absolute inset-0 items-center justify-center text-xs text-center p-2 font-semibold text-white leading-tight"
-              style={{ display: 'none', background: 'linear-gradient(135deg, #2D3B2D, #1a2820)' }}
+              className="absolute inset-0 flex-col items-center justify-center text-center px-2 py-3 text-white"
+              style={{
+                display: 'none',
+                background: `linear-gradient(155deg, ${palette[0]} 0%, ${palette[1]} 100%)`,
+              }}
             >
-              {item.title}
+              <span className="font-display italic font-bold leading-tight"
+                style={{ fontSize: 'clamp(11px, 1.4vw, 15px)' }}>
+                {item.title}
+              </span>
+              {item.sub && (
+                <span className="mt-1 tracking-[0.2em] uppercase opacity-70"
+                  style={{ fontSize: 9 }}>
+                  {item.sub}
+                </span>
+              )}
+              <span className="mt-2 opacity-50" style={{ fontSize: 16 }}>♪</span>
             </div>
-            {/* Title gradient */}
+            {/* Title gradient — only shown when real image loaded */}
             <div
               className="absolute bottom-0 left-0 right-0 px-1.5 pt-5 pb-1"
-              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)' }}
+              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)' }}
             >
               <p className="text-[8px] text-white font-medium leading-tight truncate">{item.title}</p>
             </div>
-            {/* Selected check badge */}
+            {/* Selected check */}
             {isSel && (
               <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose flex items-center justify-center shadow-sm">
                 <span className="text-white text-[9px] font-bold">✓</span>
@@ -304,13 +386,9 @@ function Step1({ form, setForm, onNext }) {
       )}
 
       {canContinue && (
-        <button
-          onClick={onNext}
-          className="mt-14 px-10 py-3.5 rounded-full text-white text-sm font-semibold cursor-pointer transition-all hover:scale-105 hover:shadow-lg ru"
-          style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)', animationDelay: '0s' }}
-        >
-          Continue →
-        </button>
+        <div className="mt-14 ru" style={{ animationDelay: '0s' }}>
+          <PrimaryCTA onClick={onNext} size="md">Continue</PrimaryCTA>
+        </div>
       )}
     </div>
   )
@@ -356,13 +434,9 @@ function Step2({ form, setForm, onNext }) {
       </div>
 
       {canContinue && (
-        <button
-          onClick={onNext}
-          className="mt-16 px-10 py-3.5 rounded-full text-white text-sm font-semibold cursor-pointer transition-all hover:scale-105 hover:shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}
-        >
-          Continue →
-        </button>
+        <div className="mt-16">
+          <PrimaryCTA onClick={onNext} size="md">Continue</PrimaryCTA>
+        </div>
       )}
     </div>
   )
@@ -468,6 +542,7 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
                     <div className="grid grid-cols-2 gap-2">
                       {visible.map(item => {
                         const isSel = selected.includes(item.id)
+                        const palette = item.palette || ['#2D3B2D', '#1a2820']
                         return (
                           <button
                             key={item.id}
@@ -476,7 +551,7 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
                             style={{
                               aspectRatio: '2/3',
                               border: isSel ? '2.5px solid #C94B4B' : '2.5px solid transparent',
-                              boxShadow: isSel ? '0 0 12px rgba(201,75,75,0.25)' : 'none',
+                              boxShadow: isSel ? '0 0 14px rgba(201,75,75,0.30)' : '0 1px 3px rgba(0,0,0,0.06)',
                             }}
                           >
                             <img
@@ -488,12 +563,26 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
                                 if (fb) fb.style.display = 'flex'
                               }}
                             />
-                            <div className="absolute inset-0 items-center justify-center text-xs text-center p-2 font-semibold text-white leading-tight"
-                              style={{ display: 'none', background: 'linear-gradient(135deg, #2D3B2D, #1a2820)' }}>
-                              {item.title}
+                            {/* Designed fallback — per-item gradient, Playfair italic name, optional genre tag */}
+                            <div className="absolute inset-0 flex-col items-center justify-center text-center px-2 py-3 text-white"
+                              style={{
+                                display: 'none',
+                                background: `linear-gradient(155deg, ${palette[0]} 0%, ${palette[1]} 100%)`,
+                              }}>
+                              <span className="font-display italic font-bold leading-tight"
+                                style={{ fontSize: 'clamp(13px, 1.6vw, 17px)' }}>
+                                {item.title}
+                              </span>
+                              {item.sub && (
+                                <span className="mt-1.5 tracking-[0.22em] uppercase opacity-75"
+                                  style={{ fontSize: 9 }}>
+                                  {item.sub}
+                                </span>
+                              )}
+                              <span className="mt-2 opacity-50" style={{ fontSize: 18 }}>♪</span>
                             </div>
                             <div className="absolute bottom-0 left-0 right-0 px-2 pt-5 pb-1.5"
-                              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)' }}>
+                              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)' }}>
                               <p className="text-[10px] text-white font-medium leading-tight truncate">{item.title}</p>
                             </div>
                             {isSel && (
@@ -560,13 +649,9 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
       </div>
 
       {canContinue && (
-        <button
-          onClick={onNext}
-          className="w-full py-4 rounded-full text-white text-sm font-semibold cursor-pointer transition-all hover:scale-[1.02] hover:shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}
-        >
-          Continue →
-        </button>
+        <PrimaryCTA onClick={onNext} size="lg" className="w-full">
+          Continue
+        </PrimaryCTA>
       )}
     </div>
   )
@@ -703,13 +788,9 @@ function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, inte
         </div>
       </div>
 
-      <button
-        onClick={onFinish}
-        className="w-full py-4 rounded-full text-white text-base font-semibold cursor-pointer transition-all hover:scale-[1.02] hover:shadow-xl"
-        style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}
-      >
+      <PrimaryCTA onClick={onFinish} size="lg" className="w-full">
         Let's find your person ✦
-      </button>
+      </PrimaryCTA>
     </div>
   )
 }
