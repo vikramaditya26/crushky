@@ -1,12 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { seedMatches } from '../data/seedMatches'
+import { SpotifyIcon, InstagramIcon, CalendarIcon, PinIcon } from '../components/Icons'
 
 const QUICK_ACTIONS = [
-  { icon: '📸', label: 'Share Instagram' },
-  { icon: '🎵', label: 'Share Spotify' },
-  { icon: '📅', label: 'Plan a date' },
-  { icon: '📍', label: 'Share location' },
+  { icon: <InstagramIcon size={14} />, label: 'Share Instagram' },
+  { icon: <SpotifyIcon size={14} />,   label: 'Share Spotify' },
+  { icon: <CalendarIcon size={14} />,  label: 'Plan a date' },
+  { icon: <PinIcon size={14} />,       label: 'Share location' },
 ]
 
 export default function MatchProfile() {
@@ -211,7 +212,7 @@ export default function MatchProfile() {
                     {msg.type === 'instagram' && (
                       <div className="bg-gradient-to-br from-[#E1306C]/10 to-[#F77737]/10 border border-[#E1306C]/20 rounded-2xl rounded-br-sm px-4 py-3">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-[#E1306C]/15 flex items-center justify-center text-sm">📸</div>
+                          <div className="w-8 h-8 rounded-full bg-[#E1306C]/10 flex items-center justify-center"><InstagramIcon size={16} /></div>
                           <div>
                             <p className="text-[11px] text-muted">Shared Instagram</p>
                             <p className="text-sm font-semibold text-dark-text">@{msg.handle}</p>
@@ -224,7 +225,7 @@ export default function MatchProfile() {
                     {msg.type === 'spotify' && (
                       <div className="bg-[#1DB954]/8 border border-[#1DB954]/20 rounded-2xl rounded-br-sm px-4 py-3">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-[#1DB954]/15 flex items-center justify-center text-sm">🎵</div>
+                          <div className="w-8 h-8 rounded-full bg-[#1DB954]/10 flex items-center justify-center"><SpotifyIcon size={16} /></div>
                           <div>
                             <p className="text-[11px] text-muted">Shared Spotify</p>
                             <p className="text-sm font-semibold text-dark-text">{msg.handle}</p>
@@ -430,7 +431,7 @@ export default function MatchProfile() {
             <div className="space-y-2.5 mb-5">
               {match.spotify && (
                 <div className="bg-white rounded-xl p-4 border border-dark-text/5 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#1DB954]/10 flex items-center justify-center text-base">🎵</div>
+                  <div className="w-10 h-10 rounded-full bg-[#1DB954]/10 flex items-center justify-center"><SpotifyIcon size={20} /></div>
                   <div className="flex-1">
                     <p className="text-xs font-semibold text-dark-text">Spotify</p>
                     <p className="text-[11px] text-muted">{match.spotify}</p>
@@ -439,7 +440,7 @@ export default function MatchProfile() {
               )}
               {match.instagram && (
                 <div className="bg-white rounded-xl p-4 border border-dark-text/5 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#E1306C]/10 flex items-center justify-center text-base">📸</div>
+                  <div className="w-10 h-10 rounded-full bg-[#E1306C]/10 flex items-center justify-center"><InstagramIcon size={20} /></div>
                   <div className="flex-1">
                     <p className="text-xs font-semibold text-dark-text">Instagram</p>
                     <p className="text-[11px] text-muted">@{match.instagram}</p>

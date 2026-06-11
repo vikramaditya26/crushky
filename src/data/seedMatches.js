@@ -7,7 +7,7 @@ export const seedMatches = [
     college: "IIM Ahmedabad",
     work: "Strategy at CRED",
     height: "5'5\"",
-    photo: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=530&fit=crop&crop=face,top",
+    photo: "/model/1.jpg",
     interests: ["Indie Cinema", "Rock Climbing", "Speculative Fiction", "Venture Capital"],
     lookingFor: "Something worth showing up for",
     loveLanguage: "Quality Time",
@@ -17,8 +17,8 @@ export const seedMatches = [
     compatibility: 94,
     whyYouMatch: "When Aanya talked to Crushky, she used almost the exact words you did — 'someone who doesn't need noise to feel connected.' You both value intellectual depth over small talk. Crushky sees 94% alignment across values, humor, and depth. The 6% gap? You'll enjoy figuring that out together.",
     photos: [
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=530&fit=crop&crop=face,top",
-      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=530&fit=crop&crop=face,top",
+      "/model/2.jpg",
+      "/model/3.jpg",
     ],
     inCommon: [
       "You both said 'depth over small talk' — almost word for word",
@@ -50,7 +50,7 @@ export const seedMatches = [
     college: "Ashoka University",
     work: "Product at Netflix India",
     height: "5'7\"",
-    photo: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=530&fit=crop&crop=face,top",
+    photo: "/model/4.jpg",
     interests: ["Short Films", "Ceramics", "Distance Running", "Book Clubs"],
     lookingFor: "Someone who shows up",
     loveLanguage: "Words of Affirmation",
@@ -60,8 +60,8 @@ export const seedMatches = [
     compatibility: 87,
     whyYouMatch: "Zara described her ideal match as 'someone with real opinions and the self-awareness to know why.' Sound familiar? You're both creatives who execute. Crushky noticed your energy levels and communication styles are unusually compatible — 87% is high for two people who both value independence this much.",
     photos: [
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=530&fit=crop&crop=face,top",
-      "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=530&fit=crop&crop=face,top",
+      "/model/5.jpg",
+      "/model/6.jpg",
     ],
     inCommon: [
       "Strong opinions, loosely held — you both said exactly this",
@@ -93,7 +93,7 @@ export const seedMatches = [
     college: "BITS Pilani",
     work: "Co-founder, stealth startup",
     height: "5'4\"",
-    photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=530&fit=crop&crop=face,top",
+    photo: "/model/7.jpg",
     interests: ["Acoustic Guitar", "Open Source", "Bouldering", "Manga"],
     lookingFor: "Someone I don't have to perform for",
     loveLanguage: "Acts of Service",
@@ -103,8 +103,8 @@ export const seedMatches = [
     compatibility: 91,
     whyYouMatch: "When Sofia described her perfect person to Crushky, she said 'technical depth AND emotional intelligence — rare combination.' That's exactly what your profile signals. Two builders who get each other. She won't just understand what you're working on — she'll push it further. One of the highest depth scores Crushky has seen.",
     photos: [
-      "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=530&fit=crop&crop=face,top",
-      "https://images.unsplash.com/photo-1502323777036-f29e3972d82f?w=400&h=530&fit=crop&crop=face,top",
+      "/model/8.jpg",
+      "/model/9.jpg",
     ],
     inCommon: [
       "Prateek Kuhad on both your playlists — Cold/Mess specifically",

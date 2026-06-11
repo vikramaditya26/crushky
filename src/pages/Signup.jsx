@@ -75,11 +75,7 @@ const PROMPTS = [
   { id: 'firstdate',     q: 'My ideal first date',              ph: 'Hidden cafe, no plan, great conversation' },
 ]
 
-const DEMO_PHOTOS = [
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=320&h=420&fit=crop&crop=face,top',
-  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=320&h=420&fit=crop&crop=face,top',
-  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=320&h=420&fit=crop&crop=faces,top',
-]
+const DEMO_PHOTOS = ['/model/10.jpg', '/model/11.jpg', '/model/12.jpg']
 
 // MVP: pre-filled so a demo user just taps the arrow through every screen.
 // Add ?blank to start empty.

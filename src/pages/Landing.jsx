@@ -308,7 +308,7 @@ function PhoneDemo() {
                 style={{ background: '#fff', borderRadius: 18, overflow: 'hidden',
                   boxShadow: '0 12px 30px -8px rgba(201,75,75,0.25)', border: '1px solid rgba(201,75,75,0.15)' }}>
                 <div style={{ display: 'flex', gap: 10, padding: 10 }}>
-                  <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=160&h=200&fit=crop&crop=face,top"
+                  <img src="/model/1.jpg"
                     alt="" style={{ width: 62, height: 78, borderRadius: 12, objectFit: 'cover' }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>

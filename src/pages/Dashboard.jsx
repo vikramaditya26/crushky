@@ -4,6 +4,7 @@ import ChatBubble from '../components/ChatBubble'
 import CompanionChat from '../components/CompanionChat'
 import { seedMatches } from '../data/seedMatches'
 import { createRecognizer } from '../utils/speech'
+import { SpotifyIcon, InstagramIcon } from '../components/Icons'
 
 const DEMO_CONVERSATION = [
   // Opening
@@ -73,11 +74,7 @@ function CountUp({ target, duration = 1400 }) {
 }
 
 // Mirrors signup demo photos (user.photos stores selected indices)
-const PROFILE_PHOTOS = [
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=320&h=420&fit=crop&crop=face,top',
-  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=320&h=420&fit=crop&crop=face,top',
-  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=320&h=420&fit=crop&crop=faces,top',
-]
+const PROFILE_PHOTOS = ['/model/10.jpg', '/model/11.jpg', '/model/12.jpg']
 
 // Map interest ids picked at signup → display names
 const INTEREST_TITLES = {
@@ -594,12 +591,16 @@ export default function Dashboard() {
 
             {/* Socials */}
             {(user.instagram || user.spotify) && (
-              <div className="flex gap-3 mt-3">
+              <div className="flex gap-4 mt-3">
                 {user.instagram && (
-                  <span className="text-muted text-xs">📸 @{user.instagram.replace('@', '')}</span>
+                  <span className="flex items-center gap-1.5 text-muted text-xs">
+                    <InstagramIcon size={14} /> @{user.instagram.replace('@', '')}
+                  </span>
                 )}
                 {user.spotify && (
-                  <span className="text-muted text-xs">🎵 {user.spotify}</span>
+                  <span className="flex items-center gap-1.5 text-muted text-xs">
+                    <SpotifyIcon size={14} /> {user.spotify}
+                  </span>
                 )}
               </div>
             )}
