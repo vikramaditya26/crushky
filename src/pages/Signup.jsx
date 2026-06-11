@@ -194,7 +194,7 @@ export default function Signup() {
   const [prompts, setPrompts] = useState(IS_DEMO ? DEMO_PROMPTS : {})
   const [selectedPhotos, setSelectedPhotos] = useState(IS_DEMO ? [0, 1, 2] : [])
 
-  const STEPS = ['name', 'birthday', 'gender', 'seeking', 'height', 'city', 'work', 'interests', 'prompts', 'photos']
+  const STEPS = ['basics', 'identity', 'world', 'interests', 'prompts', 'photos']
   const current = STEPS[step]
   const progress = ((step + 1) / STEPS.length) * 100
 
@@ -229,13 +229,9 @@ export default function Signup() {
 
   // per-screen validation
   const canContinue = {
-    name: form.name.trim().length > 1,
-    birthday: form.birthDay && form.birthMonth && String(form.birthYear).length === 4,
-    gender: !!form.gender,
-    seeking: !!form.lookingFor,
-    height: true, // skippable
-    city: form.city.trim().length > 1,
-    work: form.work.trim().length > 1,
+    basics: form.name.trim().length > 1 && form.birthDay && form.birthMonth && String(form.birthYear).length === 4,
+    identity: !!form.gender && !!form.lookingFor,
+    world: form.city.trim().length > 1 && form.work.trim().length > 1,
     interests: Object.values(interests).flat().length >= 1,
     prompts: Object.values(prompts).some(v => v?.trim()),
     photos: true,
@@ -262,7 +258,17 @@ export default function Signup() {
   const totalPicked = Object.values(interests).flat().length
 
   return (
-    <div className="min-h-screen relative" style={{ background: '#FAFAF8' }}>
+    <div className="min-h-screen relative"
+      style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F6EFE6 100%)' }}>
+      {/* Soft warm accents — subtle, not blobby */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute" style={{
+          top: 0, right: 0, width: '50vw', height: '40vh',
+          background: 'radial-gradient(ellipse at top right, rgba(201,75,75,0.05), transparent 65%)' }} />
+        <div className="absolute" style={{
+          bottom: 0, left: 0, width: '60vw', height: '35vh',
+          background: 'radial-gradient(ellipse at bottom left, rgba(212,149,106,0.06), transparent 65%)' }} />
+      </div>
       {/* Thin progress bar */}
       <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-dark-text/5">
         <div className="h-full bg-rose transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
@@ -277,23 +283,18 @@ export default function Signup() {
       <div className="transition-all duration-200"
         style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(12px)' }}>
 
-        {/* ── NAME ── */}
-        {current === 'name' && (
-          <Screen icon="👋" title="What's your first name?" subtitle="This is how you'll show up on Crushky. No usernames here.">
+        {/* ── BASICS: name + birthday ── */}
+        {current === 'basics' && (
+          <Screen icon="👋" title="Let's start with the basics." subtitle="Your name and birthday — we only ever show your age.">
+            <p className="text-dark-text/50 text-sm font-medium mb-3">First name</p>
             <SignupInput
               autoFocus
               value={form.name}
               onChange={set('name')}
-              onKeyDown={e => e.key === 'Enter' && canContinue && next()}
               placeholder="First name"
-              className="text-3xl"
+              className="text-3xl mb-10"
             />
-          </Screen>
-        )}
-
-        {/* ── BIRTHDAY ── */}
-        {current === 'birthday' && (
-          <Screen icon="🎂" title="When's your birthday?" subtitle="We only ever show your age — never the date.">
+            <p className="text-dark-text/50 text-sm font-medium mb-3">Birthday</p>
             <div className="flex items-end gap-3">
               {[
                 { field: 'birthDay',   ph: 'DD',   w: 'w-14' },
@@ -306,7 +307,7 @@ export default function Signup() {
                     type="number" inputMode="numeric"
                     value={form[f.field]} onChange={set(f.field)}
                     placeholder={f.ph}
-                    className={`text-3xl ${f.w}`}
+                    className={`text-2xl ${f.w}`}
                   />
                 </div>
               ))}
@@ -314,21 +315,17 @@ export default function Signup() {
           </Screen>
         )}
 
-        {/* ── GENDER ── */}
-        {current === 'gender' && (
-          <Screen icon="🪞" title="Which best describes you?">
-            <div>
+        {/* ── IDENTITY: gender + seeking ── */}
+        {current === 'identity' && (
+          <Screen icon="💘" title="You, and who you're here for.">
+            <p className="text-dark-text/50 text-sm font-medium mb-1">I am a</p>
+            <div className="mb-10">
               {['Man', 'Woman', 'Non-binary'].map(g => (
                 <OptionRow key={g} label={g} selected={form.gender === g}
                   onClick={() => setForm(f => ({ ...f, gender: g }))} />
               ))}
             </div>
-          </Screen>
-        )}
-
-        {/* ── SEEKING ── */}
-        {current === 'seeking' && (
-          <Screen icon="💘" title="Who do you want to meet?">
+            <p className="text-dark-text/50 text-sm font-medium mb-1">I want to meet</p>
             <div>
               {['Women', 'Men', 'Everyone'].map(l => (
                 <OptionRow key={l} label={l} selected={form.lookingFor === l}
@@ -338,29 +335,15 @@ export default function Signup() {
           </Screen>
         )}
 
-        {/* ── HEIGHT ── */}
-        {current === 'height' && (
-          <Screen icon="📏" title="How tall are you?" subtitle="Always asked, rarely honest. Be the exception.">
-            <div className="flex items-end gap-2">
-              <SignupInput type="number" inputMode="numeric" value={form.heightFt}
-                onChange={set('heightFt')} className="text-3xl w-14" />
-              <span className="text-dark-text/30 text-xl pb-2">ft</span>
-              <SignupInput type="number" inputMode="numeric" value={form.heightIn}
-                onChange={set('heightIn')} className="text-3xl w-14 ml-3" />
-              <span className="text-dark-text/30 text-xl pb-2">in</span>
-            </div>
-          </Screen>
-        )}
-
-        {/* ── CITY ── */}
-        {current === 'city' && (
-          <Screen icon="📍" title="Where's home?" subtitle="We find people in your city — no long-distance roulette.">
+        {/* ── WORLD: city + work ── */}
+        {current === 'world' && (
+          <Screen icon="📍" title="Your world." subtitle="We match you in your city — no long-distance roulette.">
+            <p className="text-dark-text/50 text-sm font-medium mb-3">City</p>
             <SignupInput
               value={form.city} onChange={set('city')}
-              onKeyDown={e => e.key === 'Enter' && canContinue && next()}
-              placeholder="Your city" className="text-3xl"
+              placeholder="Your city" className="text-2xl"
             />
-            <div className="flex gap-2.5 flex-wrap mt-6">
+            <div className="flex gap-2.5 flex-wrap mt-4 mb-10">
               {['Bangalore', 'Mumbai', 'Delhi'].map(c => (
                 <button key={c}
                   onClick={() => setForm(f => ({ ...f, city: c }))}
@@ -373,16 +356,11 @@ export default function Signup() {
                 </button>
               ))}
             </div>
-          </Screen>
-        )}
-
-        {/* ── WORK ── */}
-        {current === 'work' && (
-          <Screen icon="💼" title="What do you do?" subtitle="Job, startup, studying — whatever fills your days.">
+            <p className="text-dark-text/50 text-sm font-medium mb-3">What you do</p>
             <SignupInput
               value={form.work} onChange={set('work')}
               onKeyDown={e => e.key === 'Enter' && canContinue && next()}
-              placeholder="Your work" className="text-2xl"
+              placeholder="Job, startup, studying…" className="text-2xl"
             />
           </Screen>
         )}

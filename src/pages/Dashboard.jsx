@@ -285,38 +285,58 @@ export default function Dashboard() {
   const pendingMatches = activeMatches.filter(m => !shortlisted.includes(m.id))
 
   const tabs = [
-    { id: 'talk', label: 'Talk', icon: '✦' },
-    { id: 'matches', label: `Matches${shortlisted.length ? ` (${shortlisted.length})` : ''}`, icon: '♡' },
-    { id: 'companion', label: 'Virtual Friend', icon: '◈' },
+    { id: 'talk',      label: 'Talk',     icon: '✦' },
+    { id: 'matches',   label: 'Matches',  icon: '♡', badge: shortlisted.length || null },
+    { id: 'companion', label: 'Wingman',  icon: '◈' },
+    { id: 'profile',   label: 'You',      icon: null }, // avatar
   ]
 
   return (
-    <div className="min-h-screen bg-cream text-dark-text grain">
-      {/* Top Bar */}
+    <div className="min-h-screen bg-cream text-dark-text grain" style={{ paddingBottom: 76 }}>
+      {/* Top Bar — slim, app-style */}
       <div className="bg-cream/70 backdrop-blur-xl border-b border-dark-text/5 sticky top-0 z-40">
-        <div className="max-w-3xl mx-auto px-5 md:px-10 pt-4 pb-3">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2.5">
-              <span className="font-display text-xl font-bold">Crushky</span>
-              <span className="bg-rose/10 text-rose text-[9px] font-semibold px-2 py-0.5 rounded-full border border-rose/20">MVP</span>
-            </div>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-rose-soft to-amber overflow-hidden flex items-center justify-center text-sm font-semibold text-white">
-              {user.name ? user.name[0].toUpperCase() : 'A'}
-            </div>
-          </div>
-          <div className="flex gap-1 bg-dark-text/5 rounded-full p-1">
-            {tabs.map((t) => (
+        <div className="max-w-3xl mx-auto px-5 md:px-10 py-3.5 flex items-center justify-between">
+          <span className="font-display text-xl font-bold">Crushky</span>
+          <span className="bg-rose/10 text-rose text-[9px] font-semibold px-2 py-0.5 rounded-full border border-rose/20">MVP</span>
+        </div>
+      </div>
+
+      {/* Bottom tab bar — native app feel */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-dark-text/6"
+        style={{ background: 'rgba(250,247,242,0.92)', backdropFilter: 'blur(20px)',
+          paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        <div className="max-w-3xl mx-auto flex">
+          {tabs.map((t) => {
+            const active = tab === t.id
+            return (
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`flex-1 py-2 rounded-full text-sm font-medium transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                  tab === t.id ? 'bg-dark-green text-white shadow-sm' : 'text-muted hover:text-dark-text/60'
-                }`}
-              >
-                <span className="text-xs">{t.icon}</span> {t.label}
+                className="flex-1 flex flex-col items-center gap-0.5 pt-2.5 pb-2 cursor-pointer transition-all relative">
+                {t.id === 'profile' ? (
+                  <span className="w-6 h-6 rounded-full bg-gradient-to-br from-rose-soft to-amber flex items-center justify-center text-[10px] font-bold text-white transition-all"
+                    style={{ outline: active ? '2px solid #C94B4B' : 'none', outlineOffset: 1.5 }}>
+                    {user.name ? user.name[0].toUpperCase() : 'A'}
+                  </span>
+                ) : (
+                  <span className="text-xl leading-none transition-all"
+                    style={{ color: active ? '#C94B4B' : 'rgba(26,26,26,0.3)',
+                      transform: active ? 'scale(1.12)' : 'scale(1)' }}>
+                    {t.icon}
+                  </span>
+                )}
+                <span className="text-[10px] font-semibold"
+                  style={{ color: active ? '#C94B4B' : 'rgba(26,26,26,0.35)' }}>
+                  {t.label}
+                </span>
+                {t.badge && (
+                  <span className="absolute top-1.5 right-[28%] min-w-4 h-4 px-1 rounded-full bg-rose text-white text-[9px] font-bold flex items-center justify-center">
+                    {t.badge}
+                  </span>
+                )}
               </button>
-            ))}
-          </div>
+            )
+          })}
         </div>
       </div>
 
@@ -474,6 +494,83 @@ export default function Dashboard() {
       {tab === 'companion' && (
         <div className="max-w-3xl mx-auto px-5 md:px-10">
           <CompanionChat />
+        </div>
+      )}
+
+      {/* ─── PROFILE TAB ─── */}
+      {tab === 'profile' && (
+        <div className="max-w-3xl mx-auto px-5 md:px-10 py-6 au">
+          {/* Profile card */}
+          <div className="bg-white rounded-2xl border border-dark-text/5 p-5 shadow-sm mb-4">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-soft to-amber flex items-center justify-center text-2xl font-bold text-white">
+                {user.name ? user.name[0].toUpperCase() : 'A'}
+              </div>
+              <div>
+                <h2 className="font-display text-xl font-bold">
+                  {user.name || 'You'}{user.dob ? `, ${new Date().getFullYear() - parseInt(user.dob.slice(0, 4))}` : ''}
+                </h2>
+                <p className="text-muted text-xs mt-0.5">{user.city || '—'} · {user.work || '—'}</p>
+              </div>
+            </div>
+            {user.prompts && Object.entries(user.prompts).filter(([, v]) => v?.trim()).slice(0, 2).map(([id, v]) => (
+              <div key={id} className="bg-cream rounded-xl px-3.5 py-3 mb-2">
+                <p className="text-dark-text/70 text-xs leading-relaxed">"{v}"</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Plan card */}
+          <div className="bg-white rounded-2xl border border-dark-text/5 p-5 shadow-sm mb-4 flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-sm">
+                {localStorage.getItem('crushky_premium') === 'true' ? 'Crushky Premium ✦' : 'Free plan'}
+              </p>
+              <p className="text-muted text-xs mt-0.5">
+                {localStorage.getItem('crushky_premium') === 'true'
+                  ? 'All companions, video calls, unlimited messages'
+                  : 'Upgrade for all 4 companions & video calls'}
+              </p>
+            </div>
+            {localStorage.getItem('crushky_premium') === 'true' ? (
+              <span className="text-[10px] font-bold px-3 py-1.5 rounded-full text-white"
+                style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>PRO</span>
+            ) : (
+              <button onClick={() => setTab('companion')}
+                className="text-xs font-bold px-4 py-2 rounded-full text-white cursor-pointer hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>
+                Upgrade
+              </button>
+            )}
+          </div>
+
+          {/* Settings list */}
+          <div className="bg-white rounded-2xl border border-dark-text/5 shadow-sm overflow-hidden mb-6">
+            {[
+              { icon: '🔔', label: 'Notifications', note: 'On' },
+              { icon: '🔒', label: 'Privacy', note: '' },
+              { icon: '💬', label: 'Help & feedback', note: '' },
+            ].map((row, i) => (
+              <div key={row.label}
+                className={`flex items-center gap-3 px-5 py-4 ${i > 0 ? 'border-t border-dark-text/5' : ''}`}>
+                <span className="text-base">{row.icon}</span>
+                <span className="flex-1 text-sm text-dark-text/75 font-medium">{row.label}</span>
+                {row.note && <span className="text-muted text-xs">{row.note}</span>}
+                <span className="text-dark-text/20">›</span>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={() => {
+              ['crushky_user', 'crushky_premium', 'crushky_chat_done',
+                'crushky_companion_luna', 'crushky_companion_aria',
+                'crushky_companion_nova', 'crushky_companion_maya'].forEach(k => localStorage.removeItem(k))
+              navigate('/')
+            }}
+            className="w-full py-3.5 rounded-full border border-dark-text/12 text-dark-text/50 text-sm font-medium cursor-pointer hover:bg-white transition-all">
+            Log out & reset demo
+          </button>
         </div>
       )}
     </div>
