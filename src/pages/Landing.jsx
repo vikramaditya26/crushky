@@ -517,7 +517,7 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.95 }}
               style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignItems: 'flex-start' }}>
-              <button onClick={() => navigate(returningUser ? '/dashboard' : '/signup')}
+              <button onClick={() => navigate(returningUser ? '/dashboard' : '/start')}
                 className="cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-2xl group"
                 style={{ background: CREAM, color: INK, fontSize: 16, fontWeight: 700,
                   padding: '17px 40px', borderRadius: 100, letterSpacing: '0.01em' }}>
@@ -633,7 +633,7 @@ export default function Landing() {
             </p>
           </FadeIn>
           <FadeIn delay={0.42}>
-            <button onClick={() => navigate('/signup')}
+            <button onClick={() => navigate('/start')}
               className="cursor-pointer transition-all hover:-translate-y-1 hover:shadow-2xl group"
               style={{ background: CREAM, color: INK, fontSize: 17, fontWeight: 700,
                 padding: '18px 46px', borderRadius: 100, letterSpacing: '0.01em' }}>
