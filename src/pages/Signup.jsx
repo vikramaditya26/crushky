@@ -421,6 +421,12 @@ function Step2({ form, setForm, onNext }) {
             placeholder="Your city"
             className="text-2xl text-center"
           />
+          <div className="flex justify-center gap-2 flex-wrap mt-5">
+            {['Bangalore', 'Mumbai', 'Delhi'].map(c => (
+              <OptionPill key={c} label={c} selected={form.city === c}
+                onClick={() => setForm(f => ({ ...f, city: c }))} />
+            ))}
+          </div>
         </div>
         <div>
           <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-4">What do you do?</p>
@@ -649,9 +655,21 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
       </div>
 
       {canContinue && (
-        <PrimaryCTA onClick={onNext} size="lg" className="w-full">
-          Continue
-        </PrimaryCTA>
+        <>
+          <div className="w-full mb-5 ru flex items-start gap-2.5 bg-white/70 border border-rose/15 rounded-2xl px-4 py-3.5">
+            <span className="text-rose text-sm mt-0.5">✦</span>
+            <p className="text-dark-text/60 text-xs leading-relaxed italic">
+              {(interests.music || []).includes('prateek')
+                ? "Prateek Kuhad and this taste in films? I already have someone in mind…"
+                : totalSelected >= 5
+                  ? "Okay, this is a very specific vibe — and I love it. I'm already narrowing down who you'd click with."
+                  : "Interesting mix. I'm starting to get a picture of who you'd actually click with."}
+            </p>
+          </div>
+          <PrimaryCTA onClick={onNext} size="lg" className="w-full">
+            Continue
+          </PrimaryCTA>
+        </>
       )}
     </div>
   )
@@ -798,30 +816,48 @@ function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, inte
 // ══════════════════════════════════
 //   MAIN SIGNUP COMPONENT
 // ══════════════════════════════════
+// Demo mode (?demo in URL) pre-fills the flow for investor walkthroughs.
+// Real visitors always start blank.
+const IS_DEMO = typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).has('demo')
+
+const DEMO_FORM = {
+  name: 'Aditya',
+  birthDay: '15', birthMonth: '08', birthYear: '2003',
+  gender: 'Man', lookingFor: 'Women',
+  heightFt: '5', heightIn: '10',
+  city: 'Bangalore',
+  work: 'Founders office at Teachmint',
+  bio: '',
+  spotify: 'aditya.vibes',
+  instagram: 'aditya.kumar_',
+}
+
+const BLANK_FORM = {
+  name: '',
+  birthDay: '', birthMonth: '', birthYear: '',
+  gender: '', lookingFor: '',
+  heightFt: '', heightIn: '',
+  city: '', work: '', bio: '',
+  spotify: '', instagram: '',
+}
+
+const DEMO_PROMPT_ANSWERS = {
+  weekend: 'Coffee, bookstore, no plans honestly',
+  geekout: 'How startups go from 0 to 1. And street food.',
+  controversial: 'Maggi is better than any pasta. I will die on this hill.',
+}
+
 export default function Signup() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [visible, setVisible] = useState(true)
   const [transitioning, setTransitioning] = useState(false)
 
-  const [form, setForm] = useState({
-    name: 'Aditya',
-    birthDay: '15', birthMonth: '08', birthYear: '2003',
-    gender: 'Man', lookingFor: 'Women',
-    heightFt: '5', heightIn: '10',
-    city: 'Bangalore',
-    work: 'Founders office at Teachmint',
-    bio: '',
-    spotify: 'aditya.vibes',
-    instagram: 'aditya.kumar_',
-  })
+  const [form, setForm] = useState(IS_DEMO ? DEMO_FORM : BLANK_FORM)
   const [interests, setInterests] = useState({})
-  const [prompts, setPrompts] = useState({
-    weekend: 'Coffee, bookstore, no plans honestly',
-    geekout: 'How startups go from 0 to 1. And street food.',
-    controversial: 'Maggi is better than any pasta. I will die on this hill.',
-  })
-  const [selectedPhotos, setSelectedPhotos] = useState([0, 1, 2])
+  const [prompts, setPrompts] = useState(IS_DEMO ? DEMO_PROMPT_ANSWERS : {})
+  const [selectedPhotos, setSelectedPhotos] = useState(IS_DEMO ? [0, 1, 2] : [])
 
   const transition = (toStep) => {
     if (transitioning) return

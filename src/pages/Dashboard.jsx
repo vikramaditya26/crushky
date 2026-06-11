@@ -53,6 +53,24 @@ const MATCH_REVEAL_AT_INDEX = [
   { matchIdx: 2, afterMsgIndex: 19 },
 ]
 
+// Compatibility % counts up from 0 when the card first reveals
+function CountUp({ target, duration = 1400 }) {
+  const [value, setValue] = useState(0)
+  useEffect(() => {
+    let frame
+    const start = performance.now()
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1)
+      // ease-out so the last few percent land slowly
+      setValue(Math.round(target * (1 - Math.pow(1 - p, 3))))
+      if (p < 1) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [target, duration])
+  return <>{value}%</>
+}
+
 function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
   return (
     <div className={`bg-white rounded-2xl border border-dark-text/5 overflow-hidden shadow-lg ${isNew ? 'as' : ''}`}>
@@ -64,7 +82,9 @@ function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
               <h3 className="font-display text-base font-bold">{match.name}, {match.age}</h3>
               <p className="text-muted text-xs mt-0.5">{match.city} &middot; {match.work}</p>
             </div>
-            <span className="text-rose font-bold text-sm">{match.compatibility}%</span>
+            <span className="text-rose font-bold text-sm">
+              {isNew ? <CountUp target={match.compatibility} /> : `${match.compatibility}%`}
+            </span>
           </div>
           <p className="text-dark-text/60 text-xs mt-2 line-clamp-2">{match.whyYouMatch}</p>
           <div className="flex gap-2 mt-3">

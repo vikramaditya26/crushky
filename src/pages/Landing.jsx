@@ -263,6 +263,124 @@ function StepSection({ n, bg, title, body, reverse }) {
   )
 }
 
+/* ─── Phone demo — the product, live on the landing ───── */
+const DEMO_SCRIPT = [
+  { type: 'ai',   text: "What does your ideal weekend look like? Be honest — not the Instagram version." },
+  { type: 'user', text: "Slow mornings, hidden cafes, no plans honestly." },
+  { type: 'ai',   text: "Someone who doesn't need noise to feel connected. Got it. Give me a second…" },
+  { type: 'match' },
+]
+
+function PhoneDemo() {
+  const [step, setStep] = useState(0)
+  useEffect(() => {
+    const delays = [1200, 1700, 1700, 2000, 4200]
+    const t = setTimeout(() => {
+      setStep(s => (s + 1) % (DEMO_SCRIPT.length + 1))
+    }, delays[step] || 1700)
+    return () => clearTimeout(t)
+  }, [step])
+
+  return (
+    <div style={{ width: 300, height: 600, borderRadius: 44, background: '#FBF8F4',
+      border: '10px solid #1A1410', boxShadow: '0 40px 90px -20px rgba(0,0,0,0.45)',
+      overflow: 'hidden', position: 'relative', margin: '0 auto' }}>
+      {/* notch */}
+      <div style={{ position: 'absolute', top: 10, left: '50%', transform: 'translateX(-50%)',
+        width: 90, height: 22, borderRadius: 20, background: '#1A1410', zIndex: 5 }} />
+      {/* header */}
+      <div style={{ padding: '46px 18px 12px', borderBottom: '1px solid rgba(0,0,0,0.05)',
+        display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ width: 8, height: 8, borderRadius: 8, background: ROSE,
+          animation: 'pulse 2s infinite' }} className="animate-pulse" />
+        <span className="font-display font-bold" style={{ fontSize: 15, color: INK }}>Crushky AI</span>
+        <span style={{ fontSize: 10, color: 'rgba(26,20,16,0.35)', marginLeft: 'auto' }}>listening…</span>
+      </div>
+      {/* chat */}
+      <div style={{ padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {DEMO_SCRIPT.slice(0, step).map((m, i) => {
+          if (m.type === 'match') {
+            return (
+              <motion.div key={i}
+                initial={{ opacity: 0, scale: 0.9, y: 16 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                style={{ background: '#fff', borderRadius: 18, overflow: 'hidden',
+                  boxShadow: '0 12px 30px -8px rgba(201,75,75,0.25)', border: '1px solid rgba(201,75,75,0.15)' }}>
+                <div style={{ display: 'flex', gap: 10, padding: 10 }}>
+                  <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=160&h=200&fit=crop&crop=face,top"
+                    alt="" style={{ width: 62, height: 78, borderRadius: 12, objectFit: 'cover' }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                      <p className="font-display font-bold" style={{ fontSize: 14, color: INK }}>Aanya, 25</p>
+                      <span style={{ color: ROSE, fontWeight: 700, fontSize: 13 }}>94%</span>
+                    </div>
+                    <p style={{ fontSize: 10, color: 'rgba(26,20,16,0.45)', marginBottom: 4 }}>Mumbai · Strategy at CRED</p>
+                    <p style={{ fontSize: 10, lineHeight: 1.5, color: 'rgba(26,20,16,0.65)' }}>
+                      "She used almost the exact words you did — someone who doesn't need noise to feel connected."
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )
+          }
+          const isUser = m.type === 'user'
+          return (
+            <motion.div key={i}
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                alignSelf: isUser ? 'flex-end' : 'flex-start',
+                maxWidth: '82%',
+                background: isUser ? FOREST : '#fff',
+                color: isUser ? '#F0EBE3' : INK,
+                borderRadius: isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                padding: '9px 13px', fontSize: 12, lineHeight: 1.5,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+              }}>
+              {m.text}
+            </motion.div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function ProductPreviewSection() {
+  return (
+    <section className="relative overflow-hidden" style={{ background: CREAM, padding: '14vh 24px' }}>
+      <Grain opacity={0.06} />
+      <div className="max-w-6xl mx-auto relative z-10 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <FadeIn>
+            <p style={{ fontSize: 11, letterSpacing: '0.3em', color: 'rgba(26,20,16,0.4)',
+              fontWeight: 700, textTransform: 'uppercase', marginBottom: '1rem' }}>
+              See it work
+            </p>
+            <h2 className="font-display font-bold"
+              style={{ fontSize: 'clamp(32px, 5vw, 60px)', color: INK, lineHeight: 1.08,
+                marginBottom: '1.5rem', letterSpacing: '-0.01em' }}>
+              One conversation.
+              <br /><em style={{ color: ROSE }}>Zero swiping.</em>
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.15}>
+            <p style={{ color: '#7A7060', fontSize: 17, lineHeight: 1.75, maxWidth: 440 }}>
+              Crushky asks the questions your best friend would. Then it finds the one person
+              in your city who answered the same way — and tells you exactly{' '}
+              <em style={{ color: INK }}>why</em> you two click. Not a score. A reason.
+            </p>
+          </FadeIn>
+        </div>
+        <FadeIn delay={0.2}>
+          <PhoneDemo />
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
 /* ─── Statement section — text only on cream ──────────── */
 function StatementSection() {
   return (
@@ -306,6 +424,12 @@ export default function Landing() {
   const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
   const { scrollY } = useScroll()
+
+  /* Returning user — skip signup, go straight to dashboard */
+  const returningUser = (() => {
+    try { return JSON.parse(localStorage.getItem('crushky_user') || 'null') }
+    catch { return null }
+  })()
 
   /* Hero background ken-burns */
   const heroBgScale = useTransform(scrollY, [0, 800], [1, 1.12])
@@ -379,12 +503,21 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.95 }}
               style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignItems: 'flex-start' }}>
-              <button onClick={() => navigate('/signup')}
+              <button onClick={() => navigate(returningUser ? '/dashboard' : '/signup')}
                 className="cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-2xl group"
                 style={{ background: CREAM, color: INK, fontSize: 16, fontWeight: 700,
                   padding: '17px 40px', borderRadius: 100, letterSpacing: '0.01em' }}>
-                Start talking <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+                {returningUser?.name ? `Continue as ${returningUser.name}` : 'Start talking'}{' '}
+                <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
               </button>
+              {returningUser?.name && (
+                <button onClick={() => navigate('/signup')}
+                  className="cursor-pointer"
+                  style={{ background: 'transparent', border: 'none', color: 'rgba(240,235,227,0.5)',
+                    fontSize: 12, marginLeft: 4, textDecoration: 'underline', textUnderlineOffset: 3 }}>
+                  Not you? Start fresh
+                </button>
+              )}
               <p style={{ color: 'rgba(240,235,227,0.45)', fontSize: 12, marginLeft: 4, marginTop: 4 }}>
                 Free forever · Two minutes
               </p>
@@ -411,6 +544,9 @@ export default function Landing() {
           </span>
         </motion.div>
       </section>
+
+      {/* ════ PRODUCT PREVIEW (phone demo) ═══════════════ */}
+      <ProductPreviewSection />
 
       {/* ════ STATEMENT ══════════════════════════════════ */}
       <StatementSection />
@@ -516,15 +652,13 @@ export default function Landing() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            {['Instagram', 'Twitter', 'Contact'].map(l => (
-              <a key={l} href="#"
-                style={{ color: 'rgba(240,235,227,0.4)', fontSize: 14, textDecoration: 'none',
-                  transition: 'color 0.2s' }}
-                onMouseEnter={e => e.target.style.color = CREAM}
-                onMouseLeave={e => e.target.style.color = 'rgba(240,235,227,0.4)'}>
-                {l}
-              </a>
-            ))}
+            <a href="mailto:vikram.aditya.connect@gmail.com"
+              style={{ color: 'rgba(240,235,227,0.4)', fontSize: 14, textDecoration: 'none',
+                transition: 'color 0.2s' }}
+              onMouseEnter={e => e.target.style.color = CREAM}
+              onMouseLeave={e => e.target.style.color = 'rgba(240,235,227,0.4)'}>
+              Contact
+            </a>
           </div>
         </div>
         <p style={{ textAlign: 'center', marginTop: '2rem', paddingTop: '1.5rem',
