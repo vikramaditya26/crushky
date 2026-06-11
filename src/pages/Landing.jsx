@@ -129,7 +129,7 @@ function StoryScroll() {
   })
   return (
     <section ref={ref} style={{ height: `${STORY.length * 100}vh`, position: 'relative' }}>
-      <div className="sticky top-0 h-screen w-full overflow-hidden" style={{ background: INK }}>
+      <div className="sticky top-0 w-full overflow-hidden" style={{ background: INK, height: '100dvh' }}>
         {STORY.map((s, i) => (
           <StoryFrame key={i} idx={i} total={STORY.length}
             src={s.src} scrollYProgress={scrollYProgress} />

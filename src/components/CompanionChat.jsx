@@ -120,6 +120,134 @@ function MicIcon({ color = '#C94B4B', size = 26 }) {
   )
 }
 
+// ── Premium paywall — the revenue moment ──
+const FREE_COMPANION = 'luna'
+const FREE_MESSAGE_LIMIT = 4
+
+const PERKS = [
+  { icon: '💬', text: 'Unlimited conversations with all 4 companions' },
+  { icon: '🎥', text: 'Video calls — see them, not just read them' },
+  { icon: '🧠', text: 'Memory — they remember everything, forever' },
+  { icon: '✦',  text: 'All sessions: Deep Dive, Roleplay, Affirmations' },
+]
+
+function PaywallModal({ onClose, onUnlock, trigger }) {
+  const [stage, setStage] = useState('offer') // offer | processing | done
+
+  const handlePay = () => {
+    setStage('processing')
+    setTimeout(() => {
+      setStage('done')
+      setTimeout(onUnlock, 1600)
+    }, 1700)
+  }
+
+  const headline = trigger === 'limit'
+    ? "She has more to say…"
+    : trigger === 'video'
+      ? "See her, not just read her."
+      : "They're all waiting for you."
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center px-0 sm:px-6"
+      style={{ background: 'rgba(20,15,12,0.55)', backdropFilter: 'blur(6px)' }}
+      onClick={stage === 'offer' ? onClose : undefined}>
+      <div
+        onClick={e => e.stopPropagation()}
+        className="w-full sm:max-w-sm bg-white rounded-t-3xl sm:rounded-3xl overflow-hidden au"
+        style={{ boxShadow: '0 -10px 60px rgba(0,0,0,0.3)' }}>
+
+        {stage === 'offer' && (
+          <>
+            {/* Companion strip */}
+            <div className="relative h-32 overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #1A1410 0%, #3D2D1A 100%)' }}>
+              <div className="absolute inset-0 flex items-center justify-center gap-2 px-6">
+                {COMPANIONS.map((c, i) => (
+                  <img key={c.id} src={c.photo} alt={c.name}
+                    className="w-16 h-16 rounded-full object-cover object-top"
+                    style={{
+                      border: '2.5px solid rgba(255,255,255,0.85)',
+                      marginLeft: i > 0 ? -10 : 0,
+                      transform: `translateY(${i % 2 ? 6 : -4}px)`,
+                      boxShadow: '0 6px 18px rgba(0,0,0,0.35)',
+                    }} />
+                ))}
+              </div>
+              <button onClick={onClose}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-white/70 hover:text-white text-sm"
+                style={{ background: 'rgba(255,255,255,0.12)' }}>
+                ✕
+              </button>
+            </div>
+
+            <div className="px-6 pt-5 pb-6">
+              <h3 className="font-display text-2xl font-bold text-dark-text text-center mb-1">
+                {headline}
+              </h3>
+              <p className="text-dark-text/40 text-xs text-center mb-5">
+                Crushky <span className="font-bold text-rose">Premium</span> unlocks everything
+              </p>
+
+              <div className="space-y-2.5 mb-6">
+                {PERKS.map(p => (
+                  <div key={p.text} className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs shrink-0"
+                      style={{ background: 'rgba(201,75,75,0.08)' }}>{p.icon}</span>
+                    <p className="text-dark-text/65 text-[13px]">{p.text}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Price */}
+              <div className="flex items-baseline justify-center gap-2 mb-4">
+                <span className="text-dark-text/30 text-sm line-through">₹499</span>
+                <span className="font-display text-3xl font-bold text-dark-text">₹299</span>
+                <span className="text-dark-text/40 text-sm">/month</span>
+              </div>
+
+              <button onClick={handlePay}
+                className="w-full py-4 rounded-full text-white font-bold text-sm cursor-pointer transition-all hover:opacity-90 hover:scale-[1.01]"
+                style={{ background: 'linear-gradient(120deg, #C94B4B, #D4956A)',
+                  boxShadow: '0 8px 24px rgba(201,75,75,0.35)' }}>
+                Unlock everything ✦
+              </button>
+              <p className="text-dark-text/25 text-[10px] text-center mt-3">
+                Cancel anytime · Founding member price locked forever
+              </p>
+            </div>
+          </>
+        )}
+
+        {stage === 'processing' && (
+          <div className="px-6 py-16 text-center">
+            <div className="flex justify-center gap-1.5 mb-5">
+              {[0, 1, 2].map(i => (
+                <span key={i} className="w-2.5 h-2.5 bg-rose/60 rounded-full animate-bounce"
+                  style={{ animationDelay: `${i * 150}ms` }} />
+              ))}
+            </div>
+            <p className="font-display text-lg italic text-dark-text/70">Processing payment…</p>
+            <p className="text-dark-text/30 text-xs mt-1">UPI · Demo checkout</p>
+          </div>
+        )}
+
+        {stage === 'done' && (
+          <div className="px-6 py-16 text-center au">
+            <div className="w-16 h-16 mx-auto mb-5 rounded-full flex items-center justify-center text-2xl"
+              style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)',
+                boxShadow: '0 10px 30px rgba(201,75,75,0.4)' }}>
+              <span className="text-white">✦</span>
+            </div>
+            <p className="font-display text-2xl font-bold text-dark-text mb-1">Welcome to Premium</p>
+            <p className="text-dark-text/40 text-sm">Everyone's unlocked. They've been waiting.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ── Voice Entry Screen (per companion) ──
 function CompanionVoiceEntry({ companion, onStart }) {
   const [listening, setListening] = useState(false)
@@ -130,7 +258,7 @@ function CompanionVoiceEntry({ companion, onStart }) {
   }
 
   return (
-    <div className="relative flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 120px)' }}>
+    <div className="relative flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 120px)' }}>
       <AnimatedBg accent={companion.accent} />
 
       {/* Ambient glow behind photo */}
@@ -226,8 +354,16 @@ export default function CompanionChat() {
   const [msgCount, setMsgCount] = useState(0)
   const [isListening, setIsListening] = useState(false)
   const [isVoiceActive, setIsVoiceActive] = useState(false)
+  const [isPremium, setIsPremium] = useState(() => localStorage.getItem('crushky_premium') === 'true')
+  const [paywall, setPaywall] = useState(null) // null | 'locked' | 'limit' | 'video'
   const inputRef = useRef(null)
   const endRef = useRef(null)
+
+  const unlockPremium = () => {
+    localStorage.setItem('crushky_premium', 'true')
+    setIsPremium(true)
+    setPaywall(null)
+  }
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
   useEffect(() => { if (showInput) inputRef.current?.focus() }, [showInput])
@@ -279,6 +415,11 @@ export default function CompanionChat() {
   }
 
   const handleSelect = (id) => {
+    // Only Luna is free — tapping a locked companion opens the paywall
+    if (!isPremium && id !== FREE_COMPANION) {
+      setPaywall('locked')
+      return
+    }
     setSelected(id)
     setChatStarted(false)
     setMessages([])
@@ -288,6 +429,11 @@ export default function CompanionChat() {
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return
+    // Free tier: limited messages, then the upgrade moment
+    if (!isPremium && msgCount >= FREE_MESSAGE_LIMIT) {
+      setPaywall('limit')
+      return
+    }
     const text = input.trim()
     setInput('')
     setShowInput(false)
@@ -337,7 +483,11 @@ export default function CompanionChat() {
   }
 
   const handleSession = (session) => {
-    if (session.id === 'video') return
+    if (session.id === 'video') {
+      if (isPremium) { setChatTab('chat'); setIsVoiceActive(true) }
+      else setPaywall('video')
+      return
+    }
     if (session.reply) {
       setChatTab('chat')
       const userMsg = { role: 'user', content: `Let's do: ${session.title}` }
@@ -386,15 +536,33 @@ export default function CompanionChat() {
                   <p className="font-display font-bold text-white text-base leading-tight">{c.name}</p>
                   <p className="text-white/55 text-[10px] mt-0.5">{c.vibe}</p>
                 </div>
-                <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white shadow-sm" />
+                {(isPremium || c.id === FREE_COMPANION) ? (
+                  <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white shadow-sm" />
+                ) : (
+                  <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full"
+                    style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}>
+                    <span className="text-[8px]">🔒</span>
+                    <span className="text-white text-[8px] font-bold tracking-wide">PRO</span>
+                  </div>
+                )}
               </button>
             ))}
           </div>
 
-          <p className="text-center text-dark-text/25 text-xs mt-8">
-            Tap any friend to start a conversation
-          </p>
+          {!isPremium ? (
+            <button onClick={() => setPaywall('locked')}
+              className="w-full mt-6 py-3.5 rounded-full text-white font-semibold text-xs cursor-pointer transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(120deg, #C94B4B, #D4956A)',
+                boxShadow: '0 6px 20px rgba(201,75,75,0.3)' }}>
+              Unlock all 4 friends — ₹299/mo ✦
+            </button>
+          ) : (
+            <p className="text-center text-dark-text/25 text-xs mt-8">
+              Tap any friend to start a conversation
+            </p>
+          )}
         </div>
+        {paywall && <PaywallModal trigger={paywall} onClose={() => setPaywall(null)} onUnlock={unlockPremium} />}
       </div>
     )
   }
@@ -411,7 +579,7 @@ export default function CompanionChat() {
 
   // ── SCREEN 3: Voice-feel conversation ──
   return (
-    <div className="relative flex flex-col" style={{ height: 'calc(100vh - 120px)' }}>
+    <div className="relative flex flex-col" style={{ height: 'calc(100dvh - 120px)' }}>
       <AnimatedBg accent={companion.accent} />
 
       {/* Video call overlay */}
@@ -451,10 +619,14 @@ export default function CompanionChat() {
             <p className="text-[10px] text-dark-text/40">talking with you</p>
           </div>
         </div>
-        <button onClick={() => setIsVoiceActive(true)}
-          className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-all"
+        <button onClick={() => isPremium ? setIsVoiceActive(true) : setPaywall('video')}
+          className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-all relative"
           style={{ background: `${companion.accent}18`, border: `1px solid ${companion.accent}35` }}>
           <span style={{ fontSize: '14px' }}>📞</span>
+          {!isPremium && (
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7px] text-white"
+              style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>✦</span>
+          )}
         </button>
       </div>
 
@@ -483,7 +655,16 @@ export default function CompanionChat() {
           <div className="relative z-10 shrink-0"
             style={{ background: 'rgba(240,217,196,0.35)', borderBottom: '1px solid rgba(212,149,106,0.18)' }}>
             <p className="text-dark-text/50 text-[11px] font-medium text-center py-2">
-              🎙 Voice session in progress — {companion.name} is listening
+              {!isPremium ? (
+                <>🎙 {companion.name} is listening · <span
+                  className="font-bold cursor-pointer"
+                  style={{ color: msgCount >= FREE_MESSAGE_LIMIT - 1 ? '#C94B4B' : undefined }}
+                  onClick={() => setPaywall('limit')}>
+                  {Math.max(FREE_MESSAGE_LIMIT - msgCount, 0)} free {FREE_MESSAGE_LIMIT - msgCount === 1 ? 'message' : 'messages'} left ✦
+                </span></>
+              ) : (
+                <>🎙 Voice session in progress — {companion.name} is listening</>
+              )}
             </p>
           </div>
 
@@ -614,8 +795,7 @@ export default function CompanionChat() {
               <button
                 key={session.id}
                 onClick={() => handleSession(session)}
-                disabled={session.badge === 'Premium'}
-                className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all cursor-pointer hover:scale-[1.01] disabled:opacity-60 disabled:cursor-default"
+                className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all cursor-pointer hover:scale-[1.01]"
                 style={{
                   background: session.color || 'rgba(255,255,255,0.6)',
                   border: '1px solid rgba(0,0,0,0.06)',
@@ -644,24 +824,29 @@ export default function CompanionChat() {
           </div>
 
           {/* Upgrade card */}
-          <div className="mt-6 rounded-2xl p-5"
-            style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(201,75,75,0.12)', backdropFilter: 'blur(12px)' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[9px] font-bold px-2 py-0.5 rounded-full text-white"
-                style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>PRO</span>
-              <p className="font-display font-bold text-sm text-dark-text">Unlock everything</p>
+          {!isPremium && (
+            <div className="mt-6 rounded-2xl p-5"
+              style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(201,75,75,0.12)', backdropFilter: 'blur(12px)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full text-white"
+                  style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>PRO</span>
+                <p className="font-display font-bold text-sm text-dark-text">Unlock everything</p>
+              </div>
+              <p className="text-dark-text/45 text-xs mb-3 leading-relaxed">
+                Video calls, unlimited sessions, memory persistence, all 4 companions.
+              </p>
+              <button onClick={() => setPaywall('locked')}
+                className="w-full py-3 rounded-full text-white font-semibold text-sm cursor-pointer hover:opacity-90 transition-all"
+                style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>
+                Upgrade — ₹299/month
+              </button>
             </div>
-            <p className="text-dark-text/45 text-xs mb-3 leading-relaxed">
-              Video calls, unlimited sessions, memory persistence, all 4 companions.
-            </p>
-            <button className="w-full py-3 rounded-full text-white font-semibold text-sm cursor-pointer hover:opacity-90 transition-all"
-              style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>
-              Upgrade — ₹299/month
-            </button>
-          </div>
+          )}
           <div className="h-4" />
         </div>
       )}
+
+      {paywall && <PaywallModal trigger={paywall} onClose={() => setPaywall(null)} onUnlock={unlockPremium} />}
     </div>
   )
 }

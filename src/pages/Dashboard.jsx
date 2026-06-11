@@ -131,7 +131,7 @@ function VoiceEntry({ onStart }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 120px)' }}>
+    <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 120px)' }}>
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full"
@@ -328,7 +328,7 @@ export default function Dashboard() {
       )}
 
       {tab === 'talk' && talkStarted && (
-        <div className="max-w-3xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 120px)' }}>
+        <div className="max-w-3xl mx-auto flex flex-col" style={{ height: 'calc(100dvh - 120px)' }}>
           {/* Demo banner */}
           <div className="bg-amber-light/40 border-b border-amber/20 px-5 py-2">
             <p className="text-dark-text/50 text-[11px] font-medium text-center">

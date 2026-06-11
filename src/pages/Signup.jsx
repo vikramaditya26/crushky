@@ -816,10 +816,10 @@ function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, inte
 // ══════════════════════════════════
 //   MAIN SIGNUP COMPONENT
 // ══════════════════════════════════
-// Demo mode (?demo in URL) pre-fills the flow for investor walkthroughs.
-// Real visitors always start blank.
-const IS_DEMO = typeof window !== 'undefined' &&
-  new URLSearchParams(window.location.search).has('demo')
+// MVP: the flow is always pre-filled so anyone walking through the demo can
+// just tap Continue. Add ?blank to the URL to start empty (for testing).
+const IS_DEMO = typeof window === 'undefined' ||
+  !new URLSearchParams(window.location.search).has('blank')
 
 const DEMO_FORM = {
   name: 'Aditya',
