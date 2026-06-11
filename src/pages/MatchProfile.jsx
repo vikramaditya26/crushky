@@ -2,29 +2,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { seedMatches } from '../data/seedMatches'
 
-function CompatBar({ label, value, delay = 0 }) {
-  const [width, setWidth] = useState(0)
-  useEffect(() => {
-    const t = setTimeout(() => setWidth(value), 300 + delay)
-    return () => clearTimeout(t)
-  }, [value, delay])
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-1.5">
-        <span className="text-sm text-dark-text/70">{label}</span>
-        <span className="text-sm font-semibold text-dark-text">{value}%</span>
-      </div>
-      <div className="h-[6px] bg-dark-text/6 rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-rose-soft to-amber transition-all duration-1000 ease-out"
-          style={{ width: `${width}%` }}
-        />
-      </div>
-    </div>
-  )
-}
-
 const QUICK_ACTIONS = [
   { icon: '📸', label: 'Share Instagram' },
   { icon: '🎵', label: 'Share Spotify' },
@@ -353,9 +330,20 @@ export default function MatchProfile() {
         <div className="flex-1 max-w-3xl mx-auto w-full px-5 md:px-10 py-6 overflow-y-auto">
           <div className="au">
             {/* Main photo */}
-            <div className="rounded-2xl overflow-hidden shadow-lg mb-5">
+            <div className="rounded-2xl overflow-hidden shadow-lg mb-3">
               <img src={match.photo} alt={match.name} className="w-full aspect-[4/5] object-cover max-h-[420px]" />
             </div>
+
+            {/* More photos */}
+            {match.photos?.length > 0 && (
+              <div className="grid grid-cols-2 gap-3 mb-5">
+                {match.photos.map((p, i) => (
+                  <div key={i} className="rounded-2xl overflow-hidden shadow-md">
+                    <img src={p} alt="" className="w-full aspect-[4/5] object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Name + basics */}
             <div className="mb-6">
@@ -381,15 +369,19 @@ export default function MatchProfile() {
               </div>
             </div>
 
-            {/* Compatibility breakdown */}
-            {match.compatBreakdown && (
+            {/* What you two share — human, specific, no percentages */}
+            {match.inCommon?.length > 0 && (
               <div className="bg-white rounded-2xl p-5 border border-dark-text/5 mb-5">
-                <h2 className="text-xs text-muted font-semibold uppercase tracking-[0.15em] mb-4">Breakdown</h2>
-                <div className="space-y-3.5">
-                  <CompatBar label="Shared Values" value={match.compatBreakdown.values} delay={0} />
-                  <CompatBar label="Humor Match" value={match.compatBreakdown.humor} delay={100} />
-                  <CompatBar label="Energy Level" value={match.compatBreakdown.energy} delay={200} />
-                  <CompatBar label="Emotional Depth" value={match.compatBreakdown.depth} delay={300} />
+                <h2 className="font-display text-sm font-bold mb-4 flex items-center gap-2">
+                  <span>🤝</span> What you two share
+                </h2>
+                <div className="space-y-3">
+                  {match.inCommon.map((item, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <span className="w-5 h-5 rounded-full bg-dark-green/10 text-dark-green flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">✓</span>
+                      <p className="text-dark-text/70 text-sm leading-relaxed">{item}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -456,27 +448,54 @@ export default function MatchProfile() {
               )}
             </div>
 
-            {/* Date suggestion */}
-            <div className="bg-white rounded-2xl border border-dark-text/5 overflow-hidden mb-8">
-              {match.dateSuggestion.photo && (
-                <div className="relative h-36 overflow-hidden">
-                  <img src={match.dateSuggestion.photo} alt="" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+            {/* Date suggestions — Crushky's top pick + more spots you'd both like */}
+            <div className="mb-8">
+              <h2 className="font-display text-sm font-bold flex items-center gap-2 mb-3">
+                🍽 Where you two should go
+              </h2>
+
+              {/* Top pick */}
+              <div className="bg-white rounded-2xl border border-dark-text/5 overflow-hidden mb-3">
+                {match.dateSuggestion.photo && (
+                  <div className="relative h-36 overflow-hidden">
+                    <img src={match.dateSuggestion.photo} alt="" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+                    <span className="absolute top-3 left-3 bg-rose text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                      ✦ Crushky's pick
+                    </span>
+                  </div>
+                )}
+                <div className="p-5">
+                  <p className="text-dark-text font-semibold">{match.dateSuggestion.venue}</p>
+                  <p className="text-muted text-xs mt-0.5">{match.dateSuggestion.type} &middot; {match.dateSuggestion.area}</p>
+                  <button
+                    onClick={() => { setTab('chat'); setTimeout(() => handlePlanDate(), 300) }}
+                    className="mt-4 w-full py-3 rounded-full bg-dark-green text-white font-semibold text-sm cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg"
+                  >
+                    Plan this date
+                  </button>
+                </div>
+              </div>
+
+              {/* More spots */}
+              {match.dateSpots?.length > 0 && (
+                <div className="grid grid-cols-2 gap-3">
+                  {match.dateSpots.map((spot, i) => (
+                    <div key={i} className="bg-white rounded-2xl border border-dark-text/5 overflow-hidden">
+                      {spot.photo && (
+                        <div className="h-20 overflow-hidden">
+                          <img src={spot.photo} alt="" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <div className="p-3">
+                        <p className="text-dark-text font-semibold text-xs leading-tight">{spot.venue}</p>
+                        <p className="text-muted text-[10px] mt-1">{spot.type}</p>
+                        <p className="text-muted text-[10px]">{spot.area}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
-              <div className="p-5">
-                <h2 className="font-display text-sm font-bold flex items-center gap-2 mb-2">
-                  🍽 AI-suggested date spot
-                </h2>
-                <p className="text-dark-text font-semibold">{match.dateSuggestion.venue}</p>
-                <p className="text-muted text-xs mt-0.5">{match.dateSuggestion.type} &middot; {match.dateSuggestion.area}</p>
-                <button
-                  onClick={() => { setTab('chat'); setTimeout(() => handlePlanDate(), 300) }}
-                  className="mt-4 w-full py-3 rounded-full bg-dark-green text-white font-semibold text-sm cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg"
-                >
-                  Plan this date
-                </button>
-              </div>
             </div>
           </div>
         </div>

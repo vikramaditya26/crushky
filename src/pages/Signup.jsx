@@ -37,31 +37,32 @@ const BOOK_PICKS = [
 // ─── Music artist picks ───
 // Mix of Indian + global Gen Z favourites. Each has a fallback palette so the tile
 // looks intentional even if the photo URL 404s.
+// Verified working Wikipedia thumbnails (checked June 2026)
 const MUSIC_PICKS = [
   { id: 'taylor',    title: 'Taylor Swift',    sub: 'Pop',        palette: ['#3D1B2A', '#B85577'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/191125_Taylor_Swift_at_the_2019_American_Music_Awards_%28cropped%29.png/220px-191125_Taylor_Swift_at_the_2019_American_Music_Awards_%28cropped%29.png' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Taylor_Swift_at_the_2023_MTV_Video_Music_Awards_%283%29.png/500px-Taylor_Swift_at_the_2023_MTV_Video_Music_Awards_%283%29.png' },
   { id: 'bts',       title: 'BTS',             sub: 'K-Pop',      palette: ['#1F1F3D', '#6366D6'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/BTS_2_-_December_2019.jpg/220px-BTS_2_-_December_2019.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/BTS_during_a_White_House_press_conference_May_31%2C_2022_%28cropped%29.jpg/500px-BTS_during_a_White_House_press_conference_May_31%2C_2022_%28cropped%29.jpg' },
   { id: 'arijit',    title: 'Arijit Singh',    sub: 'Bollywood',  palette: ['#2D1B3D', '#7C3A92'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Arijit_Singh_at_an_album_launch_event_for_Pal.jpg/220px-Arijit_Singh_at_an_album_launch_event_for_Pal.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Arijit_Singh_performance_at_Chandigarh_2025.jpg/500px-Arijit_Singh_performance_at_Chandigarh_2025.jpg' },
   { id: 'rahman',    title: 'A.R. Rahman',     sub: 'Maestro',    palette: ['#1A3B5C', '#3F7CB0'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/A._R._Rahman_at_the_New_Indian_Express_Group_Devi_Awards_2017.jpg/220px-A._R._Rahman_at_the_New_Indian_Express_Group_Devi_Awards_2017.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/AR_Rahman_At_The_%E2%80%98Marvel_Anthem%E2%80%99_Launch_%283x4_cropped%29.jpg/500px-AR_Rahman_At_The_%E2%80%98Marvel_Anthem%E2%80%99_Launch_%283x4_cropped%29.jpg' },
   { id: 'diljit',    title: 'Diljit Dosanjh',  sub: 'Punjabi',    palette: ['#2B3A1F', '#7A9F4A'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Diljit_Dosanjh_promoting_Born_to_Shine.jpg/220px-Diljit_Dosanjh_promoting_Born_to_Shine.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Diljit_Dosanjh.jpg' },
   { id: 'prateek',   title: 'Prateek Kuhad',   sub: 'Indie',      palette: ['#3D2D1A', '#C28456'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Prateek_Kuhad.jpg/220px-Prateek_Kuhad.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Prateek_Kuhad_New.jpg/500px-Prateek_Kuhad_New.jpg' },
   { id: 'anuv',      title: 'Anuv Jain',       sub: 'Acoustic',   palette: ['#1B3A3D', '#3F8E94'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Anuv_Jain.jpg/220px-Anuv_Jain.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Anuv_Jain_at_Ludhiana_concert.jpg/500px-Anuv_Jain_at_Ludhiana_concert.jpg' },
   { id: 'billie',    title: 'Billie Eilish',   sub: 'Alt-Pop',    palette: ['#1F2D1F', '#6B9A6B'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Billie_Eilish_O2_Shepherd%27s_Bush_Empire_-_15_03_2019_%2832415413367%29.jpg/220px-Billie_Eilish_O2_Shepherd%27s_Bush_Empire_-_15_03_2019_%2832415413367%29.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/BillieEilishO2140725-39_-_54665577407_%28cropped%29.jpg/500px-BillieEilishO2140725-39_-_54665577407_%28cropped%29.jpg' },
   { id: 'weeknd',    title: 'The Weeknd',      sub: 'R&B',        palette: ['#2A1B1B', '#A04848'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/The_Weeknd_at_the_Oscars_in_2016_%28cropped%29.jpg/220px-The_Weeknd_at_the_Oscars_in_2016_%28cropped%29.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait_by_Brian_Ziff.jpg/500px-The_Weeknd_Portrait_by_Brian_Ziff.jpg' },
   { id: 'shreya',    title: 'Shreya Ghoshal',  sub: 'Playback',   palette: ['#3D1F2D', '#B5547A'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Shreya_Ghoshal_2019.jpg/220px-Shreya_Ghoshal_2019.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Shreya_Ghoshal_Behindwoods_Gold_Icons_Awards_2023_%28cropped%29.jpg/500px-Shreya_Ghoshal_Behindwoods_Gold_Icons_Awards_2023_%28cropped%29.jpg' },
   { id: 'olivia',    title: 'Olivia Rodrigo',  sub: 'Pop-Rock',   palette: ['#3D1A33', '#A8467C'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Olivia_Rodrigo_2024_%28cropped%29.jpg/220px-Olivia_Rodrigo_2024_%28cropped%29.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Glasto2025-546_%28cropped%29_%282%29.jpg/500px-Glasto2025-546_%28cropped%29_%282%29.jpg' },
   { id: 'karan',     title: 'Karan Aujla',     sub: 'Hip-Hop',    palette: ['#2D2D3D', '#5F6FAA'],
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Karan_Aujla_in_2024.jpg/220px-Karan_Aujla_in_2024.jpg' },
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Karan_Aujla_2020.jpg/500px-Karan_Aujla_2020.jpg' },
 ]
 
 // ─── Interest categories ───
@@ -134,6 +135,36 @@ function PrimaryCTA({ children, onClick, className = '', size = 'md', disabled =
         <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">→</span>
       </span>
     </button>
+  )
+}
+
+// ── Hinge-style floating continue button (bottom-right circle) ──
+function ContinueFab({ onClick, disabled }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="fixed bottom-7 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 disabled:opacity-20 disabled:cursor-not-allowed"
+      style={{
+        background: '#C94B4B',
+        boxShadow: '0 10px 30px rgba(201,75,75,0.4)',
+      }}>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white"
+        strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+      </svg>
+    </button>
+  )
+}
+
+// ── Small step icon (Hinge puts a tiny glyph above each question) ──
+function StepIcon({ children }) {
+  return (
+    <div className="w-9 h-9 rounded-full flex items-center justify-center mb-6"
+      style={{ background: 'rgba(201,75,75,0.08)', border: '1px solid rgba(201,75,75,0.15)' }}>
+      <span className="text-base">{children}</span>
+    </div>
   )
 }
 
@@ -287,86 +318,76 @@ function Step1({ form, setForm, onNext }) {
   const canContinue = form.name.trim() && form.gender && form.lookingFor
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen pt-20 pb-16 px-6 text-center relative z-10">
-      <p className="text-dark-text/30 text-[10px] tracking-[0.4em] uppercase mb-12">STEP 01 / 04</p>
+    <div className="min-h-screen px-6 pt-24 pb-32 relative z-10 max-w-md mx-auto w-full">
+      <StepIcon>👋</StepIcon>
 
-      <h1 className="font-display text-3xl md:text-4xl italic text-dark-text leading-snug mb-10 ru" style={{ animationDelay: '0.1s' }}>
-        First things first —<br />
-        <span className="text-rose">what do we call you?</span>
+      <h1 className="font-display text-[32px] md:text-4xl font-bold text-dark-text leading-tight mb-2 ru">
+        What's your name?
       </h1>
+      <p className="text-dark-text/40 text-sm mb-10 ru">This is how you'll appear on Crushky.</p>
 
       {/* Name */}
-      <div className="w-full max-w-xs mb-6 ru" style={{ animationDelay: '0.2s' }}>
+      <div className="mb-12 ru" style={{ animationDelay: '0.1s' }}>
         <SignupInput
           ref={nameRef}
           value={form.name}
           onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-          placeholder="Your name"
-          onKeyDown={e => e.key === 'Enter' && form.name.trim().length > 1 && canContinue && onNext()}
-          className="text-3xl text-center tracking-wide"
+          placeholder="First name"
+          onKeyDown={e => e.key === 'Enter' && canContinue && onNext()}
+          className="text-3xl"
         />
       </div>
 
       {form.name.trim().length > 1 && (
-        <div className="w-full max-w-sm space-y-10 ru" style={{ animationDelay: '0s' }}>
+        <div className="space-y-10 ru">
 
           {/* Birthday */}
           <div>
-            <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-5">Birthday</p>
-            <div className="flex items-end justify-center gap-2">
+            <p className="text-dark-text/50 text-sm font-medium mb-4">Your birthday</p>
+            <div className="flex items-end gap-3">
               {[
-                { field: 'birthDay',   label: 'DAY',   ph: 'DD',   min: 1, max: 31,   w: 'w-16' },
-                { field: 'birthMonth', label: 'MONTH', ph: 'MM',   min: 1, max: 12,   w: 'w-16' },
-                { field: 'birthYear',  label: 'YEAR',  ph: 'YYYY', min: 1990, max: 2007, w: 'w-24' },
+                { field: 'birthDay',   ph: 'DD',   w: 'w-14' },
+                { field: 'birthMonth', ph: 'MM',   w: 'w-14' },
+                { field: 'birthYear',  ph: 'YYYY', w: 'w-24' },
               ].map((f, i) => (
-                <div key={f.field} className="flex items-end gap-2">
-                  {i > 0 && <span className="text-dark-text/20 text-xl mb-5">/</span>}
-                  <div className="text-center">
-                    <SignupInput
-                      type="number"
-                      value={form[f.field]}
-                      onChange={e => setForm(prev => ({ ...prev, [f.field]: e.target.value }))}
-                      placeholder={f.ph}
-                      min={f.min} max={f.max}
-                      className={`text-2xl text-center ${f.w}`}
-                    />
-                    <p className="text-dark-text/25 text-[9px] mt-1.5 tracking-widest">{f.label}</p>
-                  </div>
+                <div key={f.field} className="flex items-end gap-3">
+                  {i > 0 && <span className="text-dark-text/15 text-2xl pb-2">/</span>}
+                  <SignupInput
+                    type="number"
+                    value={form[f.field]}
+                    onChange={e => setForm(prev => ({ ...prev, [f.field]: e.target.value }))}
+                    placeholder={f.ph}
+                    className={`text-2xl ${f.w}`}
+                  />
                 </div>
               ))}
             </div>
-            <p className="text-dark-text/25 text-[10px] mt-3">We only show your age, never the date</p>
+            <p className="text-dark-text/30 text-xs mt-3">We only show your age, never the date.</p>
           </div>
 
           {/* Height */}
           <div>
-            <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-5">Height</p>
-            <div className="flex items-end justify-center gap-3">
-              <div className="text-center">
-                <SignupInput
-                  type="number" value={form.heightFt}
-                  onChange={e => setForm(f => ({ ...f, heightFt: e.target.value }))}
-                  min="4" max="7" className="text-4xl text-center w-16"
-                />
-                <p className="text-dark-text/25 text-[9px] mt-1.5 tracking-widest">FT</p>
-              </div>
-              <span className="text-dark-text/25 text-3xl mb-6 select-none">'</span>
-              <div className="text-center">
-                <SignupInput
-                  type="number" value={form.heightIn}
-                  onChange={e => setForm(f => ({ ...f, heightIn: e.target.value }))}
-                  min="0" max="11" className="text-4xl text-center w-16"
-                />
-                <p className="text-dark-text/25 text-[9px] mt-1.5 tracking-widest">IN</p>
-              </div>
-              <span className="text-dark-text/25 text-2xl mb-6 select-none">"</span>
+            <p className="text-dark-text/50 text-sm font-medium mb-4">Height</p>
+            <div className="flex items-end gap-2">
+              <SignupInput
+                type="number" value={form.heightFt}
+                onChange={e => setForm(f => ({ ...f, heightFt: e.target.value }))}
+                className="text-2xl w-14"
+              />
+              <span className="text-dark-text/30 text-xl pb-2">ft</span>
+              <SignupInput
+                type="number" value={form.heightIn}
+                onChange={e => setForm(f => ({ ...f, heightIn: e.target.value }))}
+                className="text-2xl w-14 ml-3"
+              />
+              <span className="text-dark-text/30 text-xl pb-2">in</span>
             </div>
           </div>
 
           {/* Gender */}
           <div>
-            <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-5">I identify as</p>
-            <div className="flex justify-center gap-3 flex-wrap">
+            <p className="text-dark-text/50 text-sm font-medium mb-4">I am a</p>
+            <div className="flex gap-2.5 flex-wrap">
               {['Man', 'Woman', 'Non-binary'].map(g => (
                 <OptionPill key={g} label={g} selected={form.gender === g} onClick={() => setForm(f => ({ ...f, gender: g }))} />
               ))}
@@ -375,8 +396,8 @@ function Step1({ form, setForm, onNext }) {
 
           {/* Looking for */}
           <div>
-            <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-5">I want to meet</p>
-            <div className="flex justify-center gap-3 flex-wrap">
+            <p className="text-dark-text/50 text-sm font-medium mb-4">Looking for</p>
+            <div className="flex gap-2.5 flex-wrap">
               {['Women', 'Men', 'Everyone'].map(l => (
                 <OptionPill key={l} label={l} selected={form.lookingFor === l} onClick={() => setForm(f => ({ ...f, lookingFor: l }))} />
               ))}
@@ -385,11 +406,7 @@ function Step1({ form, setForm, onNext }) {
         </div>
       )}
 
-      {canContinue && (
-        <div className="mt-14 ru" style={{ animationDelay: '0s' }}>
-          <PrimaryCTA onClick={onNext} size="md">Continue</PrimaryCTA>
-        </div>
-      )}
+      <ContinueFab onClick={onNext} disabled={!canContinue} />
     </div>
   )
 }
@@ -403,25 +420,24 @@ function Step2({ form, setForm, onNext }) {
   const canContinue = form.city.trim() && form.work.trim()
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center relative z-10">
-      <p className="text-dark-text/30 text-[10px] tracking-[0.4em] uppercase mb-12">STEP 02 / 04</p>
+    <div className="min-h-screen px-6 pt-24 pb-32 relative z-10 max-w-md mx-auto w-full">
+      <StepIcon>📍</StepIcon>
 
-      <h1 className="font-display text-3xl md:text-4xl italic text-dark-text leading-snug mb-16 ru" style={{ animationDelay: '0.1s' }}>
-        Tell us about<br />
-        <span style={{ color: '#D4956A' }}>your world.</span>
+      <h1 className="font-display text-[32px] md:text-4xl font-bold text-dark-text leading-tight mb-2 ru">
+        Where's home?
       </h1>
+      <p className="text-dark-text/40 text-sm mb-10 ru">We'll find people in your city.</p>
 
-      <div className="w-full max-w-sm space-y-12 ru" style={{ animationDelay: '0.2s' }}>
+      <div className="space-y-12 ru" style={{ animationDelay: '0.1s' }}>
         <div>
-          <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-4">Where are you?</p>
           <SignupInput
             ref={cityRef}
             value={form.city}
             onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
             placeholder="Your city"
-            className="text-2xl text-center"
+            className="text-2xl"
           />
-          <div className="flex justify-center gap-2 flex-wrap mt-5">
+          <div className="flex gap-2.5 flex-wrap mt-5">
             {['Bangalore', 'Mumbai', 'Delhi'].map(c => (
               <OptionPill key={c} label={c} selected={form.city === c}
                 onClick={() => setForm(f => ({ ...f, city: c }))} />
@@ -429,21 +445,18 @@ function Step2({ form, setForm, onNext }) {
           </div>
         </div>
         <div>
-          <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-4">What do you do?</p>
+          <p className="text-dark-text/50 text-sm font-medium mb-4">And what do you do?</p>
           <SignupInput
             value={form.work}
             onChange={e => setForm(f => ({ ...f, work: e.target.value }))}
+            onKeyDown={e => e.key === 'Enter' && canContinue && onNext()}
             placeholder="Your work"
-            className="text-2xl text-center"
+            className="text-2xl"
           />
         </div>
       </div>
 
-      {canContinue && (
-        <div className="mt-16">
-          <PrimaryCTA onClick={onNext} size="md">Continue</PrimaryCTA>
-        </div>
-      )}
+      <ContinueFab onClick={onNext} disabled={!canContinue} />
     </div>
   )
 }
@@ -488,13 +501,13 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
   const canContinue = totalSelected >= 3 || Object.values(prompts).some(v => v?.trim())
 
   return (
-    <div className="flex flex-col items-start min-h-screen px-5 pt-16 pb-24 relative z-10 max-w-sm mx-auto w-full">
-      <p className="text-dark-text/30 text-[10px] tracking-[0.4em] uppercase mb-8 w-full text-center">STEP 03 / 04</p>
+    <div className="flex flex-col items-start min-h-screen px-6 pt-24 pb-32 relative z-10 max-w-md mx-auto w-full">
+      <StepIcon>✨</StepIcon>
 
-      <h1 className="font-display text-3xl italic text-dark-text leading-snug mb-2 w-full text-center ru">
-        What lights<br /><span style={{ color: '#8FA68F' }}>you up?</span>
+      <h1 className="font-display text-[32px] md:text-4xl font-bold text-dark-text leading-tight mb-2 ru">
+        What lights you up?
       </h1>
-      <p className="text-dark-text/35 text-xs text-center w-full mb-10">Pick a few. This is what people see first.</p>
+      <p className="text-dark-text/40 text-sm mb-10 ru">Pick a few. This is what people see first.</p>
 
       {/* Categories */}
       <div className="w-full space-y-2 mb-10">
@@ -619,7 +632,7 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
       </div>
 
       {/* Prompts */}
-      <p className="text-dark-text/30 text-[10px] tracking-[0.35em] uppercase mb-4 w-full">In your own words</p>
+      <p className="text-dark-text/50 text-sm font-medium mb-4 w-full">In your own words</p>
       <div className="w-full space-y-2 mb-10">
         {PROMPTS.slice(0, 4).map(prompt => (
           <div key={prompt.id}
@@ -655,22 +668,19 @@ function Step3({ interests, setInterests, prompts, setPrompts, onNext }) {
       </div>
 
       {canContinue && (
-        <>
-          <div className="w-full mb-5 ru flex items-start gap-2.5 bg-white/70 border border-rose/15 rounded-2xl px-4 py-3.5">
-            <span className="text-rose text-sm mt-0.5">✦</span>
-            <p className="text-dark-text/60 text-xs leading-relaxed italic">
-              {(interests.music || []).includes('prateek')
-                ? "Prateek Kuhad and this taste in films? I already have someone in mind…"
-                : totalSelected >= 5
-                  ? "Okay, this is a very specific vibe — and I love it. I'm already narrowing down who you'd click with."
-                  : "Interesting mix. I'm starting to get a picture of who you'd actually click with."}
-            </p>
-          </div>
-          <PrimaryCTA onClick={onNext} size="lg" className="w-full">
-            Continue
-          </PrimaryCTA>
-        </>
+        <div className="w-full mb-5 ru flex items-start gap-2.5 bg-white border border-rose/15 rounded-2xl px-4 py-3.5">
+          <span className="text-rose text-sm mt-0.5">✦</span>
+          <p className="text-dark-text/60 text-xs leading-relaxed italic">
+            {(interests.music || []).includes('prateek')
+              ? "Prateek Kuhad and this taste in films? I already have someone in mind…"
+              : totalSelected >= 5
+                ? "Okay, this is a very specific vibe — and I love it. I'm already narrowing down who you'd click with."
+                : "Interesting mix. I'm starting to get a picture of who you'd actually click with."}
+          </p>
+        </div>
       )}
+
+      <ContinueFab onClick={onNext} disabled={!canContinue} />
     </div>
   )
 }
@@ -684,17 +694,17 @@ function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, inte
   const totalInterests = Object.values(interests).flat()
 
   return (
-    <div className="flex flex-col items-center min-h-screen px-5 pt-16 pb-24 relative z-10 max-w-sm mx-auto w-full">
-      <p className="text-dark-text/30 text-[10px] tracking-[0.4em] uppercase mb-8 text-center w-full">STEP 04 / 04</p>
+    <div className="flex flex-col items-start min-h-screen px-6 pt-24 pb-32 relative z-10 max-w-md mx-auto w-full">
+      <StepIcon>📸</StepIcon>
 
-      <h1 className="font-display text-3xl italic text-dark-text leading-snug mb-3 text-center w-full ru">
-        Almost there —<br /><span style={{ color: '#D4956A' }}>show yourself.</span>
+      <h1 className="font-display text-[32px] md:text-4xl font-bold text-dark-text leading-tight mb-2 ru">
+        Show yourself.
       </h1>
-      <p className="text-dark-text/30 text-xs text-center mb-10">Photos are optional for the demo.</p>
+      <p className="text-dark-text/40 text-sm mb-10 ru">Photos are optional for the demo.</p>
 
       {/* Polaroid photos */}
       <div className="w-full mb-10">
-        <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-5">Photos</p>
+        <p className="text-dark-text/50 text-sm font-medium mb-5">Photos</p>
         <div className="flex gap-3 justify-center">
           {DEMO_PHOTOS.map((photo, i) => {
             const rotations = [-3, 1.5, -1]
@@ -730,7 +740,7 @@ function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, inte
 
       {/* Bio */}
       <div className="w-full mb-8">
-        <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-3">Your bio</p>
+        <p className="text-dark-text/50 text-sm font-medium mb-3">Your bio</p>
         <textarea
           value={form.bio}
           onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
@@ -742,7 +752,7 @@ function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, inte
 
       {/* Socials */}
       <div className="w-full space-y-6 mb-10">
-        <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase">Socials</p>
+        <p className="text-dark-text/50 text-sm font-medium">Socials</p>
         <div className="flex items-end gap-3">
           <span className="text-dark-text/40 text-sm mb-3 shrink-0">🎵</span>
           <div className="flex-1">
@@ -769,7 +779,7 @@ function Step4({ form, setForm, selectedPhotos, setSelectedPhotos, prompts, inte
 
       {/* Live profile preview */}
       <div className="w-full mb-10">
-        <p className="text-dark-text/35 text-[10px] tracking-[0.35em] uppercase mb-4">Your profile preview</p>
+        <p className="text-dark-text/50 text-sm font-medium mb-4">Your profile preview</p>
         <div className="bg-white border border-dark-text/8 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             {selectedPhotos.length > 0 ? (
@@ -886,8 +896,7 @@ export default function Signup() {
   const progress = (step / 4) * 100
 
   return (
-    <div className="min-h-screen relative" style={{ background: '#F7F4EF' }}>
-      <Aurora />
+    <div className="min-h-screen relative" style={{ background: '#FAFAF8' }}>
 
       {/* Rose progress bar at top */}
       <div className="fixed top-0 left-0 right-0 z-50 h-[2px] bg-dark-text/5">

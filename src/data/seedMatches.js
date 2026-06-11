@@ -15,9 +15,22 @@ export const seedMatches = [
     instagram: "@aanya.s",
     bio: "Aanya spent time with Crushky AI being honest about what she actually wants — not the dating profile version. She described herself as someone who thinks in frameworks but feels in metaphors. She's built her career across IIM-A and CRED strategy, but says the most interesting version of her comes out at 2am over bad coffee.",
     compatibility: 94,
-    compatBreakdown: { values: 96, humor: 91, energy: 88, depth: 98 },
     whyYouMatch: "When Aanya talked to Crushky, she used almost the exact words you did — 'someone who doesn't need noise to feel connected.' You both value intellectual depth over small talk. Crushky sees 94% alignment across values, humor, and depth. The 6% gap? You'll enjoy figuring that out together.",
+    photos: [
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=530&fit=crop&crop=face,top",
+      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=530&fit=crop&crop=face,top",
+    ],
+    inCommon: [
+      "You both said 'depth over small talk' — almost word for word",
+      "Late-night conversations are when you both come alive",
+      "Hidden cafes over fancy restaurants, always",
+      "Same dry sense of humor — she'll roast you back",
+    ],
     dateSuggestion: { venue: "The Bombay Canteen", type: "Casual Dining", area: "Lower Parel, Mumbai", photo: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=300&fit=crop" },
+    dateSpots: [
+      { venue: "Kala Ghoda Café", type: "Hidden Café", area: "Fort, Mumbai", photo: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=600&h=300&fit=crop" },
+      { venue: "Prithvi Theatre Café", type: "Theatre + Chai", area: "Juhu, Mumbai", photo: "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=600&h=300&fit=crop" },
+    ],
     sampleChat: [
       { from: 'them', text: "So Crushky says we're a 94% match. That's either very exciting or a lot of pressure." },
       { from: 'you', text: "Let's find out. Coffee or chai person?" },
@@ -45,9 +58,22 @@ export const seedMatches = [
     instagram: "@zara.khan",
     bio: "Zara told Crushky she's tired of dates that feel like job interviews. She runs half-marathons on weekends and ships features at Netflix during the week — independent, strong opinions, and looking for someone who isn't intimidated by that. She told Crushky the most important thing to her is someone who actually shows up.",
     compatibility: 87,
-    compatBreakdown: { values: 84, humor: 79, energy: 95, depth: 82 },
     whyYouMatch: "Zara described her ideal match as 'someone with real opinions and the self-awareness to know why.' Sound familiar? You're both creatives who execute. Crushky noticed your energy levels and communication styles are unusually compatible — 87% is high for two people who both value independence this much.",
+    photos: [
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=530&fit=crop&crop=face,top",
+      "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=530&fit=crop&crop=face,top",
+    ],
+    inCommon: [
+      "Strong opinions, loosely held — you both said exactly this",
+      "Books over Netflix on a Sunday night",
+      "You both think 'busy' is a choice, not a badge",
+      "Norwegian Wood is in both your top reads",
+    ],
     dateSuggestion: { venue: "Champa Gali", type: "Cafe Alley", area: "Saket, Delhi", photo: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=300&fit=crop" },
+    dateSpots: [
+      { venue: "Sunder Nursery", type: "Heritage Park Picnic", area: "Nizamuddin, Delhi", photo: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600&h=300&fit=crop" },
+      { venue: "Kunzum Travel Café", type: "Books + Coffee", area: "Hauz Khas, Delhi", photo: "https://images.unsplash.com/photo-1481833761820-0509d3217039?w=600&h=300&fit=crop" },
+    ],
     sampleChat: [
       { from: 'them', text: "Quick test — name three books, no thinking, go." },
       { from: 'you', text: "Sapiens, Norwegian Wood, Surely You're Joking Mr Feynman." },
@@ -75,9 +101,22 @@ export const seedMatches = [
     instagram: "@sofia.builds",
     bio: "Sofia opened up to Crushky about building at the intersection of AI and education — she cares about things that actually matter. Plays guitar badly but often. She told Crushky she wants someone who thinks staying in and building things together counts as a date, and who she doesn't have to perform for.",
     compatibility: 91,
-    compatBreakdown: { values: 93, humor: 86, energy: 78, depth: 97 },
     whyYouMatch: "When Sofia described her perfect person to Crushky, she said 'technical depth AND emotional intelligence — rare combination.' That's exactly what your profile signals. Two builders who get each other. She won't just understand what you're working on — she'll push it further. One of the highest depth scores Crushky has seen.",
+    photos: [
+      "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=530&fit=crop&crop=face,top",
+      "https://images.unsplash.com/photo-1502323777036-f29e3972d82f?w=400&h=530&fit=crop&crop=face,top",
+    ],
+    inCommon: [
+      "Prateek Kuhad on both your playlists — Cold/Mess specifically",
+      "You both build things for fun, not just work",
+      "'Stay in and cook' counts as a perfect date for both of you",
+      "Neither of you can walk past a bookstore",
+    ],
     dateSuggestion: { venue: "Third Wave Coffee", type: "Third Wave Café", area: "Koramangala, Bangalore", photo: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=300&fit=crop" },
+    dateSpots: [
+      { venue: "Cubbon Park Reads", type: "Picnic + Books", area: "Cubbon Park, Bangalore", photo: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=600&h=300&fit=crop" },
+      { venue: "Atta Galatta", type: "Bookstore Café", area: "Indiranagar, Bangalore", photo: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600&h=300&fit=crop" },
+    ],
     sampleChat: [
       { from: 'them', text: "Checked your Spotify. Prateek Kuhad and Cigarettes After Sex. Strong taste." },
       { from: 'you', text: "Cold/Mess plays at midnight or not at all. You listen to him?" },

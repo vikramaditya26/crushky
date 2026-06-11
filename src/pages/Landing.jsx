@@ -492,13 +492,13 @@ export default function Landing() {
           <Grain opacity={0.05} />
         </motion.div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-0 w-full">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-10 pt-36 pb-24 md:pt-28 md:pb-0 w-full">
           <div className="max-w-2xl">
             <motion.h1
               initial={{ opacity: 0, y: 80 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
               className="font-display font-bold"
-              style={{ fontSize: 'clamp(48px, 8vw, 110px)', lineHeight: 0.98,
+              style={{ fontSize: 'clamp(38px, 8vw, 110px)', lineHeight: 0.98,
                 color: CREAM, marginBottom: '1.75rem', letterSpacing: '-0.02em' }}>
               The app that{' '}
               <em style={{ color: '#FDA4AF', fontStyle: 'italic' }}>listens</em>
@@ -521,17 +521,9 @@ export default function Landing() {
                 className="cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-2xl group"
                 style={{ background: CREAM, color: INK, fontSize: 16, fontWeight: 700,
                   padding: '17px 40px', borderRadius: 100, letterSpacing: '0.01em' }}>
-                {returningUser?.name ? `Continue as ${returningUser.name}` : 'Start talking'}{' '}
+                {returningUser ? 'Pick up where you left off' : 'Start talking'}{' '}
                 <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
               </button>
-              {returningUser?.name && (
-                <button onClick={() => navigate('/signup')}
-                  className="cursor-pointer"
-                  style={{ background: 'transparent', border: 'none', color: 'rgba(240,235,227,0.5)',
-                    fontSize: 12, marginLeft: 4, textDecoration: 'underline', textUnderlineOffset: 3 }}>
-                  Not you? Start fresh
-                </button>
-              )}
               <p style={{ color: 'rgba(240,235,227,0.45)', fontSize: 12, marginLeft: 4, marginTop: 4 }}>
                 Free forever · Two minutes
               </p>
