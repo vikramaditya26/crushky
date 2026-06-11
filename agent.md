@@ -663,7 +663,7 @@ crushky/
 
 ---
 
-*Last updated: June 10, 2026*
+*Last updated: June 11, 2026*
 *Status: Full UI redesign complete. Warm cream aesthetic (inspired by Known + Wavelength), NOT dark/black. All screens verified on both mobile (375px) and desktop (1280px+). Features: gradient blob backgrounds, glass-morphism cards, scroll-reveal animations (IntersectionObserver), fadeInUp/scaleIn/float keyframes, phone mockup on landing, "Book this date" with restaurant confirmation details (venue, time, seating, price), AI Companion with 3 avatar choices (Mira/Arjun/Zara) and premium paywall (₹299/month after 4 messages). Ready for deploy.*
 *Tech notes: Node 22 via nvm. Tailwind v4 with @tailwindcss/vite plugin. Chat works with or without API key (has demo fallback). Photos from Unsplash. CSS animations defined in index.css with utility classes (.animate-fade-in-up, .animate-float, .blob-gradient, .glass-card, delay classes).*
 
@@ -765,6 +765,27 @@ crushky/
 - Files included in this batch: `src/pages/Landing.jsx`, `src/index.css`, `public/vid/v1.mp4`, and this `agent.md`.
 - Diff summary for this batch: another landing iteration with supporting global CSS updates, plus one additional video asset for the public media set.
 - Untracked files intentionally left out of the push: `.claude/launch.json`, `Crushky_Investor_Memo.docx`, `Crushky_Seed_Memo.docx`, and `Crushky_Seed_Memo.pdf`.
+
+## CLAUDE CODE HANDOFF NOTE — JUNE 11, 2026
+
+**IMPORTANT corrections to stale info above (the spec sections are outdated):**
+- Signup is now **4 steps** (identity / your world / interests+prompts / photos+bio+preview), not 8. Cream/light aesthetic.
+- Companions are **Luna, Aria, Nova, Maya** (4 female AI companions) — Mira/Arjun/Zara no longer exist.
+- Seed matches are **Aanya, Zara, Sofia** (see `src/data/seedMatches.js`) — not Neha/Priya/Riya.
+- Landing is the cinematic cream/ink Wavelength × Ditto design with Framer Motion, video hero, sticky scroll story.
+
+**Batch 1 (commit `9b0c46d`):**
+- OG/Twitter meta tags in `index.html` (WhatsApp/LinkedIn link previews).
+- Landing: animated phone-mockup product demo section ("See it work") with chat + Aanya match reveal.
+- Landing: returning users (localStorage `crushky_user`) get "Continue as <name>" → /dashboard.
+- Signup: **blank by default for real users**. Pre-filled investor walkthrough only via `?demo` URL param (`/signup?demo`).
+- Signup: Bangalore/Mumbai/Delhi city quick-pick chips; AI reaction line after interest selection.
+- Dashboard: compatibility % counts up from 0 on match reveal.
+
+**Batch 2 (this commit):**
+- New `/login` page — phone + OTP UI (fake; OTP auto-fills in demo, any 4 digits verify). Routes to /dashboard if user exists, else /signup. "Log in" button added to landing nav.
+- Real browser **speech-to-text** (`src/utils/speech.js`, Web Speech API) on the Dashboard Talk mic and companion chat mic — live transcript shows while listening; graceful fallback to timed animation when unsupported.
+- Companion conversations now **persist in localStorage** (`crushky_companion_<id>`); returning to a companion restores the chat and she acknowledges you're back.
 
 ## CODEX HANDOFF NOTE — JUNE 5, 2026
 

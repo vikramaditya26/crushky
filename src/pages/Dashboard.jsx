@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import ChatBubble from '../components/ChatBubble'
 import CompanionChat from '../components/CompanionChat'
 import { seedMatches } from '../data/seedMatches'
+import { createRecognizer } from '../utils/speech'
 
 const DEMO_CONVERSATION = [
   // Opening
@@ -104,10 +105,29 @@ function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
 // ─── Voice Entry Screen ───
 function VoiceEntry({ onStart }) {
   const [listening, setListening] = useState(false)
+  const [transcript, setTranscript] = useState('')
+  const startedRef = useRef(false)
+
+  const finish = () => {
+    if (startedRef.current) return
+    startedRef.current = true
+    onStart()
+  }
 
   const handleTap = () => {
     setListening(true)
-    setTimeout(() => onStart(), 2000)
+    // Real speech-to-text where the browser supports it — the mic genuinely
+    // hears you before the conversation starts. Falls back to a timed entry.
+    const rec = createRecognizer({
+      onResult: (text) => setTranscript(text),
+      onEnd: () => setTimeout(finish, 600),
+    })
+    if (rec) {
+      try { rec.start() } catch { /* already started */ }
+      setTimeout(() => { try { rec.stop() } catch {} }, 5000)
+    } else {
+      setTimeout(finish, 2000)
+    }
   }
 
   return (
@@ -160,7 +180,9 @@ function VoiceEntry({ onStart }) {
         {listening ? (
           <div className="text-center">
             <p className="font-display text-2xl italic text-dark-text/80 mb-2">Listening…</p>
-            <p className="text-muted text-sm">Getting to know you</p>
+            <p className="text-muted text-sm">
+              {transcript ? `"${transcript}"` : 'Getting to know you'}
+            </p>
           </div>
         ) : (
           <div className="text-center">

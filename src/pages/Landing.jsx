@@ -457,6 +457,20 @@ export default function Landing() {
             style={{ color: scrolled ? INK : CREAM, transition: 'color 0.5s' }}>
             Crushky
           </motion.span>
+          <motion.button
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            onClick={() => navigate('/login')}
+            className="cursor-pointer transition-all hover:opacity-80"
+            style={{
+              fontSize: 13, fontWeight: 600, padding: '9px 24px', borderRadius: 100,
+              background: scrolled ? INK : 'rgba(240,235,227,0.12)',
+              color: CREAM,
+              border: scrolled ? 'none' : '1px solid rgba(240,235,227,0.25)',
+              backdropFilter: 'blur(8px)',
+            }}>
+            Log in
+          </motion.button>
         </div>
       </nav>
 

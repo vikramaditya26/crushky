@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { sendMessage } from '../utils/claudeApi'
+import { createRecognizer } from '../utils/speech'
 import ChatBubble from './ChatBubble'
 
 // ─── 4 female AI companions ───
@@ -233,14 +234,41 @@ export default function CompanionChat() {
 
   const companion = COMPANIONS.find(c => c.id === selected)
 
+  // Conversations persist per companion — coming back to Luna feels like a
+  // relationship, not a reset. (Stored in localStorage for the MVP.)
+  const saveKey = (id) => `crushky_companion_${id}`
+
+  useEffect(() => {
+    if (!chatStarted || !selected || messages.length === 0) return
+    localStorage.setItem(saveKey(selected), JSON.stringify(messages))
+  }, [messages, chatStarted, selected])
+
   const startChat = (id) => {
     const comp = COMPANIONS.find(c => c.id === id)
     setChatStarted(true)
     setChatTab('chat')
-    setMessages([])
     setMsgCount(0)
     setShowInput(false)
     setIsListening(false)
+
+    // Returning user: restore the conversation and have the companion
+    // acknowledge it instead of re-greeting from zero.
+    let saved = null
+    try { saved = JSON.parse(localStorage.getItem(saveKey(id)) || 'null') } catch {}
+    if (saved?.length > 1) {
+      setMessages(saved)
+      setTimeout(() => {
+        setIsTyping(true)
+        setTimeout(() => {
+          setIsTyping(false)
+          setMessages(prev => [...prev, { role: 'assistant',
+            content: "Hey, you're back. I was just thinking about what we talked about last time. Where were we?" }])
+        }, 1100)
+      }, 400)
+      return
+    }
+
+    setMessages([])
     setTimeout(() => {
       setIsTyping(true)
       setTimeout(() => {
@@ -283,15 +311,29 @@ export default function CompanionChat() {
     }, 1300)
   }
 
-  // Mic tap → listening animation → show text input after 2s
+  // Mic tap → real speech-to-text where supported. What you say lands in the
+  // input ready to send. Falls back to the timed listening animation.
   const handleMicTap = () => {
     if (isTyping) return
     setIsListening(true)
     setShowInput(false)
-    setTimeout(() => {
-      setIsListening(false)
-      setShowInput(true)
-    }, 2000)
+
+    const rec = createRecognizer({
+      onResult: (text) => setInput(text),
+      onEnd: () => {
+        setIsListening(false)
+        setShowInput(true)
+      },
+    })
+    if (rec) {
+      try { rec.start() } catch { /* already started */ }
+      setTimeout(() => { try { rec.stop() } catch {} }, 7000)
+    } else {
+      setTimeout(() => {
+        setIsListening(false)
+        setShowInput(true)
+      }, 2000)
+    }
   }
 
   const handleSession = (session) => {
@@ -504,7 +546,9 @@ export default function CompanionChat() {
                   </button>
                 </div>
                 <p className="font-display text-base italic text-dark-text/70">Listening…</p>
-                <p className="text-dark-text/30 text-xs">Getting to know you</p>
+                <p className="text-dark-text/30 text-xs px-6 text-center">
+                  {input ? `"${input}"` : 'Getting to know you'}
+                </p>
               </div>
             )}
 
