@@ -72,6 +72,26 @@ function CountUp({ target, duration = 1400 }) {
   return <>{value}%</>
 }
 
+// Mirrors signup demo photos (user.photos stores selected indices)
+const PROFILE_PHOTOS = [
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=320&h=420&fit=crop&crop=face,top',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=320&h=420&fit=crop&crop=face,top',
+  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=320&h=420&fit=crop&crop=faces,top',
+]
+
+// Map interest ids picked at signup → display names
+const INTEREST_TITLES = {
+  taylor: 'Taylor Swift', bts: 'BTS', arijit: 'Arijit Singh', rahman: 'A.R. Rahman',
+  diljit: 'Diljit Dosanjh', prateek: 'Prateek Kuhad', anuv: 'Anuv Jain', billie: 'Billie Eilish',
+  weeknd: 'The Weeknd', shreya: 'Shreya Ghoshal', olivia: 'Olivia Rodrigo', karan: 'Karan Aujla',
+  interstellar: 'Interstellar', inception: 'Inception', 'dark-knight': 'The Dark Knight',
+  parasite: 'Parasite', shawshank: 'Shawshank', forrest: 'Forrest Gump', lalaland: 'La La Land',
+  oppenheimer: 'Oppenheimer', dune: 'Dune', '3idiots': '3 Idiots', znmd: 'ZNMD', tamasha: 'Tamasha',
+  sapiens: 'Sapiens', atomic: 'Atomic Habits', alchemist: 'The Alchemist', 1984: '1984',
+  zero: 'Zero to One', norwegian: 'Norwegian Wood', thinking: 'Think Fast & Slow',
+  deepwork: 'Deep Work', ikigai: 'Ikigai',
+}
+
 function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
   return (
     <div className={`bg-white rounded-2xl border border-dark-text/5 overflow-hidden shadow-lg ${isNew ? 'as' : ''}`}>
@@ -295,9 +315,16 @@ export default function Dashboard() {
     <div className="min-h-screen bg-cream text-dark-text grain" style={{ paddingBottom: 76 }}>
       {/* Top Bar — slim, app-style */}
       <div className="bg-cream/70 backdrop-blur-xl border-b border-dark-text/5 sticky top-0 z-40">
-        <div className="max-w-3xl mx-auto px-5 md:px-10 py-3.5 flex items-center justify-between">
-          <span className="font-display text-xl font-bold">Crushky</span>
-          <span className="bg-rose/10 text-rose text-[9px] font-semibold px-2 py-0.5 rounded-full border border-rose/20">MVP</span>
+        <div className="max-w-3xl mx-auto px-5 md:px-10 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="font-display text-xl font-bold">Crushky</span>
+            <span className="bg-rose/10 text-rose text-[9px] font-semibold px-2 py-0.5 rounded-full border border-rose/20">MVP</span>
+          </div>
+          <button onClick={() => setTab('profile')}
+            className="w-9 h-9 rounded-full bg-gradient-to-br from-rose-soft to-amber flex items-center justify-center text-sm font-semibold text-white cursor-pointer transition-all hover:scale-105"
+            style={{ outline: tab === 'profile' ? '2px solid #C94B4B' : 'none', outlineOffset: 2 }}>
+            {user.name ? user.name[0].toUpperCase() : 'A'}
+          </button>
         </div>
       </div>
 
@@ -503,21 +530,79 @@ export default function Dashboard() {
           {/* Profile card */}
           <div className="bg-white rounded-2xl border border-dark-text/5 p-5 shadow-sm mb-4">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-soft to-amber flex items-center justify-center text-2xl font-bold text-white">
-                {user.name ? user.name[0].toUpperCase() : 'A'}
-              </div>
+              {(user.photos?.length > 0 && PROFILE_PHOTOS[user.photos[0]]) ? (
+                <img src={PROFILE_PHOTOS[user.photos[0]]} alt=""
+                  className="w-16 h-16 rounded-2xl object-cover" />
+              ) : (
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-soft to-amber flex items-center justify-center text-2xl font-bold text-white">
+                  {user.name ? user.name[0].toUpperCase() : 'A'}
+                </div>
+              )}
               <div>
                 <h2 className="font-display text-xl font-bold">
                   {user.name || 'You'}{user.dob ? `, ${new Date().getFullYear() - parseInt(user.dob.slice(0, 4))}` : ''}
                 </h2>
                 <p className="text-muted text-xs mt-0.5">{user.city || '—'} · {user.work || '—'}</p>
+                <span className="inline-flex items-center gap-1 mt-1.5 bg-dark-green/8 text-dark-green text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                  ✓ Verified (demo)
+                </span>
               </div>
             </div>
-            {user.prompts && Object.entries(user.prompts).filter(([, v]) => v?.trim()).slice(0, 2).map(([id, v]) => (
+
+            {/* Photos */}
+            {user.photos?.length > 1 && (
+              <div className="flex gap-2 mb-4">
+                {user.photos.map(i => PROFILE_PHOTOS[i] && (
+                  <img key={i} src={PROFILE_PHOTOS[i]} alt=""
+                    className="w-16 h-20 rounded-xl object-cover" />
+                ))}
+              </div>
+            )}
+
+            {/* Details grid — everything they filled in */}
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {[
+                { label: 'Gender', value: user.gender },
+                { label: 'Looking for', value: user.lookingFor },
+                { label: 'Height', value: user.heightFt ? `${user.heightFt}'${user.heightIn || 0}"` : null },
+                { label: 'Birthday', value: user.dob },
+              ].filter(d => d.value).map(d => (
+                <div key={d.label} className="bg-cream rounded-xl px-3.5 py-2.5">
+                  <p className="text-[9px] text-muted uppercase tracking-wider">{d.label}</p>
+                  <p className="text-dark-text/80 text-sm font-medium">{d.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Interests */}
+            {user.interests && Object.values(user.interests).flat().length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {Object.values(user.interests).flat().map(id => (
+                  <span key={id} className="bg-rose/8 text-rose text-[11px] font-medium px-2.5 py-1 rounded-full border border-rose/15">
+                    {INTEREST_TITLES[id] || id}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Prompts */}
+            {user.prompts && Object.entries(user.prompts).filter(([, v]) => v?.trim()).map(([id, v]) => (
               <div key={id} className="bg-cream rounded-xl px-3.5 py-3 mb-2">
                 <p className="text-dark-text/70 text-xs leading-relaxed">"{v}"</p>
               </div>
             ))}
+
+            {/* Socials */}
+            {(user.instagram || user.spotify) && (
+              <div className="flex gap-3 mt-3">
+                {user.instagram && (
+                  <span className="text-muted text-xs">📸 @{user.instagram.replace('@', '')}</span>
+                )}
+                {user.spotify && (
+                  <span className="text-muted text-xs">🎵 {user.spotify}</span>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Plan card */}
@@ -544,12 +629,13 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Settings list */}
-          <div className="bg-white rounded-2xl border border-dark-text/5 shadow-sm overflow-hidden mb-6">
+          {/* Account settings */}
+          <p className="text-muted text-[10px] font-semibold uppercase tracking-[0.15em] mb-2 px-1">Account</p>
+          <div className="bg-white rounded-2xl border border-dark-text/5 shadow-sm overflow-hidden mb-5">
             {[
+              { icon: '📱', label: 'Contact info', note: '+91 ••••• •••10' },
               { icon: '🔔', label: 'Notifications', note: 'On' },
-              { icon: '🔒', label: 'Privacy', note: '' },
-              { icon: '💬', label: 'Help & feedback', note: '' },
+              { icon: '👁', label: 'Who can see you', note: 'Matches only' },
             ].map((row, i) => (
               <div key={row.label}
                 className={`flex items-center gap-3 px-5 py-4 ${i > 0 ? 'border-t border-dark-text/5' : ''}`}>
@@ -561,16 +647,53 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <button
-            onClick={() => {
-              ['crushky_user', 'crushky_premium', 'crushky_chat_done',
-                'crushky_companion_luna', 'crushky_companion_aria',
-                'crushky_companion_nova', 'crushky_companion_maya'].forEach(k => localStorage.removeItem(k))
-              navigate('/')
-            }}
-            className="w-full py-3.5 rounded-full border border-dark-text/12 text-dark-text/50 text-sm font-medium cursor-pointer hover:bg-white transition-all">
-            Log out & reset demo
-          </button>
+          {/* Safety & privacy */}
+          <p className="text-muted text-[10px] font-semibold uppercase tracking-[0.15em] mb-2 px-1">Safety & privacy</p>
+          <div className="bg-white rounded-2xl border border-dark-text/5 shadow-sm overflow-hidden mb-5">
+            {[
+              { icon: '🛡', label: 'Data safety', note: 'Voice deleted after matching' },
+              { icon: '📥', label: 'Download my data', note: '' },
+              { icon: '🚫', label: 'Blocked users', note: 'None' },
+              { icon: '💬', label: 'Help & feedback', note: '' },
+            ].map((row, i) => (
+              <div key={row.label}
+                className={`flex items-center gap-3 px-5 py-4 ${i > 0 ? 'border-t border-dark-text/5' : ''}`}>
+                <span className="text-base">{row.icon}</span>
+                <span className="flex-1 text-sm text-dark-text/75 font-medium">{row.label}</span>
+                {row.note && <span className="text-muted text-[11px] text-right max-w-[140px]">{row.note}</span>}
+                <span className="text-dark-text/20">›</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Danger zone */}
+          <div className="space-y-2.5 mb-6">
+            <button
+              onClick={() => {
+                ['crushky_user', 'crushky_premium', 'crushky_chat_done',
+                  'crushky_companion_luna', 'crushky_companion_aria',
+                  'crushky_companion_nova', 'crushky_companion_maya'].forEach(k => localStorage.removeItem(k))
+                navigate('/')
+              }}
+              className="w-full py-3.5 rounded-full border border-dark-text/12 text-dark-text/50 text-sm font-medium cursor-pointer hover:bg-white transition-all">
+              Log out
+            </button>
+            <button
+              onClick={() => {
+                if (window.confirm('Delete your account? This erases all your data — profile, matches, conversations. (Demo: clears everything.)')) {
+                  localStorage.clear()
+                  navigate('/')
+                }
+              }}
+              className="w-full py-3.5 rounded-full text-sm font-medium cursor-pointer transition-all hover:bg-rose/5"
+              style={{ border: '1px solid rgba(201,75,75,0.25)', color: '#C94B4B' }}>
+              Delete account
+            </button>
+          </div>
+
+          <p className="text-center text-dark-text/20 text-[10px] mb-2">
+            Crushky MVP · Made with ♡ in Bangalore
+          </p>
         </div>
       )}
     </div>
