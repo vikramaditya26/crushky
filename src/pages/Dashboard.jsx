@@ -5,6 +5,23 @@ import CompanionChat from '../components/CompanionChat'
 import { seedMatches } from '../data/seedMatches'
 import { createRecognizer } from '../utils/speech'
 import { SpotifyIcon, InstagramIcon, PhoneIcon, BellIcon, EyeIcon, ShieldIcon, DownloadIcon, BlockIcon, HelpIcon } from '../components/Icons'
+import Pic from '../components/Pic'
+
+// One soft pop when a match reveals — Web Audio, no asset needed
+function playPop() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    const o = ctx.createOscillator()
+    const g = ctx.createGain()
+    o.connect(g); g.connect(ctx.destination)
+    o.type = 'sine'
+    o.frequency.setValueAtTime(620, ctx.currentTime)
+    o.frequency.exponentialRampToValueAtTime(920, ctx.currentTime + 0.09)
+    g.gain.setValueAtTime(0.07, ctx.currentTime)
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28)
+    o.start(); o.stop(ctx.currentTime + 0.3)
+  } catch { /* audio blocked */ }
+}
 
 const DEMO_CONVERSATION = [
   // Opening
@@ -90,10 +107,20 @@ const INTEREST_TITLES = {
 }
 
 function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
+  const [burst, setBurst] = useState(false)
+  const shortlist = () => {
+    if (burst) return
+    setBurst(true)
+    setTimeout(() => onShortlist(match.id), 500)
+  }
   return (
-    <div className={`bg-white rounded-2xl border border-dark-text/5 overflow-hidden shadow-lg ${isNew ? 'as' : ''}`}>
+    <div className={`relative bg-white rounded-2xl border border-dark-text/5 overflow-hidden shadow-lg ${isNew ? 'as' : ''}`}>
+      {burst && (
+        <span className="heart-float absolute left-1/2 top-1/2 -translate-x-1/2 z-10 text-rose pointer-events-none"
+          style={{ fontSize: 34 }}>♥</span>
+      )}
       <div className="flex gap-4 p-4">
-        <img src={match.photo} alt={match.name} className="w-20 h-24 rounded-xl object-cover shrink-0" />
+        <Pic src={match.photo} alt={match.name} className="w-20 h-24 rounded-xl shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between">
             <div>
@@ -106,7 +133,7 @@ function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
           </div>
           <p className="text-dark-text/60 text-xs mt-2 line-clamp-2">{match.whyYouMatch}</p>
           <div className="flex gap-2 mt-3">
-            <button onClick={() => onShortlist(match.id)} className="flex-1 py-2 rounded-full bg-rose text-white text-xs font-semibold cursor-pointer hover:bg-rose/90 transition-all">
+            <button onClick={shortlist} className="flex-1 py-2 rounded-full bg-rose text-white text-xs font-semibold cursor-pointer hover:bg-rose/90 transition-all">
               Shortlist ♡
             </button>
             <button onClick={() => onSkip(match.id)} className="py-2 px-4 rounded-full border border-dark-text/10 text-muted text-xs font-medium cursor-pointer hover:bg-cream transition-all">
@@ -242,6 +269,7 @@ export default function Dashboard() {
   const [shortlisted, setShortlisted] = useState([])
   const [skipped, setSkipped] = useState([])
   const [newReveal, setNewReveal] = useState(null)
+  const [toast, setToast] = useState(null) // cross-tab match notification
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -281,8 +309,12 @@ export default function Dashboard() {
     const reveal = MATCH_REVEAL_AT_INDEX.find(r => r.afterMsgIndex === msgIndex)
     if (reveal && seedMatches[reveal.matchIdx]) {
       setTimeout(() => {
-        setRevealedMatches(prev => [...prev, seedMatches[reveal.matchIdx]])
-        setNewReveal(seedMatches[reveal.matchIdx].id)
+        const m = seedMatches[reveal.matchIdx]
+        setRevealedMatches(prev => [...prev, m])
+        setNewReveal(m.id)
+        playPop()
+        setToast(m)
+        setTimeout(() => setToast(null), 3500)
         setTimeout(() => setNewReveal(null), 2500)
       }, 800)
     }
@@ -312,7 +344,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-cream text-dark-text grain" style={{ paddingBottom: 76 }}>
       {/* Top Bar — slim, app-style */}
       <div className="bg-cream/70 backdrop-blur-xl border-b border-dark-text/5 sticky top-0 z-40">
-        <div className="max-w-3xl mx-auto px-5 md:px-10 py-3 flex items-center justify-between">
+        <div className="max-w-[480px] mx-auto px-5 md:px-10 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="font-display text-xl font-bold">Crushky</span>
             <span className="bg-rose/10 text-rose text-[9px] font-semibold px-2 py-0.5 rounded-full border border-rose/20">MVP</span>
@@ -325,11 +357,25 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Cross-tab match toast */}
+      {toast && (
+        <button
+          onClick={() => { setTab('matches'); setToast(null) }}
+          className="toast-in fixed top-16 left-1/2 z-[60] flex items-center gap-3 bg-white rounded-full pl-1.5 pr-5 py-1.5 cursor-pointer"
+          style={{ transform: 'translateX(-50%)', boxShadow: '0 12px 36px rgba(26,20,16,0.18)', border: '1px solid rgba(201,75,75,0.15)' }}>
+          <img src={toast.photo} alt="" className="w-9 h-9 rounded-full object-cover" />
+          <span className="text-left">
+            <span className="block text-dark-text text-xs font-bold">✦ New match — {toast.name}</span>
+            <span className="block text-muted text-[10px]">{toast.compatibility}% · tap to view</span>
+          </span>
+        </button>
+      )}
+
       {/* Bottom tab bar — native app feel */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-dark-text/6"
         style={{ background: 'rgba(250,247,242,0.92)', backdropFilter: 'blur(20px)',
           paddingBottom: 'env(safe-area-inset-bottom)' }}>
-        <div className="max-w-3xl mx-auto flex">
+        <div className="max-w-[480px] mx-auto flex">
           {tabs.map((t) => {
             const active = tab === t.id
             return (
@@ -366,13 +412,13 @@ export default function Dashboard() {
 
       {/* ─── TALK TAB ─── */}
       {tab === 'talk' && !talkStarted && (
-        <div className="max-w-3xl mx-auto px-5 md:px-10">
+        <div className="max-w-[480px] mx-auto px-5 md:px-10">
           <VoiceEntry onStart={() => setTalkStarted(true)} />
         </div>
       )}
 
       {tab === 'talk' && talkStarted && (
-        <div className="max-w-3xl mx-auto flex flex-col" style={{ height: 'calc(100dvh - 120px)' }}>
+        <div className="max-w-[480px] mx-auto flex flex-col" style={{ height: 'calc(100dvh - 120px)' }}>
           {/* Slim listening indicator */}
           <div className="flex items-center justify-center gap-2 py-2 border-b border-dark-text/5">
             <span className="w-1.5 h-1.5 bg-rose rounded-full animate-pulse" />
@@ -448,7 +494,7 @@ export default function Dashboard() {
 
       {/* ─── MATCHES TAB ─── */}
       {tab === 'matches' && (
-        <div className="max-w-3xl mx-auto px-5 md:px-10 py-6">
+        <div className="max-w-[480px] mx-auto px-5 md:px-10 py-6">
           {shortlistedMatches.length === 0 && revealedMatches.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center au">
               {/* Polaroid stack placeholder */}
@@ -482,8 +528,8 @@ export default function Dashboard() {
                           className="relative rounded-3xl overflow-hidden cursor-pointer hover-lift shadow-lg"
                         >
                           {/* Photo-led card — the photo carries the screen */}
-                          <img src={match.photo} alt={match.name}
-                            className="w-full object-cover" style={{ aspectRatio: '4/5', maxHeight: 440 }} />
+                          <Pic src={match.photo} alt={match.name}
+                            className="w-full" style={{ aspectRatio: '4/5', maxHeight: 440 }} />
                           <div className="absolute inset-0"
                             style={{ background: 'linear-gradient(to top, rgba(15,10,8,0.82) 0%, rgba(15,10,8,0.25) 38%, transparent 60%)' }} />
                           <span className="absolute top-4 right-4 bg-white/15 text-white font-bold text-xs px-2.5 py-1 rounded-full"
@@ -533,14 +579,14 @@ export default function Dashboard() {
 
       {/* ─── COMPANION TAB ─── */}
       {tab === 'companion' && (
-        <div className="max-w-3xl mx-auto px-5 md:px-10">
+        <div className="max-w-[480px] mx-auto px-5 md:px-10">
           <CompanionChat />
         </div>
       )}
 
       {/* ─── PROFILE TAB ─── */}
       {tab === 'profile' && (
-        <div className="max-w-3xl mx-auto px-5 md:px-10 py-6 au">
+        <div className="max-w-[480px] mx-auto px-5 md:px-10 py-6 au">
           {/* Profile card */}
           <div className="bg-white rounded-2xl border border-dark-text/5 p-5 shadow-sm mb-4">
             <div className="flex items-center gap-4 mb-4">
@@ -654,9 +700,14 @@ export default function Dashboard() {
               { icon: <PhoneIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Contact info', note: '+91 ••••• •••10' },
               { icon: <BellIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Notifications', note: 'On' },
               { icon: <EyeIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Who can see you', note: 'Matches only' },
+              { icon: <span className="text-rose text-base leading-none">↻</span>, label: 'Replay the matchmaking demo', note: '', onClick: () => {
+                setTalkStarted(false); setMessages([]); setAutoIndex(0)
+                setRevealedMatches([]); setShortlisted([]); setSkipped([]); setTab('talk')
+              } },
             ].map((row, i) => (
               <div key={row.label}
-                className={`flex items-center gap-3 px-5 py-4 ${i > 0 ? 'border-t border-dark-text/5' : ''}`}>
+                onClick={row.onClick}
+                className={`flex items-center gap-3 px-5 py-4 ${i > 0 ? 'border-t border-dark-text/5' : ''} ${row.onClick ? 'cursor-pointer hover:bg-cream/60 transition-colors' : ''}`}>
                 <span className="flex items-center">{row.icon}</span>
                 <span className="flex-1 text-sm text-dark-text/75 font-medium">{row.label}</span>
                 {row.note && <span className="text-muted text-xs">{row.note}</span>}

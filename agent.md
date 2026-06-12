@@ -787,6 +787,24 @@ crushky/
 - Real browser **speech-to-text** (`src/utils/speech.js`, Web Speech API) on the Dashboard Talk mic and companion chat mic — live transcript shows while listening; graceful fallback to timed animation when unsupported.
 - Companion conversations now **persist in localStorage** (`crushky_companion_<id>`); returning to a companion restores the chat and she acknowledges you're back.
 
+## CLAUDE CODE HANDOFF NOTE — JUNE 13, 2026 (REDESIGN + POLISH)
+
+**Design system rules now enforced:**
+- **No emoji-as-icons.** All UI icons are thin-line SVGs in `src/components/Icons.jsx` (20+: brand Spotify/Instagram/WhatsApp + cake, heart, pin, sparkle, pen, camera, bell, shield, brain, journal, masks, map, fork, handshake, video, phone, eye, download, block, help).
+- **Color rules:** rose `#C94B4B` = the only action color on the dating side. Dark-green is RETIRED (no longer in any component). Purple family (`#7C5CBF` etc.) = Virtual Friends section only.
+- **Chat style:** AI messages render as Playfair ink text with a rose ✦ (no bubble) via `ChatBubble.jsx`; user messages are rose bubbles.
+
+**Current product state (key facts):**
+- Entry: `/` landing → `/start` (Tinder-style auth: fake Google + phone) → `/login` (OTP, same video backdrop, auto-fills) → `/signup` (6 Hinge-style screens, pre-filled; `?blank` for empty) → `/dashboard`.
+- Dashboard: bottom tab bar (Talk / Matches / Friends / You). App screens constrained to 480px column. Route transitions via AnimatePresence in App.jsx.
+- Talk: scripted voice demo w/ real browser speech-to-text, match reveals with count-up %, pop sound, cross-tab toast.
+- Matches: photo-led full-bleed cards; model photos in `public/model/` (Aanya 1-3, Zara 4-6, Sofia 7-9, user 10-12, companions c1-c4).
+- Friends: Luna free; Aria/Nova/Maya behind ₹299 paywall (fake UPI checkout → localStorage `crushky_premium`). Personality detail sheets, auto-play demo convos, browser-TTS voices per friend, fake video call that "connects" after 3s with live timer. Telegram-style lavender chat bg.
+- Profile tab: full user details, settings (contact/data safety/delete account), "Replay the matchmaking demo" row resets Talk state.
+- Match profile chat: keyword-aware canned replies (coffee/movies/books/music/date/work patterns).
+- `Pic.jsx` = image with shimmer skeleton; use it for all photos.
+- Favicon: brand "C" + rose heart (public/favicon.svg).
+
 ## CODEX HANDOFF NOTE — JUNE 5, 2026
 
 - Committing and pushing the latest tracked local changes on `main`.

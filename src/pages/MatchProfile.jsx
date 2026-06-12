@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { seedMatches } from '../data/seedMatches'
 import { SpotifyIcon, InstagramIcon, CalendarIcon, PinIcon, HandshakeIcon, SparkleIcon, ForkIcon } from '../components/Icons'
+import Pic from '../components/Pic'
 
 const QUICK_ACTIONS = [
   { icon: <InstagramIcon size={14} />, label: 'Share Instagram' },
@@ -47,23 +48,41 @@ export default function MatchProfile() {
 
   const firstName = match.name.split(' ')[0]
 
+  // Keyword-aware canned replies — she responds to what you actually said,
+  // so a 2-minute demo poke doesn't break the illusion.
+  const smartReply = (text) => {
+    const t = text.toLowerCase()
+    if (/\b(coffee|chai|cafe|café)\b/.test(t))
+      return `Okay important question — ${match.dateSuggestion.venue} does an unreasonably good filter coffee. That's where we're going.`
+    if (/\b(movie|film|netflix|cinema|watch)\b/.test(t))
+      return `Wait, you're into films too? Okay, hot take incoming: the ending matters more than the whole movie. Fight me.`
+    if (/\b(book|read|novel)\b/.test(t))
+      return `I knew you'd bring up books. I'm three chapters into one I can't put down — I'll lend it to you IF the date goes well.`
+    if (/\b(music|song|playlist|spotify|concert)\b/.test(t))
+      return `My playlist is basically a personality test. Send me one song that's 'so you' and I'll tell you if we'd survive a road trip.`
+    if (/\b(date|meet|saturday|sunday|weekend|plan)\b/.test(t))
+      return `I was hoping you'd ask 😄 ${match.dateSuggestion.area} works for me — pick a day from the planner thing!`
+    if (/\b(work|job|startup|office)\b/.test(t))
+      return `Honestly? ${match.work.split(' at ')[0]} keeps me busy but I refuse to be one of those people who only talks about work. Next topic.`
+    if (/\b(hi|hey|hello|heyy)\b/.test(t))
+      return `Heyy! Crushky said we're a ${match.compatibility}% match so... no pressure but this conversation better be good 😄`
+    if (t.includes('?'))
+      return `Good question. Short answer: yes. Long answer: let's get coffee and I'll explain properly.`
+    const fallback = [
+      `Haha that's so true! Tell me more about that.`,
+      `Okay wait, that's actually really interesting.`,
+      `You're fun to talk to, you know that? 😄`,
+    ]
+    return fallback[Math.floor(Math.random() * fallback.length)]
+  }
+
   const handleSend = () => {
     if (!input.trim()) return
-    setMessages((prev) => [...prev, { from: 'you', text: input.trim(), type: 'text' }])
+    const text = input.trim()
+    setMessages((prev) => [...prev, { from: 'you', text, type: 'text' }])
     setInput('')
-    // Simulate reply
     setTimeout(() => {
-      const replies = [
-        `Haha that's so true! Tell me more about that.`,
-        `I was literally thinking the same thing today.`,
-        `Okay wait, that's actually really interesting.`,
-        `You're fun to talk to, you know that? 😄`,
-      ]
-      setMessages((prev) => [...prev, {
-        from: 'them',
-        text: replies[Math.floor(Math.random() * replies.length)],
-        type: 'text',
-      }])
+      setMessages((prev) => [...prev, { from: 'them', text: smartReply(text), type: 'text' }])
     }, 1200)
   }
 
@@ -138,7 +157,7 @@ export default function MatchProfile() {
     <div className="min-h-screen bg-cream text-dark-text flex flex-col">
       {/* ─── Top Bar ─── */}
       <div className="bg-cream/70 backdrop-blur-xl border-b border-dark-text/5 sticky top-0 z-40">
-        <div className="max-w-3xl mx-auto px-5 md:px-10">
+        <div className="max-w-[480px] mx-auto px-5 md:px-10">
           {/* Header row */}
           <div className="flex items-center gap-3 py-3">
             <button
@@ -174,7 +193,7 @@ export default function MatchProfile() {
 
       {/* ─── CHAT TAB ─── */}
       {tab === 'chat' && (
-        <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full" style={{ height: 'calc(100vh - 140px)' }}>
+        <div className="flex-1 flex flex-col max-w-[480px] mx-auto w-full" style={{ height: 'calc(100vh - 140px)' }}>
           {/* Messages area */}
           <div className="flex-1 overflow-y-auto px-5 md:px-10 py-4">
             {/* Match intro card */}
@@ -328,20 +347,17 @@ export default function MatchProfile() {
 
       {/* ─── PROFILE TAB ─── */}
       {tab === 'profile' && (
-        <div className="flex-1 max-w-3xl mx-auto w-full px-5 md:px-10 py-6 overflow-y-auto">
+        <div className="flex-1 max-w-[480px] mx-auto w-full px-5 md:px-10 py-6 overflow-y-auto">
           <div className="au">
             {/* Main photo */}
-            <div className="rounded-2xl overflow-hidden shadow-lg mb-3">
-              <img src={match.photo} alt={match.name} className="w-full aspect-[4/5] object-cover max-h-[420px]" />
-            </div>
+            <Pic src={match.photo} alt={match.name}
+              className="w-full aspect-[4/5] max-h-[420px] rounded-2xl shadow-lg mb-3" />
 
             {/* More photos */}
             {match.photos?.length > 0 && (
               <div className="grid grid-cols-2 gap-3 mb-5">
                 {match.photos.map((p, i) => (
-                  <div key={i} className="rounded-2xl overflow-hidden shadow-md">
-                    <img src={p} alt="" className="w-full aspect-[4/5] object-cover" />
-                  </div>
+                  <Pic key={i} src={p} alt="" className="w-full aspect-[4/5] rounded-2xl shadow-md" />
                 ))}
               </div>
             )}

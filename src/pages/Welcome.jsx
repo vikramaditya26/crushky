@@ -34,6 +34,10 @@ export default function Welcome() {
         <p className="text-white/60 text-sm mt-2 text-center">
           The app that listens before it matches.
         </p>
+        <p className="font-display italic text-white/80 text-base mt-8 text-center">
+          "So… tell me who you are."
+        </p>
+        <p className="text-white/35 text-[10px] tracking-[0.25em] uppercase mt-2">— Crushky, in about a minute</p>
       </div>
 
       {/* Auth stack */}

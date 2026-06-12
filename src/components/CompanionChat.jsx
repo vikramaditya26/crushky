@@ -314,8 +314,98 @@ function PaywallModal({ onClose, onUnlock, trigger }) {
   )
 }
 
+// ── Fake video call that genuinely "connects" — full-screen photo with slow
+//    zoom drift, live timer, mute/end controls. The premium wow moment. ──
+function VideoCallOverlay({ companion, onEnd }) {
+  const [connected, setConnected] = useState(false)
+  const [seconds, setSeconds] = useState(0)
+  const [muted, setMuted] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setConnected(true), 3000)
+    return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    if (!connected) return
+    const i = setInterval(() => setSeconds(s => s + 1), 1000)
+    return () => clearInterval(i)
+  }, [connected])
+
+  const mm = String(Math.floor(seconds / 60)).padStart(2, '0')
+  const ss = String(seconds % 60).padStart(2, '0')
+
+  if (!connected) {
+    return (
+      <div className="absolute inset-0 z-50 flex flex-col items-center justify-center"
+        style={{ background: 'rgba(30,22,45,0.97)', backdropFilter: 'blur(20px)' }}>
+        <div className="relative mb-6">
+          <div className="voice-ring-outer absolute rounded-full"
+            style={{ width: '128px', height: '128px', top: '-8px', left: '-8px', border: `1.5px solid ${companion.accent}60` }} />
+          <div className="voice-ring-mid absolute rounded-full"
+            style={{ width: '128px', height: '128px', top: '-8px', left: '-8px', border: `1.5px solid ${companion.accent}35` }} />
+          <img src={companion.photo} alt={companion.name}
+            className="w-28 h-28 rounded-full object-cover object-top relative z-10 mic-breath"
+            style={{ border: `3px solid ${companion.accent}70` }} />
+        </div>
+        <p className="font-display text-xl font-bold text-white mb-1">Calling {companion.name}…</p>
+        <p className="text-xs text-white/40 mb-8">Ringing</p>
+        <button onClick={onEnd}
+          className="w-14 h-14 rounded-full flex items-center justify-center cursor-pointer text-white text-lg rotate-[135deg]"
+          style={{ background: '#C94B4B' }}>
+          ☎
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="absolute inset-0 z-50 overflow-hidden" style={{ background: '#14101D' }}>
+      {/* Her "video" — slow zoom drift sells the live feel */}
+      <img src={companion.photo} alt={companion.name}
+        className="call-drift absolute inset-0 w-full h-full object-cover object-top" />
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(to top, rgba(15,10,20,0.75) 0%, transparent 30%, transparent 70%, rgba(15,10,20,0.55) 100%)' }} />
+
+      {/* Top: name + live timer */}
+      <div className="absolute top-5 left-0 right-0 flex flex-col items-center">
+        <p className="font-display text-lg font-bold text-white">{companion.name}</p>
+        <span className="flex items-center gap-1.5 mt-1 px-3 py-1 rounded-full text-white/85 text-xs font-medium"
+          style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(8px)' }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> {mm}:{ss}
+        </span>
+      </div>
+
+      {/* Your "camera" PiP */}
+      <div className="absolute top-16 right-4 w-20 h-28 rounded-xl overflow-hidden border-2 border-white/30 shadow-xl">
+        <img src="/model/10.jpg" alt="you" className="w-full h-full object-cover" />
+      </div>
+
+      {/* Controls */}
+      <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center gap-5">
+        <button onClick={() => setMuted(m => !m)}
+          className="w-13 h-13 rounded-full flex items-center justify-center cursor-pointer text-white"
+          style={{ width: 52, height: 52, background: muted ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.15)',
+            color: muted ? '#14101D' : '#fff', backdropFilter: 'blur(8px)' }}>
+          {muted ? '🔇' : '🎙'}
+        </button>
+        <button onClick={onEnd}
+          className="rounded-full flex items-center justify-center cursor-pointer text-white text-xl rotate-[135deg]"
+          style={{ width: 64, height: 64, background: '#E5484D', boxShadow: '0 8px 24px rgba(229,72,77,0.5)' }}>
+          ☎
+        </button>
+        <button
+          className="rounded-full flex items-center justify-center cursor-pointer text-white"
+          style={{ width: 52, height: 52, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)' }}>
+          <VideoIcon size={20} color="#fff" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ── Voice Entry Screen (per companion) ──
-function CompanionVoiceEntry({ companion, onStart }) {
+function CompanionVoiceEntry({ companion, onStart, onBack }) {
   const [listening, setListening] = useState(false)
 
   const handleTap = () => {
@@ -326,6 +416,13 @@ function CompanionVoiceEntry({ companion, onStart }) {
   return (
     <div className="relative flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 120px)' }}>
       <AnimatedBg accent={companion.accent} />
+      {onBack && (
+        <button onClick={onBack}
+          className="absolute top-4 left-4 z-20 w-9 h-9 rounded-full bg-white/70 border border-dark-text/8 flex items-center justify-center text-dark-text/50 hover:text-dark-text cursor-pointer transition-all"
+          style={{ backdropFilter: 'blur(8px)' }}>
+          ←
+        </button>
+      )}
 
       {/* Ambient glow behind photo */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -746,6 +843,7 @@ export default function CompanionChat() {
       <CompanionVoiceEntry
         companion={companion}
         onStart={() => startChat(selected)}
+        onBack={() => setSelected(null)}
       />
     )
   }
@@ -755,33 +853,15 @@ export default function CompanionChat() {
     <div className="relative flex flex-col" style={{ height: 'calc(100dvh - 120px)' }}>
       <AnimatedBg accent={companion.accent} />
 
-      {/* Video call overlay */}
+      {/* Video call overlay — "connects" after 3s into a full-screen call */}
       {isVoiceActive && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center"
-          style={{ background: 'rgba(247,242,237,0.96)', backdropFilter: 'blur(20px)' }}>
-          <div className="relative mb-6">
-            <div className="voice-ring-outer absolute rounded-full"
-              style={{ width: '128px', height: '128px', top: '-8px', left: '-8px', border: `1.5px solid ${companion.accent}40` }} />
-            <div className="voice-ring-mid absolute rounded-full"
-              style={{ width: '128px', height: '128px', top: '-8px', left: '-8px', border: `1.5px solid ${companion.accent}25` }} />
-            <img src={companion.photo} alt={companion.name}
-              className="w-28 h-28 rounded-full object-cover object-top relative z-10 mic-breath"
-              style={{ border: `3px solid ${companion.accent}50` }} />
-          </div>
-          <p className="font-display text-xl font-bold text-dark-text mb-1">Calling {companion.name}…</p>
-          <p className="text-xs text-dark-text/35 mb-8">Video call · Premium feature</p>
-          <button onClick={() => setIsVoiceActive(false)}
-            className="w-14 h-14 rounded-full flex items-center justify-center cursor-pointer text-white text-lg"
-            style={{ background: '#C94B4B' }}>
-            ✕
-          </button>
-        </div>
+        <VideoCallOverlay companion={companion} onEnd={() => setIsVoiceActive(false)} />
       )}
 
       {/* Header */}
       <div className="relative z-10 flex items-center justify-between px-4 py-3"
         style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', background: 'rgba(247,242,237,0.75)', backdropFilter: 'blur(12px)' }}>
-        <button onClick={() => { setSelected(null); setChatStarted(false); setMessages([]) }}
+        <button onClick={() => setChatStarted(false)}
           className="text-dark-text/40 hover:text-dark-text/70 transition-colors cursor-pointer px-1 py-1">
           ←
         </button>

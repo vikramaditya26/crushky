@@ -521,7 +521,7 @@ export default function Landing() {
                 className="cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-2xl group"
                 style={{ background: CREAM, color: INK, fontSize: 16, fontWeight: 700,
                   padding: '17px 40px', borderRadius: 100, letterSpacing: '0.01em' }}>
-                {returningUser ? 'Pick up where you left off' : 'Start talking'}{' '}
+                {returningUser ? 'Pick up where you left off' : 'Find your person'}{' '}
                 <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
               </button>
               <p style={{ color: 'rgba(240,235,227,0.45)', fontSize: 12, marginLeft: 4, marginTop: 4 }}>
@@ -637,7 +637,7 @@ export default function Landing() {
               className="cursor-pointer transition-all hover:-translate-y-1 hover:shadow-2xl group"
               style={{ background: CREAM, color: INK, fontSize: 17, fontWeight: 700,
                 padding: '18px 46px', borderRadius: 100, letterSpacing: '0.01em' }}>
-              Start your conversation <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+              Get started <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
             </button>
           </FadeIn>
           <FadeIn delay={0.56}>

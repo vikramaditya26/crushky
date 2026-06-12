@@ -47,26 +47,23 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative"
-      style={{ background: '#F7F4EF' }}>
-      {/* soft aurora */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute rounded-full" style={{
-          top: '-15%', right: '-15%', width: '55vw', height: '55vw',
-          background: 'radial-gradient(circle, rgba(201,75,75,0.07) 0%, transparent 70%)',
-          filter: 'blur(90px)' }} />
-        <div className="absolute rounded-full" style={{
-          bottom: '-20%', left: '-15%', width: '60vw', height: '60vw',
-          background: 'radial-gradient(circle, rgba(212,149,106,0.06) 0%, transparent 70%)',
-          filter: 'blur(100px)' }} />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden"
+      style={{ background: '#1A1410' }}>
+      {/* Same cinematic backdrop as /start — one continuous entry experience */}
+      <video autoPlay muted loop playsInline preload="auto"
+        className="absolute inset-0 w-full h-full object-cover">
+        <source src="/vid/v1.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(to top, rgba(20,15,12,0.92) 0%, rgba(20,15,12,0.6) 60%, rgba(20,15,12,0.45) 100%)' }} />
 
-      <button onClick={() => navigate('/')}
-        className="fixed top-5 left-5 z-50 text-dark-text/35 text-sm hover:text-dark-text/70 transition-colors cursor-pointer">
-        ← Home
+      <button onClick={() => navigate('/start')}
+        className="fixed top-5 left-5 z-50 text-white/50 text-sm hover:text-white transition-colors cursor-pointer">
+        ← Back
       </button>
 
-      <div className="relative z-10 w-full max-w-xs text-center">
+      <div className="relative z-10 w-full max-w-xs text-center bg-white rounded-3xl px-6 py-10"
+        style={{ boxShadow: '0 30px 80px rgba(0,0,0,0.45)' }}>
         <p className="font-display text-2xl font-bold text-dark-text mb-1">Crushky</p>
 
         {stage === 'phone' && (
