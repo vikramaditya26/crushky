@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { seedMatches } from '../data/seedMatches'
-import { SpotifyIcon, InstagramIcon, CalendarIcon, PinIcon } from '../components/Icons'
+import { SpotifyIcon, InstagramIcon, CalendarIcon, PinIcon, HandshakeIcon, SparkleIcon, ForkIcon } from '../components/Icons'
 
 const QUICK_ACTIONS = [
   { icon: <InstagramIcon size={14} />, label: 'Share Instagram' },
@@ -128,8 +128,8 @@ export default function MatchProfile() {
   }
 
   const tabs = [
-    { id: 'chat', label: 'Chat', icon: '💬' },
-    { id: 'profile', label: 'Profile', icon: '👤' },
+    { id: 'chat', label: 'Chat' },
+    { id: 'profile', label: 'Profile' },
   ]
 
   const DAYS = ['This Saturday', 'This Sunday', 'Next Friday', 'Next Saturday']
@@ -150,7 +150,7 @@ export default function MatchProfile() {
             <img src={match.photo} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="font-display text-base font-bold truncate">{match.name}, {match.age}</p>
-              <p className="text-[10px] text-dark-green font-medium">Active now</p>
+              <p className="text-[10px] text-rose font-medium">Active now</p>
             </div>
             <span className="bg-rose/10 text-rose font-bold text-xs px-2.5 py-1 rounded-full shrink-0">{match.compatibility}%</span>
           </div>
@@ -162,10 +162,10 @@ export default function MatchProfile() {
                 key={t.id}
                 onClick={() => setTab(t.id)}
                 className={`flex-1 py-2 rounded-full text-sm font-medium transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                  tab === t.id ? 'bg-dark-green text-white shadow-sm' : 'text-muted hover:text-dark-text/60'
+                  tab === t.id ? 'bg-rose text-white shadow-sm' : 'text-muted hover:text-dark-text/60'
                 }`}
               >
-                <span className="text-xs">{t.icon}</span> {t.label}
+                {t.label}
               </button>
             ))}
           </div>
@@ -201,7 +201,7 @@ export default function MatchProfile() {
                     {msg.type === 'text' && (
                       <div className={`px-4 py-2.5 text-[13px] leading-relaxed ${
                         msg.from === 'you'
-                          ? 'bg-dark-green text-white rounded-2xl rounded-br-sm'
+                          ? 'bg-rose text-white rounded-2xl rounded-br-sm'
                           : 'bg-white border border-dark-text/5 text-dark-text/80 rounded-2xl rounded-bl-sm'
                       }`}>
                         {msg.text}
@@ -236,7 +236,7 @@ export default function MatchProfile() {
 
                     {/* Date plan card */}
                     {msg.type === 'date-plan' && (
-                      <div className="bg-dark-green text-white rounded-2xl rounded-br-sm px-4 py-3">
+                      <div className="bg-rose text-white rounded-2xl rounded-br-sm px-4 py-3">
                         <p className="text-[10px] text-white/60 mb-1">Date planned</p>
                         <p className="text-sm font-semibold">{msg.venue}</p>
                         <p className="text-[12px] text-white/70 mt-0.5">{msg.area}</p>
@@ -272,7 +272,7 @@ export default function MatchProfile() {
                     <button
                       key={day}
                       onClick={() => handleConfirmDate(day)}
-                      className="py-2.5 rounded-xl border-2 border-dark-text/8 text-sm font-medium text-dark-text/70 cursor-pointer hover:border-dark-green/40 hover:bg-dark-green/5 transition-all"
+                      className="py-2.5 rounded-xl border-2 border-dark-text/8 text-sm font-medium text-dark-text/70 cursor-pointer hover:border-rose/40 hover:bg-rose/5 transition-all"
                     >
                       {day}
                     </button>
@@ -295,7 +295,7 @@ export default function MatchProfile() {
                 <button
                   key={a.label}
                   onClick={() => handleQuickAction(a.label)}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-dark-text/8 text-xs font-medium text-dark-text/60 cursor-pointer hover:border-dark-green/30 hover:text-dark-text transition-all shrink-0"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-dark-text/8 text-xs font-medium text-dark-text/60 cursor-pointer hover:border-rose/30 hover:text-dark-text transition-all shrink-0"
                 >
                   <span>{a.icon}</span> {a.label}
                 </button>
@@ -312,12 +312,12 @@ export default function MatchProfile() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder={`Message ${firstName}...`}
-                className="flex-1 bg-white border border-dark-text/10 rounded-full px-5 py-3 text-sm outline-none focus:border-dark-green/40 transition-all placeholder:text-dark-text/25"
+                className="flex-1 bg-white border border-dark-text/10 rounded-full px-5 py-3 text-sm outline-none focus:border-rose/40 transition-all placeholder:text-dark-text/25"
               />
               <button
                 onClick={handleSend}
                 disabled={!input.trim()}
-                className="w-10 h-10 rounded-full bg-dark-green text-white flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-30 hover:bg-dark-green/90 transition-all text-sm"
+                className="w-10 h-10 rounded-full bg-rose text-white flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-30 hover:bg-rose/90 transition-all text-sm"
               >
                 &#10148;
               </button>
@@ -374,12 +374,12 @@ export default function MatchProfile() {
             {match.inCommon?.length > 0 && (
               <div className="bg-white rounded-2xl p-5 border border-dark-text/5 mb-5">
                 <h2 className="font-display text-sm font-bold mb-4 flex items-center gap-2">
-                  <span>🤝</span> What you two share
+                  <HandshakeIcon size={16} color="#C94B4B" /> What you two share
                 </h2>
                 <div className="space-y-3">
                   {match.inCommon.map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <span className="w-5 h-5 rounded-full bg-dark-green/10 text-dark-green flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">✓</span>
+                      <span className="w-5 h-5 rounded-full bg-rose/10 text-rose flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">✓</span>
                       <p className="text-dark-text/70 text-sm leading-relaxed">{item}</p>
                     </div>
                   ))}
@@ -390,7 +390,7 @@ export default function MatchProfile() {
             {/* Why you click */}
             <div className="bg-gradient-to-br from-rose/8 to-amber/5 border border-rose/10 rounded-2xl p-5 mb-5">
               <h2 className="font-display text-sm font-bold text-rose mb-2 flex items-center gap-2">
-                <span>✨</span> Why You Two Click
+                <SparkleIcon size={15} color="#C94B4B" /> Why You Two Click
               </h2>
               <p className="text-dark-text/70 text-sm leading-relaxed">{match.whyYouMatch}</p>
             </div>
@@ -452,7 +452,7 @@ export default function MatchProfile() {
             {/* Date suggestions — Crushky's top pick + more spots you'd both like */}
             <div className="mb-8">
               <h2 className="font-display text-sm font-bold flex items-center gap-2 mb-3">
-                🍽 Where you two should go
+                <ForkIcon size={15} color="#C94B4B" /> Where you two should go
               </h2>
 
               {/* Top pick */}
@@ -471,7 +471,7 @@ export default function MatchProfile() {
                   <p className="text-muted text-xs mt-0.5">{match.dateSuggestion.type} &middot; {match.dateSuggestion.area}</p>
                   <button
                     onClick={() => { setTab('chat'); setTimeout(() => handlePlanDate(), 300) }}
-                    className="mt-4 w-full py-3 rounded-full bg-dark-green text-white font-semibold text-sm cursor-pointer hover:bg-dark-green/90 transition-all hover:shadow-lg"
+                    className="mt-4 w-full py-3 rounded-full bg-rose text-white font-semibold text-sm cursor-pointer hover:bg-rose/90 transition-all hover:shadow-lg"
                   >
                     Plan this date
                   </button>

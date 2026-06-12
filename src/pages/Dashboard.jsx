@@ -4,7 +4,7 @@ import ChatBubble from '../components/ChatBubble'
 import CompanionChat from '../components/CompanionChat'
 import { seedMatches } from '../data/seedMatches'
 import { createRecognizer } from '../utils/speech'
-import { SpotifyIcon, InstagramIcon } from '../components/Icons'
+import { SpotifyIcon, InstagramIcon, PhoneIcon, BellIcon, EyeIcon, ShieldIcon, DownloadIcon, BlockIcon, HelpIcon } from '../components/Icons'
 
 const DEMO_CONVERSATION = [
   // Opening
@@ -106,7 +106,7 @@ function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
           </div>
           <p className="text-dark-text/60 text-xs mt-2 line-clamp-2">{match.whyYouMatch}</p>
           <div className="flex gap-2 mt-3">
-            <button onClick={() => onShortlist(match.id)} className="flex-1 py-2 rounded-full bg-dark-green text-white text-xs font-semibold cursor-pointer hover:bg-dark-green/90 transition-all">
+            <button onClick={() => onShortlist(match.id)} className="flex-1 py-2 rounded-full bg-rose text-white text-xs font-semibold cursor-pointer hover:bg-rose/90 transition-all">
               Shortlist ♡
             </button>
             <button onClick={() => onSkip(match.id)} className="py-2 px-4 rounded-full border border-dark-text/10 text-muted text-xs font-medium cursor-pointer hover:bg-cream transition-all">
@@ -373,11 +373,10 @@ export default function Dashboard() {
 
       {tab === 'talk' && talkStarted && (
         <div className="max-w-3xl mx-auto flex flex-col" style={{ height: 'calc(100dvh - 120px)' }}>
-          {/* Demo banner */}
-          <div className="bg-amber-light/40 border-b border-amber/20 px-5 py-2">
-            <p className="text-dark-text/50 text-[11px] font-medium text-center">
-              🎙 Voice session in progress — Crushky is listening and learning about you
-            </p>
+          {/* Slim listening indicator */}
+          <div className="flex items-center justify-center gap-2 py-2 border-b border-dark-text/5">
+            <span className="w-1.5 h-1.5 bg-rose rounded-full animate-pulse" />
+            <p className="text-dark-text/40 text-[11px] font-medium">Crushky is listening</p>
           </div>
 
           <div className="flex-1 overflow-y-auto px-5 md:px-10 py-5">
@@ -439,7 +438,7 @@ export default function Dashboard() {
                 disabled
                 className="flex-1 bg-white border border-dark-text/10 rounded-full px-5 py-3 text-sm outline-none placeholder:text-dark-text/25 disabled:opacity-50"
               />
-              <button disabled className="w-10 h-10 rounded-full bg-dark-green text-white flex items-center justify-center shrink-0 disabled:opacity-30 text-sm">
+              <button disabled className="w-10 h-10 rounded-full bg-rose text-white flex items-center justify-center shrink-0 disabled:opacity-30 text-sm">
                 &#10148;
               </button>
             </div>
@@ -452,10 +451,20 @@ export default function Dashboard() {
         <div className="max-w-3xl mx-auto px-5 md:px-10 py-6">
           {shortlistedMatches.length === 0 && revealedMatches.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center au">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-rose-light/50 to-amber-light/50 apg mb-6" />
-              <h2 className="font-display text-2xl font-bold mb-2">No matches yet</h2>
-              <p className="text-muted text-sm max-w-xs mb-6">Keep talking to Crushky AI to discover your matches. The more you share, the better your matches.</p>
-              <button onClick={() => setTab('talk')} className="bg-dark-green text-white font-semibold px-6 py-3 rounded-full cursor-pointer hover:bg-dark-green/90 transition-all text-sm">
+              {/* Polaroid stack placeholder */}
+              <div className="relative w-28 h-28 mb-8">
+                {[{ r: -8, x: -14 }, { r: 5, x: 12 }, { r: -1, x: 0 }].map((p, i) => (
+                  <div key={i} className="absolute inset-0 rounded-lg bg-white border border-dark-text/8 shadow-md"
+                    style={{ transform: `rotate(${p.r}deg) translateX(${p.x}px)`, padding: '6px 6px 16px' }}>
+                    <div className="w-full h-full rounded-sm"
+                      style={{ background: 'linear-gradient(135deg, rgba(201,75,75,0.12), rgba(212,149,106,0.15))' }} />
+                  </div>
+                ))}
+                <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-rose text-lg">✦</span>
+              </div>
+              <h2 className="font-display text-2xl font-bold mb-2">Your people are coming</h2>
+              <p className="text-muted text-sm max-w-xs mb-6">Keep talking to Crushky — the more you share, the better the matches.</p>
+              <button onClick={() => setTab('talk')} className="bg-rose text-white font-semibold px-6 py-3 rounded-full cursor-pointer hover:bg-rose/90 transition-all text-sm">
                 Back to conversation
               </button>
             </div>
@@ -465,30 +474,38 @@ export default function Dashboard() {
                 <div className="mb-8">
                   <h2 className="font-display text-xl font-bold mb-1">Your shortlist</h2>
                   <p className="text-muted text-sm mb-5">People you're interested in</p>
-                  <div className="space-y-4">
+                  <div className="space-y-5">
                     {shortlistedMatches.map((match, i) => (
                       <div key={match.id} className="as" style={{ animationDelay: `${i * 100}ms` }}>
                         <div
                           onClick={() => navigate(`/match/${match.id}`)}
-                          className="bg-white rounded-2xl border border-dark-text/5 overflow-hidden cursor-pointer hover-lift"
+                          className="relative rounded-3xl overflow-hidden cursor-pointer hover-lift shadow-lg"
                         >
-                          <div className="flex gap-4 p-4">
-                            <img src={match.photo} alt={match.name} className="w-24 h-28 rounded-xl object-cover shrink-0" />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between">
-                                <div>
-                                  <h3 className="font-display text-lg font-bold">{match.name}, {match.age}</h3>
-                                  <p className="text-muted text-xs mt-0.5">{match.city} &middot; {match.work}</p>
-                                </div>
-                                <span className="bg-rose/10 text-rose font-bold text-xs px-2.5 py-1 rounded-full">{match.compatibility}%</span>
-                              </div>
-                              <p className="text-dark-text/60 text-xs mt-2 line-clamp-2">{match.whyYouMatch}</p>
-                              <div className="flex gap-1.5 mt-2">
-                                {match.interests.slice(0, 3).map((int) => (
-                                  <span key={int} className="bg-cream text-dark-text/50 text-[10px] px-2 py-0.5 rounded-full">{int}</span>
+                          {/* Photo-led card — the photo carries the screen */}
+                          <img src={match.photo} alt={match.name}
+                            className="w-full object-cover" style={{ aspectRatio: '4/5', maxHeight: 440 }} />
+                          <div className="absolute inset-0"
+                            style={{ background: 'linear-gradient(to top, rgba(15,10,8,0.82) 0%, rgba(15,10,8,0.25) 38%, transparent 60%)' }} />
+                          <span className="absolute top-4 right-4 bg-white/15 text-white font-bold text-xs px-2.5 py-1 rounded-full"
+                            style={{ backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.25)' }}>
+                            {match.compatibility}% ✦
+                          </span>
+                          <div className="absolute bottom-0 left-0 right-0 p-5">
+                            <h3 className="font-display font-bold text-white" style={{ fontSize: 26, lineHeight: 1.1 }}>
+                              {match.name}, <em className="font-normal">{match.age}</em>
+                            </h3>
+                            <p className="text-white/65 text-xs mt-1">{match.city} · {match.work}</p>
+                            <p className="text-white/85 text-[13px] mt-2.5 line-clamp-2 leading-relaxed font-display italic">
+                              "{match.inCommon?.[0] || match.whyYouMatch.split('.')[0]}"
+                            </p>
+                            <div className="flex items-center justify-between mt-3.5">
+                              <div className="flex gap-1.5">
+                                {match.interests.slice(0, 2).map((int) => (
+                                  <span key={int} className="text-white/75 text-[10px] px-2.5 py-1 rounded-full"
+                                    style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(6px)' }}>{int}</span>
                                 ))}
                               </div>
-                              <p className="text-dark-green text-xs font-semibold mt-3">Chat &amp; view profile &rarr;</p>
+                              <span className="text-white text-xs font-semibold">Chat &rarr;</span>
                             </div>
                           </div>
                         </div>
@@ -540,7 +557,7 @@ export default function Dashboard() {
                   {user.name || 'You'}{user.dob ? `, ${new Date().getFullYear() - parseInt(user.dob.slice(0, 4))}` : ''}
                 </h2>
                 <p className="text-muted text-xs mt-0.5">{user.city || '—'} · {user.work || '—'}</p>
-                <span className="inline-flex items-center gap-1 mt-1.5 bg-dark-green/8 text-dark-green text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-1 mt-1.5 bg-rose/8 text-rose text-[10px] font-semibold px-2 py-0.5 rounded-full">
                   ✓ Verified (demo)
                 </span>
               </div>
@@ -634,13 +651,13 @@ export default function Dashboard() {
           <p className="text-muted text-[10px] font-semibold uppercase tracking-[0.15em] mb-2 px-1">Account</p>
           <div className="bg-white rounded-2xl border border-dark-text/5 shadow-sm overflow-hidden mb-5">
             {[
-              { icon: '📱', label: 'Contact info', note: '+91 ••••• •••10' },
-              { icon: '🔔', label: 'Notifications', note: 'On' },
-              { icon: '👁', label: 'Who can see you', note: 'Matches only' },
+              { icon: <PhoneIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Contact info', note: '+91 ••••• •••10' },
+              { icon: <BellIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Notifications', note: 'On' },
+              { icon: <EyeIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Who can see you', note: 'Matches only' },
             ].map((row, i) => (
               <div key={row.label}
                 className={`flex items-center gap-3 px-5 py-4 ${i > 0 ? 'border-t border-dark-text/5' : ''}`}>
-                <span className="text-base">{row.icon}</span>
+                <span className="flex items-center">{row.icon}</span>
                 <span className="flex-1 text-sm text-dark-text/75 font-medium">{row.label}</span>
                 {row.note && <span className="text-muted text-xs">{row.note}</span>}
                 <span className="text-dark-text/20">›</span>
@@ -652,14 +669,14 @@ export default function Dashboard() {
           <p className="text-muted text-[10px] font-semibold uppercase tracking-[0.15em] mb-2 px-1">Safety & privacy</p>
           <div className="bg-white rounded-2xl border border-dark-text/5 shadow-sm overflow-hidden mb-5">
             {[
-              { icon: '🛡', label: 'Data safety', note: 'Voice deleted after matching' },
-              { icon: '📥', label: 'Download my data', note: '' },
-              { icon: '🚫', label: 'Blocked users', note: 'None' },
-              { icon: '💬', label: 'Help & feedback', note: '' },
+              { icon: <ShieldIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Data safety', note: 'Voice deleted after matching' },
+              { icon: <DownloadIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Download my data', note: '' },
+              { icon: <BlockIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Blocked users', note: 'None' },
+              { icon: <HelpIcon size={17} color="rgba(26,26,26,0.45)" />, label: 'Help & feedback', note: '' },
             ].map((row, i) => (
               <div key={row.label}
                 className={`flex items-center gap-3 px-5 py-4 ${i > 0 ? 'border-t border-dark-text/5' : ''}`}>
-                <span className="text-base">{row.icon}</span>
+                <span className="flex items-center">{row.icon}</span>
                 <span className="flex-1 text-sm text-dark-text/75 font-medium">{row.label}</span>
                 {row.note && <span className="text-muted text-[11px] text-right max-w-[140px]">{row.note}</span>}
                 <span className="text-dark-text/20">›</span>

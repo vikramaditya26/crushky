@@ -1,33 +1,25 @@
+// Editorial chat style (Ditto-inspired): the AI speaks as elegant ink text with
+// a small ✦ mark — no bubble. Only "you" get a bubble. Distinctive on purpose.
 export default function ChatBubble({ message, isUser, voiceMode = false }) {
+  if (!isUser) {
+    return (
+      <div className="flex justify-start mb-5">
+        <div className="max-w-[88%] md:max-w-[75%] flex gap-2.5">
+          <span className="text-rose text-[13px] mt-[3px] shrink-0 select-none">✦</span>
+          <p className="font-display text-[15.5px] leading-[1.65] text-dark-text/85 whitespace-pre-line">
+            {message}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
-      <div
-        className={`max-w-[85%] md:max-w-[70%] px-4 py-3 text-sm leading-relaxed whitespace-pre-line ${
-          isUser
-            ? 'bg-dark-green text-white rounded-2xl rounded-br-sm shadow-sm'
-            : 'bg-white border border-dark-text/5 text-dark-text rounded-2xl rounded-bl-sm shadow-sm'
-        }`}
-      >
-        {/* Voice indicator on AI messages */}
-        {!isUser && voiceMode && (
-          <div className="flex items-end gap-[2px] mb-2 h-3">
-            {[1,2,3,4,5].map(i => (
-              <span
-                key={i}
-                className="inline-block w-[2px] rounded-full bg-rose/40"
-                style={{
-                  height: `${6 + Math.sin(i * 1.4) * 4}px`,
-                  animation: `waveBar 1.2s ease-in-out infinite ${i * 90}ms`,
-                  transformOrigin: 'bottom',
-                }}
-              />
-            ))}
-          </div>
-        )}
+    <div className="flex justify-end mb-4">
+      <div className="max-w-[85%] md:max-w-[70%] px-4 py-3 text-sm leading-relaxed whitespace-pre-line bg-rose text-white rounded-2xl rounded-br-sm shadow-sm">
         {message}
-        {/* Mic icon on user messages */}
-        {isUser && voiceMode && (
-          <div className="flex items-center gap-1 mt-1.5 opacity-40">
+        {voiceMode && (
+          <div className="flex items-center gap-1 mt-1.5 opacity-50">
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
               <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>

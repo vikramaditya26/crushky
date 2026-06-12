@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { sendMessage } from '../utils/claudeApi'
 import { createRecognizer } from '../utils/speech'
 import ChatBubble from './ChatBubble'
+import { VideoIcon, BrainIcon, JournalIcon, MasksIcon, SparkleIcon, MapIcon } from './Icons'
 
 // ─── 4 AI virtual friends — purple family palette, distinct voices ───
 const COMPANIONS = [
@@ -111,37 +112,37 @@ const DEMO_REPLIES = [
 
 const SESSIONS = [
   {
-    id: 'video',    icon: '🎥', title: 'Video Call',
+    id: 'video',    icon: <VideoIcon size={20} color="#7C5CBF" />, title: 'Video Call',
     desc: 'See their face. Talk face-to-face in real time.',
     badge: 'Premium',
     color: 'rgba(201,75,75,0.08)',
   },
   {
-    id: 'deep',     icon: '🧠', title: 'Deep Dive',
+    id: 'deep',     icon: <BrainIcon size={20} color="#7C5CBF" />, title: 'Deep Dive',
     desc: "Let's explore something you've been carrying around but not saying.",
     reply: "Deep dive time. What's something that's been sitting with you that you haven't told anyone?",
     color: 'rgba(155,143,166,0.08)',
   },
   {
-    id: 'journal',  icon: '📔', title: 'Talk Through Your Day',
+    id: 'journal',  icon: <JournalIcon size={20} color="#7C5CBF" />, title: 'Talk Through Your Day',
     desc: "Tell me everything. I'll ask the right questions.",
     reply: "I'm all ears. Walk me through your day — from the moment you woke up. What actually happened?",
     color: 'rgba(143,166,143,0.08)',
   },
   {
-    id: 'roleplay', icon: '🎭', title: 'Roleplay a Conversation',
+    id: 'roleplay', icon: <MasksIcon size={20} color="#7C5CBF" />, title: 'Roleplay a Conversation',
     desc: "Practice that important conversation before it happens — with a match, a date, anyone.",
     reply: "Okay, who do you want to practice talking to? Tell me about them and what you want to say.",
     color: 'rgba(212,149,106,0.08)',
   },
   {
-    id: 'affirmation', icon: '✨', title: 'Affirmation Session',
+    id: 'affirmation', icon: <SparkleIcon size={20} color="#7C5CBF" />, title: 'Affirmation Session',
     desc: "Some things you need to hear. I'm going to say them.",
     reply: "Before we start — just know I actually mean all of this. Ready? Here we go.",
     color: 'rgba(201,75,75,0.06)',
   },
   {
-    id: 'life',     icon: '🗺️', title: 'Map Your Life',
+    id: 'life',     icon: <MapIcon size={20} color="#7C5CBF" />, title: 'Map Your Life',
     desc: "What do you actually want in the next year? Let's get specific.",
     reply: "One year from now. Not 'happy' — actually specific. Where are you, what are you doing, who's around?",
     color: 'rgba(143,166,143,0.06)',
@@ -709,7 +710,7 @@ export default function CompanionChat() {
 
                   {/* Memory */}
                   <div className="flex items-center gap-2.5 mb-5">
-                    <span className="text-base">🧠</span>
+                    <BrainIcon size={18} color="#7C5CBF" />
                     <p className="text-dark-text/55 text-xs">
                       {c.name} remembers your conversations — pick up exactly where you left off.
                     </p>
@@ -989,7 +990,8 @@ export default function CompanionChat() {
                   boxShadow: '0 2px 14px rgba(0,0,0,0.04)',
                 }}
               >
-                <span className="text-2xl shrink-0">{session.icon}</span>
+                <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                  style={{ background: 'rgba(124,92,191,0.08)' }}>{session.icon}</span>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-0.5">
                     <p className="font-semibold text-sm text-dark-text">{session.title}</p>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { CakeIcon, HeartIcon, PinIcon, SparkleIcon, PenIcon, CameraIcon } from '../components/Icons'
 
 function shuffleArr(arr) {
   return [...arr].sort(() => Math.random() - 0.5)
@@ -63,9 +64,9 @@ const MUSIC_PICKS = [
 ]
 
 const CATEGORIES = [
-  { id: 'music', icon: '🎵', label: 'Music',       picks: MUSIC_PICKS },
-  { id: 'film',  icon: '🎬', label: 'Movies & TV', picks: MOVIE_PICKS },
-  { id: 'books', icon: '📚', label: 'Books',       picks: BOOK_PICKS  },
+  { id: 'music', label: 'Music',       picks: MUSIC_PICKS },
+  { id: 'film',  label: 'Movies & TV', picks: MOVIE_PICKS },
+  { id: 'books', label: 'Books',       picks: BOOK_PICKS  },
 ]
 
 const PROMPTS = [
@@ -183,6 +184,7 @@ export default function Signup() {
   const [step, setStep] = useState(0)
   const [visible, setVisible] = useState(true)
   const [transitioning, setTransitioning] = useState(false)
+  const [direction, setDirection] = useState(1) // 1 = forward, -1 = back
 
   const [form, setForm] = useState(IS_DEMO ? DEMO_FORM : BLANK_FORM)
   const [interests, setInterests] = useState(IS_DEMO ? DEMO_INTERESTS : {})
@@ -195,6 +197,7 @@ export default function Signup() {
 
   const transition = (toStep) => {
     if (transitioning) return
+    setDirection(toStep > step ? 1 : -1)
     setTransitioning(true)
     setVisible(false)
     setTimeout(() => {
@@ -202,7 +205,7 @@ export default function Signup() {
       setVisible(true)
       setTransitioning(false)
       window.scrollTo(0, 0)
-    }, 240)
+    }, 220)
   }
 
   const next = () => {
@@ -264,9 +267,11 @@ export default function Signup() {
           bottom: 0, left: 0, width: '60vw', height: '35vh',
           background: 'radial-gradient(ellipse at bottom left, rgba(212,149,106,0.06), transparent 65%)' }} />
       </div>
-      {/* Thin progress bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-dark-text/5">
-        <div className="h-full bg-rose transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
+      {/* Visible rose progress bar with soft glow */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-dark-text/6" style={{ height: 3 }}>
+        <div className="h-full transition-all duration-500 ease-out"
+          style={{ width: `${progress}%`, background: '#C94B4B',
+            boxShadow: '0 0 8px rgba(201,75,75,0.5)', borderRadius: '0 3px 3px 0' }} />
       </div>
 
       {/* Back */}
@@ -275,12 +280,15 @@ export default function Signup() {
         ←
       </button>
 
-      <div className="transition-all duration-200"
-        style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(12px)' }}>
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateX(0)' : `translateX(${direction * -36}px)`,
+        transition: 'opacity 220ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1)',
+      }}>
 
         {/* ── BASICS: name + birthday ── */}
         {current === 'basics' && (
-          <Screen icon="👋" title="Let's start with the basics." subtitle="Your name and birthday — we only ever show your age.">
+          <Screen icon={<CakeIcon size={17} color="#C94B4B" />} title="Let's start with the basics." subtitle="Your name and birthday — we only ever show your age.">
             <p className="text-dark-text/50 text-sm font-medium mb-3">First name</p>
             <SignupInput
               autoFocus
@@ -312,7 +320,7 @@ export default function Signup() {
 
         {/* ── IDENTITY: gender + seeking ── */}
         {current === 'identity' && (
-          <Screen icon="💘" title="You, and who you're here for.">
+          <Screen icon={<HeartIcon size={17} color="#C94B4B" />} title="You, and who you're here for.">
             <p className="text-dark-text/50 text-sm font-medium mb-1">I am a</p>
             <div className="mb-10">
               {['Man', 'Woman', 'Non-binary'].map(g => (
@@ -332,7 +340,7 @@ export default function Signup() {
 
         {/* ── WORLD: city + work ── */}
         {current === 'world' && (
-          <Screen icon="📍" title="Your world." subtitle="We match you in your city — no long-distance roulette.">
+          <Screen icon={<PinIcon size={17} />} title="Your world." subtitle="We match you in your city — no long-distance roulette.">
             <p className="text-dark-text/50 text-sm font-medium mb-3">City</p>
             <SignupInput
               value={form.city} onChange={set('city')}
@@ -362,7 +370,7 @@ export default function Signup() {
 
         {/* ── INTERESTS ── */}
         {current === 'interests' && (
-          <Screen icon="✨" title="What are you into?" subtitle="Tap what you love. Crushky listens to taste, not just looks.">
+          <Screen icon={<SparkleIcon size={17} color="#C94B4B" />} title="What are you into?" subtitle="Tap what you love. Crushky listens to taste, not just looks.">
             {/* Category pills */}
             <div className="flex gap-2 mb-5">
               {CATEGORIES.map(c => (
@@ -370,7 +378,7 @@ export default function Signup() {
                   className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     openCat === c.id ? 'bg-dark-text text-white' : 'bg-white text-dark-text/50 border border-dark-text/10'
                   }`}>
-                  {c.icon} {c.label}
+                  {c.label}
                   {(interests[c.id]?.length || 0) > 0 && (
                     <span className="ml-1.5 text-rose">{`·${interests[c.id].length}`}</span>
                   )}
@@ -439,7 +447,7 @@ export default function Signup() {
 
         {/* ── PROMPTS ── */}
         {current === 'prompts' && (
-          <Screen icon="✍️" title="Say it in your words." subtitle="Answer one. This is what makes people stop scrolling.">
+          <Screen icon={<PenIcon size={17} color="#C94B4B" />} title="Say it in your words." subtitle="Answer one. This is what makes people stop scrolling.">
             <div className="space-y-3">
               {PROMPTS.map(p => (
                 <div key={p.id} className="bg-white rounded-2xl border border-dark-text/8 px-4 py-4">
@@ -461,7 +469,7 @@ export default function Signup() {
 
         {/* ── PHOTOS + PREVIEW ── */}
         {current === 'photos' && (
-          <Screen icon="📸" title="Last one — pick your photos." subtitle="Demo photos for now. Tap to select.">
+          <Screen icon={<CameraIcon size={17} color="#C94B4B" />} title="Last one — pick your photos." subtitle="Demo photos for now. Tap to select.">
             <div className="flex gap-3 mb-10">
               {DEMO_PHOTOS.map((photo, i) => {
                 const rotations = [-3, 1.5, -1]
