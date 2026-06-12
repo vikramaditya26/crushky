@@ -140,17 +140,16 @@ function OptionRow({ label, selected, onClick }) {
 
 function ContinueFab({ onClick, disabled }) {
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="fixed bottom-7 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 disabled:opacity-20 disabled:cursor-not-allowed"
-      style={{ background: '#C94B4B', boxShadow: '0 10px 30px rgba(201,75,75,0.4)' }}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white"
-        strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="5" y1="12" x2="19" y2="12" />
-        <polyline points="12 5 19 12 12 19" />
-      </svg>
-    </button>
+    <div className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-7 pt-10 pointer-events-none"
+      style={{ background: 'linear-gradient(to top, rgba(250,250,248,0.97) 40%, transparent)' }}>
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        className="pointer-events-auto block w-full max-w-md mx-auto py-4 rounded-full text-white font-bold text-[15px] cursor-pointer transition-all hover:opacity-95 active:scale-[0.98] disabled:opacity-25 disabled:cursor-not-allowed"
+        style={{ background: '#C94B4B', boxShadow: '0 10px 30px rgba(201,75,75,0.35)' }}>
+        Continue
+      </button>
+    </div>
   )
 }
 

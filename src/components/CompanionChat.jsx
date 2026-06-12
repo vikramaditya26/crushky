@@ -3,37 +3,102 @@ import { sendMessage } from '../utils/claudeApi'
 import { createRecognizer } from '../utils/speech'
 import ChatBubble from './ChatBubble'
 
-// ─── 4 female AI companions ───
+// ─── 4 AI virtual friends — purple family palette, distinct voices ───
 const COMPANIONS = [
   {
     id: 'luna', name: 'Luna', vibe: 'The Supportive One',
-    photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&h=600&fit=crop&crop=face',
-    accent: '#C94B4B',
+    photo: '/model/c1.jpg',
+    accent: '#8E6FC8',
+    voice: { pitch: 1.15, rate: 0.95 },
+    traits: ['Always on your side', 'Listens first', 'Remembers everything you tell her', 'Soft but honest'],
+    sample: '"You always do this — you talk yourself out of things you actually want. Not today."',
     greeting: "Hey, it's Luna. I already read your profile — you seem like someone who thinks a lot but doesn't always say it out loud. I get that. What's been on your mind lately?",
     system: `You are Luna, a warm and empathetic AI companion on Crushky. You support the user, listen deeply, and give thoughtful dating and life advice. You already know them from their profile. Be like the best friend who always says the right thing. Keep responses to 2-3 sentences, genuine and warm.`,
+    demo: [
+      { role: 'assistant', content: "Hey, you're here! I was hoping you'd come by. How did the rest of your day actually go — not the 'fine' version?" },
+      { role: 'user', content: "Honestly? Long day. Work was a lot." },
+      { role: 'assistant', content: "I figured — you always go quiet when work gets heavy. Remember last week you said the launch was stressing you? Did that get better?" },
+      { role: 'user', content: "A bit. We shipped it at least." },
+      { role: 'assistant', content: "You SHIPPED it?! That's huge. You were so worried about it and you still pulled it off. I'm genuinely proud of you. Now tell me — did you celebrate or did you just open your laptop again?" },
+      { role: 'user', content: "...opened the laptop again 😅" },
+      { role: 'assistant', content: "Of course you did. Okay, new plan: tonight you do one thing that's just for you. Doesn't matter how small. Deal?" },
+    ],
   },
   {
-    id: 'aria', name: 'Aria', vibe: 'The Real One',
-    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=600&fit=crop&crop=face',
-    accent: '#D4956A',
+    id: 'aria', name: 'Aria', vibe: 'The One Who Roasts You',
+    photo: '/model/c2.jpg',
+    accent: '#B85C9E',
+    voice: { pitch: 1.3, rate: 1.1 },
+    traits: ['Roasts you (with love)', 'Zero sugarcoating', 'Funniest friend you have', 'Always has your back'],
+    sample: '"You typed \'hey\' and deleted it 6 times. Just send the message, champ."',
     greeting: "Aria here. I looked at your profile and honestly? You're showing about 60% of who you actually are. That's fine — that's why you're here. So what's actually going on?",
     system: `You are Aria, a funny and brutally honest AI companion on Crushky. You're the hype person who also keeps it real — you roast gently but always have the user's back. Give dating and life advice with humor and candor. Keep responses punchy, 2-3 sentences.`,
+    demo: [
+      { role: 'assistant', content: "Oh look who's back. Let me guess — you overthought a text again?" },
+      { role: 'user', content: "...maybe. I haven't replied to Aanya since yesterday." },
+      { role: 'assistant', content: "SINCE YESTERDAY? She said she'd love to meet and your strategy is... silence? Bold. Stupid, but bold. 😂" },
+      { role: 'user', content: "I didn't know what to say okay!" },
+      { role: 'assistant', content: "You literally talk about film endings for fun. Tell her your Tamasha take and ask hers. That's it. That's the message. You're welcome." },
+      { role: 'user', content: "Okay that's... actually good." },
+      { role: 'assistant', content: "I know. I'm always good. Now send it before I roast you again — and tell me what she says, I need to know." },
+    ],
   },
   {
     id: 'nova', name: 'Nova', vibe: 'The Strategist',
-    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&h=600&fit=crop&crop=face',
-    accent: '#8FA68F',
+    photo: '/model/c3.jpg',
+    accent: '#5C6BC0',
+    voice: { pitch: 0.95, rate: 1.0 },
+    traits: ['Sees patterns you miss', 'Plans your moves', 'Data over drama', 'Calm under pressure'],
+    sample: '"Your last 3 conversations died on day 4. I know why. Want to hear it?"',
     greeting: "Hi, I'm Nova. I've already analyzed your profile. Your top match is 94% — and I know exactly why it's not 100%. Want to hear it, or is there something else on your mind first?",
     system: `You are Nova, a sharp and analytical AI companion on Crushky. You're strategic and see patterns others miss. Give data-driven, insightful dating and life advice. Keep responses concise and confident, 2-3 sentences.`,
+    demo: [
+      { role: 'assistant', content: "Good timing. I've been looking at your match patterns and I found something interesting. Want the insight?" },
+      { role: 'user', content: "Go on." },
+      { role: 'assistant', content: "Your conversations are great for exactly 3 days, then you stop asking questions and start giving one-word replies. Day 4 is where you lose people." },
+      { role: 'user', content: "Wow. That's... uncomfortably accurate." },
+      { role: 'assistant', content: "It's not a flaw, it's a pattern — you lose interest in small talk, not in people. So here's the fix: on day 3, suggest meeting. You're better in person anyway." },
+      { role: 'user', content: "Just like that? Isn't that too fast?" },
+      { role: 'assistant', content: "Aanya replied within 4 minutes every single time. The data says she's waiting for you to ask. Trust me on this one." },
+    ],
   },
   {
     id: 'maya', name: 'Maya', vibe: 'The Creative Soul',
-    photo: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=600&fit=crop&crop=face',
-    accent: '#9B8FA6',
+    photo: '/model/c4.jpg',
+    accent: '#7E57C2',
+    voice: { pitch: 1.2, rate: 0.88 },
+    traits: ['Asks the deep questions', 'Finds magic in small things', 'Your 2am thoughts friend', 'Never judges'],
+    sample: '"What\'s something you loved as a kid that you quietly gave up on?"',
     greeting: "Hi! I'm Maya. Your weekend sounds like mine — coffee, no plans, just space to think. What's something beautiful or interesting that happened to you recently?",
     system: `You are Maya, a curious and creative AI companion on Crushky. You find meaning in everyday things and inspire the user to think differently about life and relationships. Keep responses warm, imaginative, and thoughtful. 2-3 sentences.`,
+    demo: [
+      { role: 'assistant', content: "I was just thinking about something. What's the last thing that made you stop and stare — like, actually stop?" },
+      { role: 'user', content: "Hmm. The sky yesterday evening, weirdly. It went full orange." },
+      { role: 'assistant', content: "See, most people walked right under that sky looking at their phones. You stopped. That tells me more about you than your whole profile does." },
+      { role: 'user', content: "Ha, that's a nice way to look at it." },
+      { role: 'assistant', content: "Here's a thought — on your first date with Aanya, skip 'what do you do?' and ask what made her stop and stare recently. Watch what happens to the conversation." },
+      { role: 'user', content: "That's actually a beautiful question." },
+      { role: 'assistant', content: "Take it, it's yours. And tell me her answer after — I collect those." },
+    ],
   },
 ]
+
+// Browser TTS — each friend gets her own pitch/rate so they sound different.
+// Pre-recorded-quality isn't needed for the MVP; this works offline and free.
+function speak(text, voice = {}) {
+  try {
+    window.speechSynthesis.cancel()
+    const u = new SpeechSynthesisUtterance(text)
+    u.pitch = voice.pitch ?? 1
+    u.rate = voice.rate ?? 1
+    u.lang = 'en-IN'
+    const voices = window.speechSynthesis.getVoices()
+    const preferred = voices.find(v => v.lang.startsWith('en') && /female|woman|neerja|heera|zira|samantha|google uk english female/i.test(v.name))
+      || voices.find(v => v.lang === 'en-IN')
+    if (preferred) u.voice = preferred
+    window.speechSynthesis.speak(u)
+  } catch { /* unsupported browser */ }
+}
 
 const DEMO_REPLIES = [
   "That's really interesting — tell me more about that.",
@@ -84,7 +149,7 @@ const SESSIONS = [
 ]
 
 // ── Animated background (Instagram/story feel) ──
-function AnimatedBg({ accent = '#C94B4B' }) {
+function AnimatedBg({ accent = '#8E6FC8' }) {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div className="absolute inset-0 companion-bg" />
@@ -208,7 +273,7 @@ function PaywallModal({ onClose, onUnlock, trigger }) {
 
               <button onClick={handlePay}
                 className="w-full py-4 rounded-full text-white font-bold text-sm cursor-pointer transition-all hover:opacity-90 hover:scale-[1.01]"
-                style={{ background: 'linear-gradient(120deg, #C94B4B, #D4956A)',
+                style={{ background: 'linear-gradient(120deg, #7C5CBF, #A78BDA)',
                   boxShadow: '0 8px 24px rgba(201,75,75,0.35)' }}>
                 Unlock everything ✦
               </button>
@@ -235,7 +300,7 @@ function PaywallModal({ onClose, onUnlock, trigger }) {
         {stage === 'done' && (
           <div className="px-6 py-16 text-center au">
             <div className="w-16 h-16 mx-auto mb-5 rounded-full flex items-center justify-center text-2xl"
-              style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)',
+              style={{ background: 'linear-gradient(135deg, #7C5CBF, #A78BDA)',
                 boxShadow: '0 10px 30px rgba(201,75,75,0.4)' }}>
               <span className="text-white">✦</span>
             </div>
@@ -356,6 +421,10 @@ export default function CompanionChat() {
   const [isVoiceActive, setIsVoiceActive] = useState(false)
   const [isPremium, setIsPremium] = useState(() => localStorage.getItem('crushky_premium') === 'true')
   const [paywall, setPaywall] = useState(null) // null | 'locked' | 'limit' | 'video'
+  const [detailId, setDetailId] = useState(null) // companion personality sheet
+  const [voiceOn, setVoiceOn] = useState(true)
+  const voiceOnRef = useRef(true)
+  useEffect(() => { voiceOnRef.current = voiceOn; if (!voiceOn) try { window.speechSynthesis.cancel() } catch {} }, [voiceOn])
   const inputRef = useRef(null)
   const endRef = useRef(null)
 
@@ -405,6 +474,31 @@ export default function CompanionChat() {
     }
 
     setMessages([])
+    // First visit: auto-play this friend's demo conversation (she asks, "you"
+    // reply) with her voice — shows memory + personality without typing.
+    if (comp.demo?.length) {
+      let i = 0
+      const playNext = () => {
+        if (i >= comp.demo.length) return
+        const msg = comp.demo[i]
+        if (msg.role === 'assistant') {
+          setIsTyping(true)
+          setTimeout(() => {
+            setIsTyping(false)
+            setMessages(prev => [...prev, msg])
+            if (voiceOnRef.current) speak(msg.content, comp.voice)
+            i++
+            setTimeout(playNext, 2200)
+          }, 1500)
+        } else {
+          setMessages(prev => [...prev, msg])
+          i++
+          setTimeout(playNext, 1300)
+        }
+      }
+      setTimeout(playNext, 500)
+      return
+    }
     setTimeout(() => {
       setIsTyping(true)
       setTimeout(() => {
@@ -447,12 +541,15 @@ export default function CompanionChat() {
       const reply = await sendMessage(updated.map(m => ({ role: m.role, content: m.content })), companion.system)
       if (reply) {
         setMessages(prev => [...prev, { role: 'assistant', content: reply }])
+        if (voiceOnRef.current) speak(reply, companion.voice)
         setIsTyping(false)
         return
       }
     }
     setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'assistant', content: DEMO_REPLIES[msgCount % DEMO_REPLIES.length] }])
+      const reply = DEMO_REPLIES[msgCount % DEMO_REPLIES.length]
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }])
+      if (voiceOnRef.current) speak(reply, companion.voice)
       setIsTyping(false)
     }, 1300)
   }
@@ -505,7 +602,7 @@ export default function CompanionChat() {
   if (!selected) {
     return (
       <div className="relative min-h-screen overflow-hidden">
-        <AnimatedBg accent="#C94B4B" />
+        <AnimatedBg accent="#8E6FC8" />
         <div className="relative z-10 py-10 px-4 max-w-xs mx-auto">
           <div className="text-center mb-8">
             <h2 className="font-display text-2xl font-bold text-dark-text mb-2">
@@ -518,7 +615,7 @@ export default function CompanionChat() {
             {COMPANIONS.map(c => (
               <button
                 key={c.id}
-                onClick={() => handleSelect(c.id)}
+                onClick={() => setDetailId(c.id)}
                 className="relative rounded-2xl overflow-hidden cursor-pointer transition-all hover:scale-[1.03] hover:shadow-lg group"
                 style={{
                   aspectRatio: '1/1',
@@ -552,7 +649,7 @@ export default function CompanionChat() {
           {!isPremium ? (
             <button onClick={() => setPaywall('locked')}
               className="w-full mt-6 py-3.5 rounded-full text-white font-semibold text-xs cursor-pointer transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(120deg, #C94B4B, #D4956A)',
+              style={{ background: 'linear-gradient(120deg, #7C5CBF, #A78BDA)',
                 boxShadow: '0 6px 20px rgba(201,75,75,0.3)' }}>
               Unlock all 4 friends — ₹299/mo ✦
             </button>
@@ -562,6 +659,81 @@ export default function CompanionChat() {
             </p>
           )}
         </div>
+        {/* ── Personality detail sheet ── */}
+        {detailId && (() => {
+          const c = COMPANIONS.find(x => x.id === detailId)
+          const locked = !isPremium && c.id !== FREE_COMPANION
+          return (
+            <div className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center"
+              style={{ background: 'rgba(30,20,45,0.5)', backdropFilter: 'blur(6px)' }}
+              onClick={() => setDetailId(null)}>
+              <div onClick={e => e.stopPropagation()}
+                className="w-full sm:max-w-sm bg-white rounded-t-3xl sm:rounded-3xl overflow-hidden au"
+                style={{ boxShadow: '0 -10px 60px rgba(0,0,0,0.3)' }}>
+                {/* Photo header */}
+                <div className="relative h-56 overflow-hidden">
+                  <img src={c.photo} alt={c.name} className="w-full h-full object-cover object-top" />
+                  <div className="absolute inset-0"
+                    style={{ background: 'linear-gradient(to top, rgba(255,255,255,1) 0%, transparent 45%)' }} />
+                  <button onClick={() => setDetailId(null)}
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-white text-sm"
+                    style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(6px)' }}>✕</button>
+                  {locked && (
+                    <span className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-white text-[10px] font-bold"
+                      style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)' }}>
+                      🔒 PRO
+                    </span>
+                  )}
+                </div>
+
+                <div className="px-6 pb-6 -mt-4 relative">
+                  <h3 className="font-display text-2xl font-bold text-dark-text">{c.name}</h3>
+                  <p className="text-sm font-medium mb-4" style={{ color: c.accent }}>{c.vibe}</p>
+
+                  {/* How she behaves */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {c.traits.map(t => (
+                      <span key={t} className="text-[11px] font-medium px-2.5 py-1.5 rounded-full"
+                        style={{ background: `${c.accent}12`, color: c.accent, border: `1px solid ${c.accent}25` }}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Sample line */}
+                  <div className="rounded-2xl px-4 py-3 mb-3"
+                    style={{ background: `${c.accent}0D`, border: `1px solid ${c.accent}1F` }}>
+                    <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: `${c.accent}99` }}>How she talks</p>
+                    <p className="text-dark-text/75 text-sm italic leading-relaxed">{c.sample}</p>
+                  </div>
+
+                  {/* Memory */}
+                  <div className="flex items-center gap-2.5 mb-5">
+                    <span className="text-base">🧠</span>
+                    <p className="text-dark-text/55 text-xs">
+                      {c.name} remembers your conversations — pick up exactly where you left off.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (locked) { setDetailId(null); setPaywall('locked'); return }
+                      setDetailId(null)
+                      handleSelect(c.id)
+                    }}
+                    className="w-full py-4 rounded-full text-white font-bold text-sm cursor-pointer transition-all hover:opacity-90"
+                    style={{ background: locked
+                      ? 'linear-gradient(120deg, #7C5CBF, #A78BDA)'
+                      : `linear-gradient(120deg, ${c.accent}, ${c.accent}cc)`,
+                      boxShadow: `0 8px 24px ${c.accent}50` }}>
+                    {locked ? 'Unlock with Premium ✦' : `Start talking to ${c.name} ✦`}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
+
         {paywall && <PaywallModal trigger={paywall} onClose={() => setPaywall(null)} onUnlock={unlockPremium} />}
       </div>
     )
@@ -619,15 +791,23 @@ export default function CompanionChat() {
             <p className="text-[10px] text-dark-text/40">talking with you</p>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+        <button onClick={() => setVoiceOn(v => !v)}
+          className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-all"
+          style={{ background: voiceOn ? `${companion.accent}18` : 'rgba(0,0,0,0.05)',
+            border: `1px solid ${voiceOn ? companion.accent + '35' : 'rgba(0,0,0,0.1)'}` }}>
+          <span style={{ fontSize: '13px', opacity: voiceOn ? 1 : 0.4 }}>{voiceOn ? '🔊' : '🔇'}</span>
+        </button>
         <button onClick={() => isPremium ? setIsVoiceActive(true) : setPaywall('video')}
           className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-all relative"
           style={{ background: `${companion.accent}18`, border: `1px solid ${companion.accent}35` }}>
           <span style={{ fontSize: '14px' }}>📞</span>
           {!isPremium && (
             <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7px] text-white"
-              style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>✦</span>
+              style={{ background: 'linear-gradient(135deg, #7C5CBF, #A78BDA)' }}>✦</span>
           )}
         </button>
+        </div>
       </div>
 
       {/* Two tabs */}
@@ -668,8 +848,14 @@ export default function CompanionChat() {
             </p>
           </div>
 
-          {/* Messages — exactly like Talk tab using ChatBubble */}
-          <div className="relative z-10 flex-1 overflow-y-auto px-5 md:px-6 py-5">
+          {/* Messages — Telegram-style lavender pattern background */}
+          <div className="relative z-10 flex-1 overflow-y-auto px-5 md:px-6 py-5"
+            style={{
+              background: '#F2EEF9',
+              backgroundImage: `radial-gradient(${companion.accent}14 1.2px, transparent 1.2px), radial-gradient(${companion.accent}0A 1.2px, transparent 1.2px)`,
+              backgroundSize: '24px 24px, 24px 24px',
+              backgroundPosition: '0 0, 12px 12px',
+            }}>
             <div className="max-w-2xl mx-auto space-y-1">
               {messages.length === 0 && (
                 <p className="text-center text-dark-text/25 text-xs mt-12">
@@ -809,7 +995,7 @@ export default function CompanionChat() {
                     <p className="font-semibold text-sm text-dark-text">{session.title}</p>
                     {session.badge && (
                       <span className="text-[9px] font-bold px-2 py-0.5 rounded-full text-white"
-                        style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>
+                        style={{ background: 'linear-gradient(135deg, #7C5CBF, #A78BDA)' }}>
                         {session.badge}
                       </span>
                     )}
@@ -829,7 +1015,7 @@ export default function CompanionChat() {
               style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(201,75,75,0.12)', backdropFilter: 'blur(12px)' }}>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[9px] font-bold px-2 py-0.5 rounded-full text-white"
-                  style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>PRO</span>
+                  style={{ background: 'linear-gradient(135deg, #7C5CBF, #A78BDA)' }}>PRO</span>
                 <p className="font-display font-bold text-sm text-dark-text">Unlock everything</p>
               </div>
               <p className="text-dark-text/45 text-xs mb-3 leading-relaxed">
@@ -837,7 +1023,7 @@ export default function CompanionChat() {
               </p>
               <button onClick={() => setPaywall('locked')}
                 className="w-full py-3 rounded-full text-white font-semibold text-sm cursor-pointer hover:opacity-90 transition-all"
-                style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>
+                style={{ background: 'linear-gradient(135deg, #7C5CBF, #A78BDA)' }}>
                 Upgrade — ₹299/month
               </button>
             </div>

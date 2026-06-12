@@ -304,7 +304,7 @@ export default function Dashboard() {
   const tabs = [
     { id: 'talk',      label: 'Talk',     icon: '✦' },
     { id: 'matches',   label: 'Matches',  icon: '♡', badge: shortlisted.length || null },
-    { id: 'companion', label: 'Wingman',  icon: '◈' },
+    { id: 'companion', label: 'Friends',  icon: '◈' },
     { id: 'profile',   label: 'You',      icon: null }, // avatar
   ]
 
