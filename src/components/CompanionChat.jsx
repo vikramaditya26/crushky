@@ -634,8 +634,9 @@ export default function CompanionChat() {
     setMsgCount(c => c + 1)
     setIsTyping(true)
 
-    const hasKey = import.meta.env.VITE_ANTHROPIC_API_KEY
-    if (hasKey && companion) {
+    // Try the real AI (server proxy); fall back to scripted replies if the
+    // backend has no key configured or the request fails.
+    if (companion) {
       const reply = await sendMessage(updated.map(m => ({ role: m.role, content: m.content })), companion.system)
       if (reply) {
         setMessages(prev => [...prev, { role: 'assistant', content: reply }])

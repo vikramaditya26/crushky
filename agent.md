@@ -49,7 +49,7 @@ Unlike Hinge/Bumble where you swipe and repeat yourself to every match, on Crush
 | Repo | GitHub (public) | Source of truth |
 | Node | v22 (use `nvm use 22`) | Required for Vite 8+ |
 
-**API Key:** Stored in `.env` as `VITE_ANTHROPIC_API_KEY`. Never commit `.env`. Add to Vercel env vars.
+**API Key:** Server-only as `ANTHROPIC_API_KEY` (NOT `VITE_`-prefixed). Used by the `/api/chat` Vercel serverless function — the key never reaches the browser. Set it in Vercel → Project → Settings → Environment Variables. The old browser-side `VITE_ANTHROPIC_API_KEY` is retired (it leaked the key to every visitor).
 
 ---
 
