@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CakeIcon, HeartIcon, PinIcon, SparkleIcon, PenIcon, CameraIcon } from '../components/Icons'
+import { saveProfile } from '../lib/profile'
 
 function shuffleArr(arr) {
   return [...arr].sort(() => Math.random() - 0.5)
@@ -214,12 +215,19 @@ export default function Signup() {
   }
   const back = () => step === 0 ? navigate('/start') : transition(step - 1)
 
-  const finish = () => {
+  const finish = async () => {
     localStorage.setItem('crushky_user', JSON.stringify({
       ...form,
       dob: `${form.birthYear}-${String(form.birthMonth).padStart(2, '0')}-${String(form.birthDay).padStart(2, '0')}`,
       interests, prompts, photos: selectedPhotos,
     }))
+    // Save to the real database too (never blocks navigation if it fails/slow)
+    try {
+      await Promise.race([
+        saveProfile(form, { interests, prompts, photos: selectedPhotos }),
+        new Promise(r => setTimeout(r, 1500)),
+      ])
+    } catch { /* ignore — demo still proceeds */ }
     navigate('/dashboard')
   }
 
