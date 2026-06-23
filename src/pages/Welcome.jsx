@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { seedDemoUser } from '../lib/demoUser'
 
 // Tinder-style auth gate: full-bleed visual, logo, legalese, stacked auth
 // buttons. Everything is demo — Google "signs in" after a beat, phone goes
@@ -86,6 +87,14 @@ export default function Welcome() {
           onClick={() => navigate('/login')}>
           Trouble signing in?
         </p>
+
+        {/* Investor / demo shortcut — skips auth + signup, lands in the app */}
+        <button
+          onClick={() => { seedDemoUser(); navigate('/dashboard') }}
+          className="w-full mt-6 py-2.5 text-white/55 text-xs font-medium cursor-pointer hover:text-white transition-colors flex items-center justify-center gap-1.5"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 18 }}>
+          Just exploring? Skip into the app →
+        </button>
       </div>
     </div>
   )
