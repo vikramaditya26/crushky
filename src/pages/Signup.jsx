@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CakeIcon, HeartIcon, PinIcon, SparkleIcon, PenIcon, CameraIcon } from '../components/Icons'
 import { saveProfile } from '../lib/profile'
 
 function shuffleArr(arr) {
@@ -155,25 +154,28 @@ function ContinueFab({ onClick, disabled }) {
   )
 }
 
-function StepIcon({ children }) {
+// Editorial one-question scaffold — magazine-style: typographic step marker,
+// oversized Playfair headline, generous whitespace.
+function Screen({ n, total, kicker, title, subtitle, children }) {
   return (
-    <div className="w-9 h-9 rounded-full flex items-center justify-center mb-6"
-      style={{ background: 'rgba(201,75,75,0.08)', border: '1px solid rgba(201,75,75,0.15)' }}>
-      <span className="text-base">{children}</span>
-    </div>
-  )
-}
+    <div className="min-h-screen px-7 pt-28 pb-40 max-w-md mx-auto w-full au">
+      {/* Step marker */}
+      <div className="flex items-center gap-3 mb-8">
+        <span className="font-display italic text-rose" style={{ fontSize: 19 }}>
+          {String(n).padStart(2, '0')}
+        </span>
+        <span className="text-dark-text/20 text-xs">/ {String(total).padStart(2, '0')}</span>
+        <span className="h-px flex-1 bg-dark-text/10" />
+        <span className="text-dark-text/40 text-[10px] font-semibold tracking-[0.25em] uppercase">{kicker}</span>
+      </div>
 
-// One-question screen scaffold
-function Screen({ icon, title, subtitle, children }) {
-  return (
-    <div className="min-h-screen px-6 pt-24 pb-36 max-w-md mx-auto w-full au">
-      <StepIcon>{icon}</StepIcon>
-      <h1 className="font-display text-[30px] md:text-4xl font-bold text-dark-text leading-tight mb-2">
+      {/* Oversized headline */}
+      <h1 className="font-display font-bold text-dark-text mb-3"
+        style={{ fontSize: 'clamp(32px, 9vw, 46px)', lineHeight: 1.08, letterSpacing: '-0.015em' }}>
         {title}
       </h1>
-      {subtitle && <p className="text-dark-text/40 text-sm mb-10">{subtitle}</p>}
-      {!subtitle && <div className="mb-10" />}
+      {subtitle && <p className="text-dark-text/45 text-[15px] leading-relaxed mb-12 max-w-sm">{subtitle}</p>}
+      {!subtitle && <div className="mb-12" />}
       {children}
     </div>
   )
@@ -296,7 +298,7 @@ export default function Signup() {
 
         {/* ── BASICS: name + birthday ── */}
         {current === 'basics' && (
-          <Screen icon={<CakeIcon size={17} color="#C94B4B" />} title="Let's start with the basics." subtitle="Your name and birthday — we only ever show your age.">
+          <Screen n={1} total={6} kicker="Basics" title="Let's start with the basics." subtitle="Your name and birthday — we only ever show your age.">
             <p className="text-dark-text/50 text-sm font-medium mb-3">First name</p>
             <SignupInput
               autoFocus
@@ -328,7 +330,7 @@ export default function Signup() {
 
         {/* ── IDENTITY: gender + seeking ── */}
         {current === 'identity' && (
-          <Screen icon={<HeartIcon size={17} color="#C94B4B" />} title="You, and who you're here for.">
+          <Screen n={2} total={6} kicker="Identity" title="You, and who you're here for.">
             <p className="text-dark-text/50 text-sm font-medium mb-1">I am a</p>
             <div className="mb-10">
               {['Man', 'Woman', 'Non-binary'].map(g => (
@@ -348,7 +350,7 @@ export default function Signup() {
 
         {/* ── WORLD: city + work ── */}
         {current === 'world' && (
-          <Screen icon={<PinIcon size={17} />} title="Your world." subtitle="We match you in your city — no long-distance roulette.">
+          <Screen n={3} total={6} kicker="Your world" title="Your world." subtitle="We match you in your city — no long-distance roulette.">
             <p className="text-dark-text/50 text-sm font-medium mb-3">City</p>
             <SignupInput
               value={form.city} onChange={set('city')}
@@ -378,7 +380,7 @@ export default function Signup() {
 
         {/* ── INTERESTS ── */}
         {current === 'interests' && (
-          <Screen icon={<SparkleIcon size={17} color="#C94B4B" />} title="What are you into?" subtitle="Tap what you love. Crushky listens to taste, not just looks.">
+          <Screen n={4} total={6} kicker="Taste" title="What are you into?" subtitle="Tap what you love. Crushky listens to taste, not just looks.">
             {/* Category pills */}
             <div className="flex gap-2 mb-5">
               {CATEGORIES.map(c => (
@@ -455,7 +457,7 @@ export default function Signup() {
 
         {/* ── PROMPTS ── */}
         {current === 'prompts' && (
-          <Screen icon={<PenIcon size={17} color="#C94B4B" />} title="Say it in your words." subtitle="Answer one. This is what makes people stop scrolling.">
+          <Screen n={5} total={6} kicker="Your words" title="Say it in your words." subtitle="Answer one. This is what makes people stop scrolling.">
             <div className="space-y-3">
               {PROMPTS.map(p => (
                 <div key={p.id} className="bg-white rounded-2xl border border-dark-text/8 px-4 py-4">
@@ -477,7 +479,7 @@ export default function Signup() {
 
         {/* ── PHOTOS + PREVIEW ── */}
         {current === 'photos' && (
-          <Screen icon={<CameraIcon size={17} color="#C94B4B" />} title="Last one — pick your photos." subtitle="Demo photos for now. Tap to select.">
+          <Screen n={6} total={6} kicker="Photos" title="Last one — pick your photos." subtitle="Demo photos for now. Tap to select.">
             <div className="flex gap-3 mb-10">
               {DEMO_PHOTOS.map((photo, i) => {
                 const rotations = [-3, 1.5, -1]
