@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { seedMatches } from '../data/seedMatches'
 import { SpotifyIcon, InstagramIcon, CalendarIcon, PinIcon, HandshakeIcon, SparkleIcon, ForkIcon } from '../components/Icons'
 import Pic from '../components/Pic'
+import { sharedTaste } from '../lib/interests'
 
 const QUICK_ACTIONS = [
   { icon: <InstagramIcon size={14} />, label: 'Share Instagram' },
@@ -386,22 +387,36 @@ export default function MatchProfile() {
               </div>
             </div>
 
-            {/* What you two share — human, specific, no percentages */}
-            {match.inCommon?.length > 0 && (
-              <div className="bg-white rounded-2xl p-5 border border-dark-text/5 mb-5">
-                <h2 className="font-display text-sm font-bold mb-4 flex items-center gap-2">
-                  <HandshakeIcon size={16} color="#C94B4B" /> What you two share
-                </h2>
-                <div className="space-y-3">
-                  {match.inCommon.map((item, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <span className="w-5 h-5 rounded-full bg-rose/10 text-rose flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">✓</span>
-                      <p className="text-dark-text/70 text-sm leading-relaxed">{item}</p>
-                    </div>
-                  ))}
+            {/* What you two share — real taste overlap (from your signup) first,
+                then the narrative reasons */}
+            {(() => {
+              const shared = sharedTaste(match)
+              const items = [
+                ...shared.map(t => ({ real: true, text: `You both picked ${t}` })),
+                ...(match.inCommon || []).map(text => ({ real: false, text })),
+              ]
+              if (items.length === 0) return null
+              return (
+                <div className="bg-white rounded-2xl p-5 border border-dark-text/5 mb-5">
+                  <h2 className="font-display text-sm font-bold mb-4 flex items-center gap-2">
+                    <HandshakeIcon size={16} color="#C94B4B" /> What you two share
+                  </h2>
+                  <div className="space-y-3">
+                    {items.map((item, i) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <span className="w-5 h-5 rounded-full bg-rose/10 text-rose flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">✓</span>
+                        <p className="text-dark-text/70 text-sm leading-relaxed">
+                          {item.text}
+                          {item.real && (
+                            <span className="ml-1.5 text-[9px] font-bold text-rose/70 uppercase tracking-wide">· from your taste</span>
+                          )}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )
+            })()}
 
             {/* Why you click */}
             <div className="bg-gradient-to-br from-rose/8 to-amber/5 border border-rose/10 rounded-2xl p-5 mb-5">

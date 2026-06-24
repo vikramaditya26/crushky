@@ -6,6 +6,7 @@ import { seedMatches } from '../data/seedMatches'
 import { createRecognizer } from '../utils/speech'
 import { SpotifyIcon, InstagramIcon, PhoneIcon, BellIcon, EyeIcon, ShieldIcon, DownloadIcon, BlockIcon, HelpIcon } from '../components/Icons'
 import Pic from '../components/Pic'
+import { INTEREST_TITLES, sharedTasteLine } from '../lib/interests'
 
 // One soft pop when a match reveals — Web Audio, no asset needed
 function playPop() {
@@ -92,19 +93,6 @@ function CountUp({ target, duration = 1400 }) {
 
 // Mirrors signup demo photos (user.photos stores selected indices)
 const PROFILE_PHOTOS = ['/model/10.jpg', '/model/11.jpg', '/model/12.jpg']
-
-// Map interest ids picked at signup → display names
-const INTEREST_TITLES = {
-  taylor: 'Taylor Swift', bts: 'BTS', arijit: 'Arijit Singh', rahman: 'A.R. Rahman',
-  diljit: 'Diljit Dosanjh', prateek: 'Prateek Kuhad', anuv: 'Anuv Jain', billie: 'Billie Eilish',
-  weeknd: 'The Weeknd', shreya: 'Shreya Ghoshal', olivia: 'Olivia Rodrigo', karan: 'Karan Aujla',
-  interstellar: 'Interstellar', inception: 'Inception', 'dark-knight': 'The Dark Knight',
-  parasite: 'Parasite', shawshank: 'Shawshank', forrest: 'Forrest Gump', lalaland: 'La La Land',
-  oppenheimer: 'Oppenheimer', dune: 'Dune', '3idiots': '3 Idiots', znmd: 'ZNMD', tamasha: 'Tamasha',
-  sapiens: 'Sapiens', atomic: 'Atomic Habits', alchemist: 'The Alchemist', 1984: '1984',
-  zero: 'Zero to One', norwegian: 'Norwegian Wood', thinking: 'Think Fast & Slow',
-  deepwork: 'Deep Work', ikigai: 'Ikigai',
-}
 
 function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
   const [burst, setBurst] = useState(false)
@@ -542,7 +530,7 @@ export default function Dashboard() {
                             </h3>
                             <p className="text-white/65 text-xs mt-1">{match.city} · {match.work}</p>
                             <p className="text-white/85 text-[13px] mt-2.5 line-clamp-2 leading-relaxed font-display italic">
-                              "{match.inCommon?.[0] || match.whyYouMatch.split('.')[0]}"
+                              "{sharedTasteLine(match) || match.inCommon?.[0] || match.whyYouMatch.split('.')[0]}"
                             </p>
                             <div className="flex items-center justify-between mt-3.5">
                               <div className="flex gap-1.5">
