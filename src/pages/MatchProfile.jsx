@@ -49,32 +49,73 @@ export default function MatchProfile() {
 
   const firstName = match.name.split(' ')[0]
 
-  // Keyword-aware canned replies — she responds to what you actually said,
-  // so a 2-minute demo poke doesn't break the illusion.
+  // Keyword-aware canned replies — she responds to what you actually said and
+  // varies her lines, so a real poke doesn't break the illusion.
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)]
   const smartReply = (text) => {
     const t = text.toLowerCase()
-    if (/\b(coffee|chai|cafe|café)\b/.test(t))
-      return `Okay important question — ${match.dateSuggestion.venue} does an unreasonably good filter coffee. That's where we're going.`
-    if (/\b(movie|film|netflix|cinema|watch)\b/.test(t))
-      return `Wait, you're into films too? Okay, hot take incoming: the ending matters more than the whole movie. Fight me.`
-    if (/\b(book|read|novel)\b/.test(t))
-      return `I knew you'd bring up books. I'm three chapters into one I can't put down — I'll lend it to you IF the date goes well.`
-    if (/\b(music|song|playlist|spotify|concert)\b/.test(t))
-      return `My playlist is basically a personality test. Send me one song that's 'so you' and I'll tell you if we'd survive a road trip.`
-    if (/\b(date|meet|saturday|sunday|weekend|plan)\b/.test(t))
-      return `I was hoping you'd ask 😄 ${match.dateSuggestion.area} works for me — pick a day from the planner thing!`
-    if (/\b(work|job|startup|office)\b/.test(t))
-      return `Honestly? ${match.work.split(' at ')[0]} keeps me busy but I refuse to be one of those people who only talks about work. Next topic.`
-    if (/\b(hi|hey|hello|heyy)\b/.test(t))
-      return `Heyy! Crushky said we're a ${match.compatibility}% match so... no pressure but this conversation better be good 😄`
-    if (t.includes('?'))
-      return `Good question. Short answer: yes. Long answer: let's get coffee and I'll explain properly.`
-    const fallback = [
+    const groups = [
+      { re: /\b(coffee|chai|cafe|café|tea)\b/, lines: [
+        `Okay important question — ${match.dateSuggestion.venue} does an unreasonably good filter coffee. That's where we're going.`,
+        `Chai or coffee says a lot about a person. I'm watching your answer very closely 👀`,
+      ]},
+      { re: /\b(movie|film|netflix|cinema|watch|show|series)\b/, lines: [
+        `Wait, you're into films too? Hot take incoming: the ending matters more than the whole movie. Fight me.`,
+        `I judge people by their comfort rewatch. Go on — what's yours? Be brave.`,
+      ]},
+      { re: /\b(book|read|novel|author)\b/, lines: [
+        `I knew you'd bring up books. I'm three chapters into one I can't put down — I'll lend it to you IF the date goes well.`,
+        `A reader. Good. Last book that genuinely changed your mind — go.`,
+      ]},
+      { re: /\b(music|song|playlist|spotify|concert|band|artist)\b/, lines: [
+        `My playlist is basically a personality test. Send me one song that's 'so you' and I'll tell you if we'd survive a road trip.`,
+        `Okay but do you actually go to gigs or are you a 'listen at home' person? Important data.`,
+      ]},
+      { re: /\b(food|eat|dinner|lunch|restaurant|cook|foodie|hungry)\b/, lines: [
+        `A person who takes food seriously? We're going to get along dangerously well.`,
+        `Fair warning: I will order too much and make you try all of it. Non-negotiable.`,
+      ]},
+      { re: /\b(travel|trip|trek|mountains|beach|goa|vacation|flight)\b/, lines: [
+        `Mountains or beach — and your answer decides whether this works out 😄`,
+        `I'm a 'wander with no plan' traveller. Please tell me you're not a spreadsheet-itinerary person.`,
+      ]},
+      { re: /\b(date|meet|saturday|sunday|weekend|plan|free)\b/, lines: [
+        `I was hoping you'd ask 😄 ${match.dateSuggestion.area} works for me — pick a day from the planner!`,
+        `Okay, real plans now? Bold. I respect it. Pick a day and I'll be there.`,
+      ]},
+      { re: /\b(work|job|startup|office|career|study|college)\b/, lines: [
+        `Honestly? ${match.work.split(' at ')[0]} keeps me busy, but I refuse to be one of those people who only talks about work. Next topic.`,
+        `I'll tell you about work if you tell me what you'd do if money wasn't a thing. Deal?`,
+      ]},
+      { re: /\b(funny|lol|haha|joke|😂|🤣|lmao)\b/, lines: [
+        `Oh good, you're funny. That was 80% of my checklist, honestly.`,
+        `Careful — if you make me actually laugh I get attached fast.`,
+      ]},
+      { re: /\b(cute|pretty|beautiful|gorgeous|handsome|like you|into you)\b/, lines: [
+        `Smooth. I'll allow it 😄 but you'll have to be more interesting than charming to keep me here.`,
+        `Flattery noted and quietly appreciated. Now say something real.`,
+      ]},
+      { re: /\b(love|relationship|serious|looking for|commit|feelings)\b/, lines: [
+        `I'm not here to waste time either. I want the real thing — does that scare you or excite you?`,
+        `Depth over games, always. If we click, we click honestly. That work for you?`,
+      ]},
+      { re: /\b(hi|hey|hello|heyy|yo|hii)\b/, lines: [
+        `Heyy! Crushky says we're a ${match.compatibility}% match, so... no pressure, but this better be a good conversation 😄`,
+        `Hi you. Okay, first impressions matter — impress me (gently).`,
+      ]},
+    ]
+    const hit = groups.find(g => g.re.test(t))
+    if (hit) return pick(hit.lines)
+    if (t.includes('?')) return pick([
+      `Good question. Short answer: yes. Long answer: let's get coffee and I'll explain properly.`,
+      `Ooh, asking the real questions already. I like that. Ask me in person?`,
+    ])
+    return pick([
       `Haha that's so true! Tell me more about that.`,
       `Okay wait, that's actually really interesting.`,
       `You're fun to talk to, you know that? 😄`,
-    ]
-    return fallback[Math.floor(Math.random() * fallback.length)]
+      `See, this is why Crushky matched us. Keep going.`,
+    ])
   }
 
   const handleSend = () => {

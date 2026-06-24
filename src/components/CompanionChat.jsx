@@ -3,6 +3,7 @@ import { sendMessage } from '../utils/claudeApi'
 import { createRecognizer } from '../utils/speech'
 import ChatBubble from './ChatBubble'
 import { VideoIcon, BrainIcon, JournalIcon, MasksIcon, SparkleIcon, MapIcon } from './Icons'
+import { companionReply } from '../lib/companionReplies'
 
 // ─── 4 AI virtual friends — purple family palette, distinct voices ───
 const COMPANIONS = [
@@ -100,15 +101,6 @@ function speak(text, voice = {}) {
     window.speechSynthesis.speak(u)
   } catch { /* unsupported browser */ }
 }
-
-const DEMO_REPLIES = [
-  "That's really interesting — tell me more about that.",
-  "I totally get that. What's the part you keep going back to?",
-  "Honestly? You're being too hard on yourself. You have great instincts.",
-  "Ha, I knew you'd say that. Here's what I actually think...",
-  "You already know the answer. Let me help you see it clearly.",
-  "That makes a lot of sense. How long have you been feeling this way?",
-]
 
 const SESSIONS = [
   {
@@ -646,7 +638,8 @@ export default function CompanionChat() {
       }
     }
     setTimeout(() => {
-      const reply = DEMO_REPLIES[msgCount % DEMO_REPLIES.length]
+      // In-character, topic-aware scripted reply (no API needed)
+      const reply = companionReply(companion?.id, text, msgCount)
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
       if (voiceOnRef.current) speak(reply, companion.voice)
       setIsTyping(false)
