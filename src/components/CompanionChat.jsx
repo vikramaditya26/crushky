@@ -4,6 +4,7 @@ import { createRecognizer } from '../utils/speech'
 import ChatBubble from './ChatBubble'
 import { VideoIcon, BrainIcon, JournalIcon, MasksIcon, SparkleIcon, MapIcon } from './Icons'
 import { companionReply } from '../lib/companionReplies'
+import { getSessionScript } from '../lib/sessionScripts'
 
 // ─── 4 AI virtual friends — purple family palette, distinct voices ───
 const COMPANIONS = [
@@ -113,64 +114,26 @@ const SESSIONS = [
     id: 'deep',     icon: <BrainIcon size={20} color="#7C5CBF" />, title: 'Deep Dive',
     desc: "Let's explore something you've been carrying around but not saying.",
     color: 'rgba(155,143,166,0.08)',
-    script: [
-      "Deep dive time. What's something that's been sitting with you that you haven't told anyone?",
-      "Thank you for saying that out loud — that took something. How long have you been carrying it?",
-      "And when it's at its loudest, what does it make you believe about yourself?",
-      "Here's what I notice: that belief sounds old, almost like it was handed to you. Whose voice is it, really?",
-      "You're allowed to set it down. Not forever — just for tonight. What would it feel like to put it down?",
-      "That's real progress. Most people never even name this stuff, and you just did. I'm proud of you.",
-    ],
   },
   {
     id: 'journal',  icon: <JournalIcon size={20} color="#7C5CBF" />, title: 'Talk Through Your Day',
     desc: "Tell me everything. I'll ask the right questions.",
     color: 'rgba(143,166,143,0.08)',
-    script: [
-      "I'm all ears. Walk me through your day — from the moment you woke up. What actually happened?",
-      "Okay. And what was the best two minutes of the whole day, however small?",
-      "What's the part you'd redo if you could rewind it?",
-      "If today were a chapter in a book, what would you title it?",
-      "Thank you for letting me in on all of it. Sleep easy — tomorrow's a fresh page, and I'll be here.",
-    ],
   },
   {
     id: 'roleplay', icon: <MasksIcon size={20} color="#7C5CBF" />, title: 'Roleplay a Conversation',
     desc: "Practice that important conversation before it happens — with a match, a date, anyone.",
     color: 'rgba(212,149,106,0.08)',
-    script: [
-      "Okay, who do you want to practice talking to? Tell me about them and what you want to say.",
-      "Got it. I'll play them. Go ahead — say the first thing, exactly how you actually would.",
-      "(as them) Oh — hey. I wasn't expecting you to bring that up. What do you mean?",
-      "(as them) Okay… I hear you. Honestly, it means a lot that you said it out loud.",
-      "Pause — that was great. You were clear and you didn't over-apologise. One tweak: slow down at the very start.",
-      "Want to run it once more, or do you feel ready for the real thing? Either way, you've got this.",
-    ],
   },
   {
     id: 'affirmation', icon: <SparkleIcon size={20} color="#7C5CBF" />, title: 'Affirmation Session',
     desc: "Some things you need to hear. I'm going to say them.",
     color: 'rgba(201,75,75,0.06)',
-    script: [
-      "Before we start — just know I actually mean all of this. Ready? Here we go.",
-      "You are not behind in life. You're on your own clock, and it is working.",
-      "The way you care about people is rare. Don't let anyone make you feel it's 'too much.'",
-      "You've survived every single hard day so far. That's a 100% track record. Don't forget it.",
-      "Someone is going to feel so lucky to be chosen by you. Including, one day, you.",
-      "Okay. Breathe that in. Come back and read it again whenever the world gets loud.",
-    ],
   },
   {
     id: 'life',     icon: <MapIcon size={20} color="#7C5CBF" />, title: 'Map Your Life',
     desc: "What do you actually want in the next year? Let's get specific.",
     color: 'rgba(143,166,143,0.06)',
-    script: [
-      "One year from now. Not 'happy' — actually specific. Where are you, what are you doing, who's around?",
-      "I love that. Now what's one small thing in that picture you could start this month?",
-      "What's the fear that usually stops you from starting?",
-      "And if that fear turned out to be wrong — what suddenly becomes possible?",
-      "Write that down somewhere you'll see it. That's not a daydream, that's a direction. We'll revisit it.",
-    ],
   },
 ]
 
@@ -531,7 +494,7 @@ function CompanionVoiceEntry({ companion, onStart, onBack }) {
 }
 
 // ══════════════════════════════════════
-export default function CompanionChat() {
+export default function CompanionChat({ forceOpen = null }) {
   const [selected, setSelected] = useState(null)
   const [chatStarted, setChatStarted] = useState(false)
   const [chatTab, setChatTab] = useState('chat')
@@ -560,6 +523,15 @@ export default function CompanionChat() {
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
   useEffect(() => { if (showInput) inputRef.current?.focus() }, [showInput])
+
+  // "She texted you first" — open straight into her chat when arriving via a nudge
+  useEffect(() => {
+    if (!forceOpen) return
+    if (!isPremium && forceOpen !== FREE_COMPANION) { setSelected(forceOpen); setPaywall('locked'); return }
+    setSelected(forceOpen)
+    startChat(forceOpen)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [forceOpen])
 
   const companion = COMPANIONS.find(c => c.id === selected)
 
@@ -666,10 +638,10 @@ export default function CompanionChat() {
     // generic reply — so Deep Dive, Roleplay, etc. play out turn by turn.
     const active = sessionRef.current
     if (active) {
-      const s = SESSIONS.find(x => x.id === active.id)
-      if (s?.script && active.step < s.script.length) {
-        const line = s.script[active.step]
-        const last = active.step + 1 >= s.script.length
+      const script = getSessionScript(active.id, selected)
+      if (script && active.step < script.length) {
+        const line = script[active.step]
+        const last = active.step + 1 >= script.length
         sessionRef.current = last ? null : { id: active.id, step: active.step + 1 }
         setTimeout(() => {
           setMessages(prev => [...prev, { role: 'assistant', content: line }])
@@ -732,7 +704,8 @@ export default function CompanionChat() {
       else setPaywall('video')
       return
     }
-    if (session.script) {
+    const script = getSessionScript(session.id, selected)
+    if (script) {
       setChatTab('chat')
       sessionRef.current = { id: session.id, step: 1 } // step 0 is posted now
       const userMsg = { role: 'user', content: `Let's do: ${session.title}` }
@@ -740,7 +713,7 @@ export default function CompanionChat() {
       setMsgCount(c => c + 1)
       setIsTyping(true)
       setTimeout(() => {
-        const line = session.script[0]
+        const line = script[0]
         setMessages(prev => [...prev, { role: 'assistant', content: line }])
         if (voiceOnRef.current) speak(line, companion?.voice)
         setIsTyping(false)

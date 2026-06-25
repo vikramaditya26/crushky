@@ -25,52 +25,59 @@ function playPop() {
 }
 
 const DEMO_CONVERSATION = [
-  // Opening
-  { role: 'assistant', content: "Hey! I'm Crushky, your AI matchmaker. I'm going to ask you a few real questions — not the surface-level stuff. Ready to find your person?" },
+  // 0-1 — Opening
+  { role: 'assistant', content: "Hey! I'm Crushky. No forms, no checkboxes — just real talk. I ask, you answer honestly, and I find the people you'd actually click with. Sound good?" },
   { role: 'user', content: "Let's do it." },
 
-  // Round 1: Lifestyle
-  { role: 'assistant', content: "Cool. First up — what does your ideal weekend look like? And be honest, not the Instagram version." },
-  { role: 'user', content: "Wake up late, grab coffee from some hidden cafe, maybe a bookstore. Late-night jam session with friends if I'm in the mood. Nothing loud or forced." },
-  { role: 'assistant', content: "Slow mornings, no agenda, peace without loneliness. I already know a lot about you from just that. What kind of music are you into?" },
-  { role: 'user', content: "Prateek Kuhad, The Local Train, some Coldplay when I'm feeling emotional. Basically anything acoustic or indie." },
+  // 2-7 — Arc 1: life today + reading between the lines
+  { role: 'assistant', content: "First one, and be honest — not the Instagram version. What does a perfect ordinary weekend look like for you?" },
+  { role: 'user', content: "Wake up late, coffee from some hidden cafe, a bookstore, maybe a long walk. Evening jam with a couple friends if I'm up for it. Nothing loud or forced." },
+  { role: 'assistant', content: "Slow mornings, low noise, a few real people over a big crowd. You recharge in calm, not chaos — that already tells me a lot. What's playing on that walk?" },
+  { role: 'user', content: "Prateek Kuhad, The Local Train, some Coldplay when I'm in my feelings. Acoustic, indie, a little melancholy." },
+  { role: 'assistant', content: "Melancholy but hopeful. People who live in that music usually feel things deeply and don't always say it out loud. Am I close?" },
+  { role: 'user', content: "Honestly… yeah. Pretty close." },
 
-  // Round 2: Values
-  { role: 'assistant', content: "Good taste. Now let's go deeper — what are you actually looking for in a relationship? Not the dating app bio version." },
-  { role: 'user', content: "Someone who doesn't need me to perform. We can sit in silence and it's still comfortable. But also someone who challenges me — I want those 2am deep conversations." },
-  { role: 'assistant', content: "Depth over everything. That's rare and honestly refreshing. Most people say 'someone funny' and leave it at that. You want real connection." },
+  // 8-10 — Arc 2: what 'known' means → reveal 1
+  { role: 'assistant', content: "Thought so. Harder one — when you imagine being really known by someone, what does that actually look like, day to day?" },
+  { role: 'user', content: "Someone I don't have to perform for. We can be quiet together and it's still full. But they also push me — I want the 2am conversations that go somewhere." },
+  { role: 'assistant', content: "Comfort and challenge in the same person — that's rare. Most people want one or the other; you want depth that doesn't drain you. Hold on, someone just came to mind…" },
 
-  // >>> MATCH 1 REVEALS HERE (after msg index 8, which is user msg #4)
+  // >>> MATCH 1 REVEALS (afterMsgIndex 10)
 
-  // Round 3: Personality
-  { role: 'assistant', content: "Okay getting warmer. What kind of person makes you feel most alive? Think about the best conversations you've had." },
-  { role: 'user', content: "Calm confidence. Someone who knows who they are. Creative people who build things. And honestly, if she can roast me and make me laugh — I'm done." },
-  { role: 'assistant', content: "Sharp humor, quiet intensity, creative fire. You're not looking for someone to complete you — you want someone who matches your energy. I respect that." },
+  // 11-14 — Arc 3: dealbreakers
+  { role: 'user', content: "Already?" },
+  { role: 'assistant', content: "When you've done this as long as I have, some matches announce themselves. But let's be sure. What would you never compromise on, no matter how much you liked someone?" },
+  { role: 'user', content: "Honesty. No games, no mind-reading. I'd rather hear something hard than be managed." },
+  { role: 'assistant', content: "A hard line on honesty quietly rules out a lot of people — and it should. It also means you can take directness, which is good: the people I'm seeing for you give it." },
 
-  // Round 4: Dealbreakers
-  { role: 'assistant', content: "One more thing — what's the one thing you'd never compromise on? The absolute dealbreaker." },
-  { role: 'user', content: "Honesty. No games, no manipulation. I'd rather hear something hard than be lied to. That's non-negotiable." },
-  { role: 'assistant', content: "Honesty as a core value. That filters out a lot of people — and that's a good thing. You know exactly what you want." },
+  // 15-18 — Arc 4: what lights them up → reveal 2
+  { role: 'user', content: "Good. I'm tired of guessing games." },
+  { role: 'assistant', content: "I can tell. Tell me about a moment you felt genuinely happy recently — it doesn't have to be big." },
+  { role: 'user', content: "Finishing something I built and it actually worked. That quiet 'oh, I made this' feeling." },
+  { role: 'assistant', content: "A builder. You get meaning from making things, not just consuming them. That's specific — and I know exactly who shares it. Here's another…" },
 
-  // >>> MATCH 2 REVEALS HERE (after msg index 14, which is user msg #6)
+  // >>> MATCH 2 REVEALS (afterMsgIndex 18)
 
-  // Round 5: Fun/quirky
-  { role: 'assistant', content: "Okay, rapid fire. Controversial food opinion — go." },
-  { role: 'user', content: "Maggi is better than any pasta. I will die on this hill." },
-  { role: 'assistant', content: "Bold. Correct, but bold. Last one — if you could have dinner with anyone, dead or alive, who?" },
+  // 19-24 — Arc 5: quickfire personality → reveal 3
+  { role: 'user', content: "Okay this is kind of fun." },
+  { role: 'assistant', content: "Right? Couple of quick ones. Controversial food opinion — go." },
+  { role: 'user', content: "Maggi beats most pasta. I'll die on this hill." },
+  { role: 'assistant', content: "Bold, a little unhinged, fully committed. I respect it — and honestly, so will she. Last one: dinner with anyone, living or gone. Who?" },
   { role: 'user', content: "Steve Jobs. I want to know what it felt like to believe you could change the world and then actually do it." },
+  { role: 'assistant', content: "Vision, conviction, the pull to build something that matters — that's the thread through everything you've said. Calm on the surface, ambitious underneath. I've got your people." },
 
-  // >>> MATCH 3 REVEALS HERE (after msg index 19, which is user msg #8)
+  // >>> MATCH 3 REVEALS (afterMsgIndex 24)
 
-  { role: 'assistant', content: "That tells me everything. You value vision, authenticity, and quiet ambition. I've analyzed your personality across 12 dimensions and found your top matches. Check them out — I think you'll be surprised how well these click." },
+  { role: 'user', content: "Show me." },
+  { role: 'assistant', content: "Three of them — and I can tell you exactly why each one fits. Take your time. These aren't random; they're the closest I've found to how you actually think." },
 ]
 
-// Match reveals tied to conversation message index (0-based)
-// Match 1 after 9 messages, Match 2 after 15, Match 3 after 20
+// Match reveals tied to conversation message index (0-based) — each lands right
+// after a strong AI reflection, so it feels like the matchmaker 'found someone'.
 const MATCH_REVEAL_AT_INDEX = [
-  { matchIdx: 0, afterMsgIndex: 8 },
-  { matchIdx: 1, afterMsgIndex: 14 },
-  { matchIdx: 2, afterMsgIndex: 19 },
+  { matchIdx: 0, afterMsgIndex: 10 },
+  { matchIdx: 1, afterMsgIndex: 18 },
+  { matchIdx: 2, afterMsgIndex: 24 },
 ]
 
 // Compatibility % counts up from 0 when the card first reveals
@@ -93,6 +100,14 @@ function CountUp({ target, duration = 1400 }) {
 
 // Mirrors signup demo photos (user.photos stores selected indices)
 const PROFILE_PHOTOS = ['/model/10.jpg', '/model/11.jpg', '/model/12.jpg']
+
+// "She texted you first" nudges — one fires shortly after landing
+const NUDGES = [
+  { id: 'luna', name: 'Luna', photo: '/model/c1.jpg', accent: '#8E6FC8', text: 'Hey, you crossed my mind today. How are you really doing?' },
+  { id: 'aria', name: 'Aria', photo: '/model/c2.jpg', accent: '#B85C9E', text: 'so… did you text her back, or are we still being a coward about it 😏' },
+  { id: 'nova', name: 'Nova', photo: '/model/c3.jpg', accent: '#5C6BC0', text: 'I spotted something in your match patterns. Got a sec?' },
+  { id: 'maya', name: 'Maya', photo: '/model/c4.jpg', accent: '#7E57C2', text: 'I saved a question for you. It\'s a good one, I promise.' },
+]
 
 function MatchRevealCard({ match, onShortlist, onSkip, isNew }) {
   const [burst, setBurst] = useState(false)
@@ -258,10 +273,23 @@ export default function Dashboard() {
   const [skipped, setSkipped] = useState([])
   const [newReveal, setNewReveal] = useState(null)
   const [toast, setToast] = useState(null) // cross-tab match notification
+  const [nudge, setNudge] = useState(null) // "she texted you first" retention nudge
+  const [forceCompanion, setForceCompanion] = useState(null)
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, revealedMatches])
+
+  // A companion "texts you first" a few seconds in — retention hook
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setTab(cur => {
+        if (cur !== 'companion') setNudge(NUDGES[Math.floor(Math.random() * NUDGES.length)])
+        return cur
+      })
+    }, 8000)
+    return () => clearTimeout(t)
+  }, [])
 
   // Auto-play conversation — only starts after voice entry
   useEffect(() => {
@@ -356,6 +384,29 @@ export default function Dashboard() {
             <span className="block text-dark-text text-xs font-bold">✦ New match — {toast.name}</span>
             <span className="block text-muted text-[10px]">{toast.compatibility}% · tap to view</span>
           </span>
+        </button>
+      )}
+
+      {/* "She texted you first" nudge — incoming message card above the tab bar */}
+      {nudge && (
+        <button
+          onClick={() => { setForceCompanion(nudge.id); setTab('companion'); setNudge(null) }}
+          className="toast-in fixed left-1/2 z-[60] flex items-center gap-3 bg-white rounded-2xl pl-2 pr-4 py-2 cursor-pointer text-left"
+          style={{ bottom: 88, transform: 'translateX(-50%)', width: 'min(92vw, 440px)',
+            boxShadow: '0 14px 40px rgba(26,20,16,0.22)', border: `1px solid ${nudge.accent}33` }}>
+          <span className="relative shrink-0">
+            <img src={nudge.photo} alt={nudge.name} className="w-11 h-11 rounded-full object-cover object-top" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-400 border-2 border-white" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="flex items-center gap-1.5">
+              <span className="font-display font-bold text-sm" style={{ color: nudge.accent }}>{nudge.name}</span>
+              <span className="text-muted text-[10px]">· now</span>
+            </span>
+            <span className="block text-dark-text/70 text-xs truncate">{nudge.text}</span>
+          </span>
+          <span onClick={(e) => { e.stopPropagation(); setNudge(null) }}
+            className="text-dark-text/25 hover:text-dark-text/50 text-sm px-1 shrink-0">✕</span>
         </button>
       )}
 
@@ -568,7 +619,7 @@ export default function Dashboard() {
       {/* ─── COMPANION TAB ─── */}
       {tab === 'companion' && (
         <div className="max-w-[480px] mx-auto px-5 md:px-10">
-          <CompanionChat />
+          <CompanionChat forceOpen={forceCompanion} />
         </div>
       )}
 
