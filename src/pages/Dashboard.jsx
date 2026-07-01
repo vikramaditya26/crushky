@@ -440,7 +440,7 @@ export default function Dashboard() {
       )}
 
       {tab === 'talk' && talkStarted && (
-        <div className="max-w-[480px] mx-auto flex flex-col bg-white" style={{ height: 'calc(100dvh - 120px)' }}>
+        <div className="max-w-[480px] mx-auto flex flex-col" style={{ height: 'calc(100dvh - 120px)' }}>
           {/* Slim listening indicator */}
           <div className="flex items-center justify-center gap-2 py-2 border-b border-dark-text/5">
             <span className="w-1.5 h-1.5 bg-rose rounded-full animate-pulse" />
@@ -625,7 +625,8 @@ export default function Dashboard() {
                   {user.name || 'You'}{user.dob ? `, ${new Date().getFullYear() - parseInt(user.dob.slice(0, 4))}` : ''}
                 </h2>
                 <p className="text-muted text-xs mt-0.5">{user.city || '—'} · {user.work || '—'}</p>
-                <span className="inline-flex items-center gap-1 mt-1.5 bg-rose/8 text-rose text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                  style={{ background: 'rgba(46,125,91,0.1)', color: '#2E7D5B' }}>
                   ✓ Verified (demo)
                 </span>
               </div>

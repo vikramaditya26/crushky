@@ -266,7 +266,17 @@ export default function Signup() {
   const totalPicked = Object.values(interests).flat().length
 
   return (
-    <div className="min-h-screen relative" style={{ background: '#FFFFFF' }}>
+    <div className="min-h-screen relative"
+      style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F6EFE6 100%)' }}>
+      {/* Soft warm accents */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute" style={{
+          top: 0, right: 0, width: '50vw', height: '40vh',
+          background: 'radial-gradient(ellipse at top right, rgba(201,75,75,0.05), transparent 65%)' }} />
+        <div className="absolute" style={{
+          bottom: 0, left: 0, width: '60vw', height: '35vh',
+          background: 'radial-gradient(ellipse at bottom left, rgba(212,149,106,0.06), transparent 65%)' }} />
+      </div>
       {/* Visible rose progress bar with soft glow */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-dark-text/6" style={{ height: 3 }}>
         <div className="h-full transition-all duration-500 ease-out"

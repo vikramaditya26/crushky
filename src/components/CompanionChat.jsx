@@ -954,9 +954,14 @@ export default function CompanionChat({ forceOpen = null }) {
             </p>
           </div>
 
-          {/* Messages — clean white chat background */}
+          {/* Messages — soft lavender chat background */}
           <div className="relative z-10 flex-1 overflow-y-auto px-5 md:px-6 py-5"
-            style={{ background: '#FFFFFF' }}>
+            style={{
+              background: '#F5F1FA',
+              backgroundImage: `radial-gradient(${companion.accent}12 1.2px, transparent 1.2px), radial-gradient(${companion.accent}08 1.2px, transparent 1.2px)`,
+              backgroundSize: '24px 24px, 24px 24px',
+              backgroundPosition: '0 0, 12px 12px',
+            }}>
             <div className="max-w-2xl mx-auto space-y-1">
               {messages.length === 0 && (
                 <p className="text-center text-dark-text/25 text-xs mt-12">
