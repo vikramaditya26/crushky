@@ -43,58 +43,61 @@ export default function Welcome() {
 
       {/* Auth stack */}
       <div className="relative z-10 px-6 pb-10 w-full max-w-sm mx-auto">
-        <p className="text-white/45 text-[11px] text-center leading-relaxed mb-5 px-4">
-          By tapping Sign in, you agree to our{' '}
-          <span className="underline underline-offset-2">Terms</span>. Learn how we process
-          your data in our <span className="underline underline-offset-2">Privacy Policy</span>.
-        </p>
-
-        {/* Google */}
-        <button
-          onClick={handleGoogle}
-          disabled={googleLoading}
-          className="w-full flex items-center justify-center gap-3 py-3.5 rounded-full bg-white font-semibold text-sm cursor-pointer transition-all hover:bg-white/90 active:scale-[0.98] mb-3 disabled:opacity-70"
-          style={{ color: '#1A1410' }}>
-          {googleLoading ? (
-            <span className="flex gap-1.5">
-              {[0, 1, 2].map(i => (
-                <span key={i} className="w-2 h-2 rounded-full animate-bounce"
-                  style={{ background: '#C94B4B', animationDelay: `${i * 150}ms` }} />
-              ))}
-            </span>
-          ) : (
-            <>
-              <svg width="18" height="18" viewBox="0 0 48 48">
-                <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.3 6.1 29.4 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
-                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.3 6.1 29.4 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
-                <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/>
-              </svg>
-              Continue with Google
-            </>
-          )}
-        </button>
-
-        {/* Phone */}
-        <button
-          onClick={() => navigate('/login')}
-          className="w-full flex items-center justify-center gap-3 py-3.5 rounded-full font-semibold text-sm text-white cursor-pointer transition-all active:scale-[0.98] mb-5"
-          style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }}>
-          <span style={{ fontSize: 16 }}>📱</span> Continue with phone number
-        </button>
-
-        <p className="text-white/40 text-xs text-center cursor-pointer hover:text-white/60 transition-colors"
-          onClick={() => navigate('/login')}>
-          Trouble signing in?
-        </p>
-
-        {/* Investor / demo shortcut — skips auth + signup, lands in the app */}
+        {/* PRIMARY — skip straight into the app (no login friction for demos) */}
         <button
           onClick={() => { seedDemoUser(); navigate('/dashboard') }}
-          className="w-full mt-6 py-2.5 text-white/55 text-xs font-medium cursor-pointer hover:text-white transition-colors flex items-center justify-center gap-1.5"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 18 }}>
-          Just exploring? Skip into the app →
+          className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-white font-bold text-[15px] cursor-pointer transition-all hover:opacity-95 active:scale-[0.98] mb-3"
+          style={{ color: '#1A1410', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
+          Enter Crushky
+          <span className="transition-transform">→</span>
         </button>
+        <p className="text-white/45 text-[11px] text-center mb-6">No sign-up needed to look around</p>
+
+        {/* Secondary — real sign-in options, quieter */}
+        <div className="flex items-center gap-3 mb-4">
+          <span className="h-px flex-1 bg-white/15" />
+          <span className="text-white/35 text-[10px] tracking-widest uppercase">or sign in</span>
+          <span className="h-px flex-1 bg-white/15" />
+        </div>
+
+        <div className="flex gap-2.5">
+          <button
+            onClick={handleGoogle}
+            disabled={googleLoading}
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-white text-xs font-medium cursor-pointer transition-all active:scale-[0.98] disabled:opacity-70"
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)' }}>
+            {googleLoading ? (
+              <span className="flex gap-1">
+                {[0, 1, 2].map(i => (
+                  <span key={i} className="w-1.5 h-1.5 rounded-full animate-bounce"
+                    style={{ background: '#fff', animationDelay: `${i * 150}ms` }} />
+                ))}
+              </span>
+            ) : (
+              <>
+                <svg width="15" height="15" viewBox="0 0 48 48">
+                  <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.3 6.1 29.4 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
+                  <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.3 6.1 29.4 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+                  <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
+                  <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/>
+                </svg>
+                Google
+              </>
+            )}
+          </button>
+          <button
+            onClick={() => navigate('/login')}
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-white text-xs font-medium cursor-pointer transition-all active:scale-[0.98]"
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)' }}>
+            <span style={{ fontSize: 14 }}>📱</span> Phone
+          </button>
+        </div>
+
+        <p className="text-white/35 text-[10px] text-center leading-relaxed mt-6 px-4">
+          By continuing you agree to our{' '}
+          <span className="underline underline-offset-2">Terms</span> &amp;{' '}
+          <span className="underline underline-offset-2">Privacy Policy</span>.
+        </p>
       </div>
     </div>
   )

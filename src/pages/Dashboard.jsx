@@ -8,22 +8,6 @@ import { SpotifyIcon, InstagramIcon, PhoneIcon, BellIcon, EyeIcon, ShieldIcon, D
 import Pic from '../components/Pic'
 import { INTEREST_TITLES, sharedTasteLine } from '../lib/interests'
 
-// One soft pop when a match reveals — Web Audio, no asset needed
-function playPop() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)()
-    const o = ctx.createOscillator()
-    const g = ctx.createGain()
-    o.connect(g); g.connect(ctx.destination)
-    o.type = 'sine'
-    o.frequency.setValueAtTime(620, ctx.currentTime)
-    o.frequency.exponentialRampToValueAtTime(920, ctx.currentTime + 0.09)
-    g.gain.setValueAtTime(0.07, ctx.currentTime)
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28)
-    o.start(); o.stop(ctx.currentTime + 0.3)
-  } catch { /* audio blocked */ }
-}
-
 const DEMO_CONVERSATION = [
   // 0-1 — Opening
   { role: 'assistant', content: "Hey! I'm Crushky. No forms, no checkboxes — just real talk. I ask, you answer honestly, and I find the people you'd actually click with. Sound good?" },
@@ -167,13 +151,13 @@ function VoiceEntry({ onStart }) {
     // hears you before the conversation starts. Falls back to a timed entry.
     const rec = createRecognizer({
       onResult: (text) => setTranscript(text),
-      onEnd: () => setTimeout(finish, 600),
+      onEnd: () => setTimeout(finish, 300),
     })
     if (rec) {
       try { rec.start() } catch { /* already started */ }
-      setTimeout(() => { try { rec.stop() } catch {} }, 5000)
+      setTimeout(() => { try { rec.stop() } catch {} }, 2600)
     } else {
-      setTimeout(finish, 2000)
+      setTimeout(finish, 900)
     }
   }
 
@@ -287,7 +271,7 @@ export default function Dashboard() {
         if (cur !== 'companion') setNudge(NUDGES[Math.floor(Math.random() * NUDGES.length)])
         return cur
       })
-    }, 8000)
+    }, 3500)
     return () => clearTimeout(t)
   }, [])
 
@@ -298,8 +282,8 @@ export default function Dashboard() {
 
     const msg = DEMO_CONVERSATION[autoIndex]
     const isAssistant = msg.role === 'assistant'
-    // Slower pacing for a more natural feel
-    const delay = autoIndex === 0 ? 1000 : isAssistant ? 1800 : 1100
+    // Snappy pacing — people have no patience in a demo
+    const delay = autoIndex === 0 ? 400 : isAssistant ? 900 : 650
 
     if (isAssistant && autoIndex > 0) {
       setIsTyping(true)
@@ -328,11 +312,10 @@ export default function Dashboard() {
         const m = seedMatches[reveal.matchIdx]
         setRevealedMatches(prev => [...prev, m])
         setNewReveal(m.id)
-        playPop()
         setToast(m)
         setTimeout(() => setToast(null), 3500)
         setTimeout(() => setNewReveal(null), 2500)
-      }, 800)
+      }, 350)
     }
   }
 
@@ -457,7 +440,7 @@ export default function Dashboard() {
       )}
 
       {tab === 'talk' && talkStarted && (
-        <div className="max-w-[480px] mx-auto flex flex-col" style={{ height: 'calc(100dvh - 120px)' }}>
+        <div className="max-w-[480px] mx-auto flex flex-col bg-white" style={{ height: 'calc(100dvh - 120px)' }}>
           {/* Slim listening indicator */}
           <div className="flex items-center justify-center gap-2 py-2 border-b border-dark-text/5">
             <span className="w-1.5 h-1.5 bg-rose rounded-full animate-pulse" />
@@ -515,7 +498,7 @@ export default function Dashboard() {
           </div>
 
           {/* Input (disabled during demo) */}
-          <div className="bg-cream/80 backdrop-blur-lg border-t border-dark-text/5 px-5 md:px-10 py-3">
+          <div className="bg-white/90 backdrop-blur-lg border-t border-dark-text/5 px-5 md:px-10 py-3">
             <div className="max-w-2xl mx-auto flex gap-3">
               <input
                 type="text"

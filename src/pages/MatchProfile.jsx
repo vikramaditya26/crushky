@@ -235,7 +235,7 @@ export default function MatchProfile() {
 
       {/* ─── CHAT TAB ─── */}
       {tab === 'chat' && (
-        <div className="flex-1 flex flex-col max-w-[480px] mx-auto w-full" style={{ height: 'calc(100vh - 140px)' }}>
+        <div className="flex-1 flex flex-col max-w-[480px] mx-auto w-full bg-white" style={{ height: 'calc(100vh - 140px)' }}>
           {/* Messages area */}
           <div className="flex-1 overflow-y-auto px-5 md:px-10 py-4">
             {/* Match intro card */}
@@ -258,13 +258,12 @@ export default function MatchProfile() {
                   <div className={`max-w-[75%] ${
                     msg.from === 'you' ? '' : ''
                   }`}>
-                    {/* Regular text message */}
+                    {/* Regular text message — purple you / soft neutral them */}
                     {msg.type === 'text' && (
-                      <div className={`px-4 py-2.5 text-[13px] leading-relaxed ${
-                        msg.from === 'you'
-                          ? 'bg-rose text-white rounded-2xl rounded-br-sm'
-                          : 'bg-white border border-dark-text/5 text-dark-text/80 rounded-2xl rounded-bl-sm'
-                      }`}>
+                      <div className="px-4 py-2.5 text-[13px] leading-relaxed"
+                        style={msg.from === 'you'
+                          ? { background: '#7C5CBF', color: '#fff', borderRadius: '20px 20px 5px 20px', boxShadow: '0 2px 8px rgba(124,92,191,0.28)' }
+                          : { background: '#F1EFF5', color: '#1A1410', borderRadius: '20px 20px 20px 5px' }}>
                         {msg.text}
                       </div>
                     )}
@@ -350,7 +349,7 @@ export default function MatchProfile() {
           </div>
 
           {/* Quick actions bar */}
-          <div className="px-5 md:px-10 py-2 border-t border-dark-text/5 bg-cream/80">
+          <div className="px-5 md:px-10 py-2 border-t border-dark-text/5 bg-white">
             <div className="flex gap-2 overflow-x-auto pb-1">
               {QUICK_ACTIONS.map((a) => (
                 <button
@@ -365,7 +364,7 @@ export default function MatchProfile() {
           </div>
 
           {/* Message input */}
-          <div className="px-5 md:px-10 py-3 border-t border-dark-text/5 bg-cream">
+          <div className="px-5 md:px-10 py-3 border-t border-dark-text/5 bg-white">
             <div className="flex gap-2">
               <input
                 type="text"
