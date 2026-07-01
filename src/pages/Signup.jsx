@@ -131,7 +131,7 @@ function OptionRow({ label, selected, onClick }) {
       <span className="w-6 h-6 rounded-full flex items-center justify-center transition-all"
         style={{
           border: selected ? 'none' : '2px solid rgba(26,20,16,0.18)',
-          background: selected ? '#C94B4B' : 'transparent',
+          background: selected ? '#5B2E8F' : 'transparent',
         }}>
         {selected && <span className="text-white text-[11px] font-bold">✓</span>}
       </span>
@@ -147,7 +147,7 @@ function ContinueFab({ onClick, disabled }) {
         onClick={onClick}
         disabled={disabled}
         className="pointer-events-auto block w-full max-w-md mx-auto py-4 rounded-full text-white font-bold text-[15px] cursor-pointer transition-all hover:opacity-95 active:scale-[0.98] disabled:opacity-25 disabled:cursor-not-allowed"
-        style={{ background: '#C94B4B', boxShadow: '0 10px 30px rgba(201,75,75,0.35)' }}>
+        style={{ background: '#5B2E8F', boxShadow: '0 10px 30px rgba(91,46,143,0.35)' }}>
         Continue
       </button>
     </div>
@@ -272,16 +272,16 @@ export default function Signup() {
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute" style={{
           top: 0, right: 0, width: '50vw', height: '40vh',
-          background: 'radial-gradient(ellipse at top right, rgba(201,75,75,0.05), transparent 65%)' }} />
+          background: 'radial-gradient(ellipse at top right, rgba(91,46,143,0.05), transparent 65%)' }} />
         <div className="absolute" style={{
           bottom: 0, left: 0, width: '60vw', height: '35vh',
-          background: 'radial-gradient(ellipse at bottom left, rgba(212,149,106,0.06), transparent 65%)' }} />
+          background: 'radial-gradient(ellipse at bottom left, rgba(169,143,214,0.06), transparent 65%)' }} />
       </div>
       {/* Visible rose progress bar with soft glow */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-dark-text/6" style={{ height: 3 }}>
         <div className="h-full transition-all duration-500 ease-out"
-          style={{ width: `${progress}%`, background: '#C94B4B',
-            boxShadow: '0 0 8px rgba(201,75,75,0.5)', borderRadius: '0 3px 3px 0' }} />
+          style={{ width: `${progress}%`, background: '#5B2E8F',
+            boxShadow: '0 0 8px rgba(91,46,143,0.5)', borderRadius: '0 3px 3px 0' }} />
       </div>
 
       {/* Back */}
@@ -406,8 +406,8 @@ export default function Signup() {
                     className="relative rounded-xl overflow-hidden cursor-pointer transition-all"
                     style={{
                       aspectRatio: '2/3',
-                      border: isSel ? '2.5px solid #C94B4B' : '2.5px solid transparent',
-                      boxShadow: isSel ? '0 0 14px rgba(201,75,75,0.3)' : '0 1px 3px rgba(0,0,0,0.06)',
+                      border: isSel ? '2.5px solid #5B2E8F' : '2.5px solid transparent',
+                      boxShadow: isSel ? '0 0 14px rgba(91,46,143,0.3)' : '0 1px 3px rgba(0,0,0,0.06)',
                     }}>
                     <img src={item.img} alt={item.title}
                       className="w-full h-full object-cover"
@@ -491,7 +491,7 @@ export default function Signup() {
                     className="relative cursor-pointer transition-all duration-300"
                     style={{ transform: `rotate(${rotations[i]}deg) scale(${isSel ? 1.04 : 1})` }}>
                     <div className={`border-[1.5px] rounded-lg overflow-hidden transition-all ${
-                      isSel ? 'border-rose shadow-[0_0_16px_rgba(201,75,75,0.25)]' : 'border-dark-text/10'
+                      isSel ? 'border-rose shadow-[0_0_16px_rgba(91,46,143,0.25)]' : 'border-dark-text/10'
                     }`} style={{ background: '#fff', padding: '5px 5px 18px 5px' }}>
                       <img src={photo} alt="" className="w-24 h-32 object-cover rounded-sm" />
                     </div>
@@ -511,7 +511,7 @@ export default function Signup() {
                   <img src={DEMO_PHOTOS[selectedPhotos[0]]} className="w-14 h-14 rounded-xl object-cover" alt="" />
                 ) : (
                   <div className="w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold text-white"
-                    style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>
+                    style={{ background: 'linear-gradient(135deg, #5B2E8F, #A98FD6)' }}>
                     {form.name ? form.name[0].toUpperCase() : '?'}
                   </div>
                 )}

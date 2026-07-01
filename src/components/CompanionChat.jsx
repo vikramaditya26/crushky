@@ -108,7 +108,7 @@ const SESSIONS = [
     id: 'video',    icon: <VideoIcon size={20} color="#7C5CBF" />, title: 'Video Call',
     desc: 'See their face. Talk face-to-face in real time.',
     badge: 'Premium',
-    color: 'rgba(201,75,75,0.08)',
+    color: 'rgba(91,46,143,0.08)',
   },
   {
     id: 'deep',     icon: <BrainIcon size={20} color="#7C5CBF" />, title: 'Deep Dive',
@@ -123,12 +123,12 @@ const SESSIONS = [
   {
     id: 'roleplay', icon: <MasksIcon size={20} color="#7C5CBF" />, title: 'Roleplay a Conversation',
     desc: "Practice that important conversation before it happens — with a match, a date, anyone.",
-    color: 'rgba(212,149,106,0.08)',
+    color: 'rgba(169,143,214,0.08)',
   },
   {
     id: 'affirmation', icon: <SparkleIcon size={20} color="#7C5CBF" />, title: 'Affirmation Session',
     desc: "Some things you need to hear. I'm going to say them.",
-    color: 'rgba(201,75,75,0.06)',
+    color: 'rgba(91,46,143,0.06)',
   },
   {
     id: 'life',     icon: <MapIcon size={20} color="#7C5CBF" />, title: 'Map Your Life',
@@ -149,7 +149,7 @@ function AnimatedBg({ accent = '#8E6FC8' }) {
       }} />
       <div className="absolute rounded-full animate-blob-2" style={{
         width: '240px', height: '240px',
-        background: 'radial-gradient(circle, rgba(212,149,106,0.1) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(169,143,214,0.1) 0%, transparent 70%)',
         bottom: '15%', left: '-5%', filter: 'blur(60px)',
       }} />
       <div className="absolute rounded-full animate-blob-3" style={{
@@ -162,7 +162,7 @@ function AnimatedBg({ accent = '#8E6FC8' }) {
 }
 
 // ── Mic Icon SVG ──
-function MicIcon({ color = '#C94B4B', size = 26 }) {
+function MicIcon({ color = '#5B2E8F', size = 26 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
       stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -247,7 +247,7 @@ function PaywallModal({ onClose, onUnlock, trigger }) {
                 {PERKS.map(p => (
                   <div key={p.text} className="flex items-center gap-3">
                     <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs shrink-0"
-                      style={{ background: 'rgba(201,75,75,0.08)' }}>{p.icon}</span>
+                      style={{ background: 'rgba(91,46,143,0.08)' }}>{p.icon}</span>
                     <p className="text-dark-text/65 text-[13px]">{p.text}</p>
                   </div>
                 ))}
@@ -263,7 +263,7 @@ function PaywallModal({ onClose, onUnlock, trigger }) {
               <button onClick={handlePay}
                 className="w-full py-4 rounded-full text-white font-bold text-sm cursor-pointer transition-all hover:opacity-90 hover:scale-[1.01]"
                 style={{ background: 'linear-gradient(120deg, #7C5CBF, #A78BDA)',
-                  boxShadow: '0 8px 24px rgba(201,75,75,0.35)' }}>
+                  boxShadow: '0 8px 24px rgba(91,46,143,0.35)' }}>
                 Unlock everything ✦
               </button>
               <p className="text-dark-text/25 text-[10px] text-center mt-3">
@@ -290,7 +290,7 @@ function PaywallModal({ onClose, onUnlock, trigger }) {
           <div className="px-6 py-16 text-center au">
             <div className="w-16 h-16 mx-auto mb-5 rounded-full flex items-center justify-center text-2xl"
               style={{ background: 'linear-gradient(135deg, #7C5CBF, #A78BDA)',
-                boxShadow: '0 10px 30px rgba(201,75,75,0.4)' }}>
+                boxShadow: '0 10px 30px rgba(91,46,143,0.4)' }}>
               <span className="text-white">✦</span>
             </div>
             <p className="font-display text-2xl font-bold text-dark-text mb-1">Welcome to Premium</p>
@@ -340,7 +340,7 @@ function VideoCallOverlay({ companion, onEnd }) {
         <p className="text-xs text-white/40 mb-8">Ringing</p>
         <button onClick={onEnd}
           className="w-14 h-14 rounded-full flex items-center justify-center cursor-pointer text-white text-lg rotate-[135deg]"
-          style={{ background: '#C94B4B' }}>
+          style={{ background: '#5B2E8F' }}>
           ☎
         </button>
       </div>
@@ -773,7 +773,7 @@ export default function CompanionChat({ forceOpen = null }) {
             <button onClick={() => setPaywall('locked')}
               className="w-full mt-6 py-3.5 rounded-full text-white font-semibold text-xs cursor-pointer transition-all hover:opacity-90"
               style={{ background: 'linear-gradient(120deg, #7C5CBF, #A78BDA)',
-                boxShadow: '0 6px 20px rgba(201,75,75,0.3)' }}>
+                boxShadow: '0 6px 20px rgba(91,46,143,0.3)' }}>
               Unlock all 4 friends — ₹299/mo ✦
             </button>
           ) : (
@@ -939,12 +939,12 @@ export default function CompanionChat({ forceOpen = null }) {
         <>
           {/* "Voice session in progress" banner — same as Talk tab */}
           <div className="relative z-10 shrink-0"
-            style={{ background: 'rgba(240,217,196,0.35)', borderBottom: '1px solid rgba(212,149,106,0.18)' }}>
+            style={{ background: 'rgba(240,217,196,0.35)', borderBottom: '1px solid rgba(169,143,214,0.18)' }}>
             <p className="text-dark-text/50 text-[11px] font-medium text-center py-2">
               {!isPremium ? (
                 <>🎙 {companion.name} is listening · <span
                   className="font-bold cursor-pointer"
-                  style={{ color: msgCount >= FREE_MESSAGE_LIMIT - 1 ? '#C94B4B' : undefined }}
+                  style={{ color: msgCount >= FREE_MESSAGE_LIMIT - 1 ? '#5B2E8F' : undefined }}
                   onClick={() => setPaywall('limit')}>
                   {Math.max(FREE_MESSAGE_LIMIT - msgCount, 0)} free {FREE_MESSAGE_LIMIT - msgCount === 1 ? 'message' : 'messages'} left ✦
                 </span></>
@@ -1119,7 +1119,7 @@ export default function CompanionChat({ forceOpen = null }) {
           {/* Upgrade card */}
           {!isPremium && (
             <div className="mt-6 rounded-2xl p-5"
-              style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(201,75,75,0.12)', backdropFilter: 'blur(12px)' }}>
+              style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(91,46,143,0.12)', backdropFilter: 'blur(12px)' }}>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[9px] font-bold px-2 py-0.5 rounded-full text-white"
                   style={{ background: 'linear-gradient(135deg, #7C5CBF, #A78BDA)' }}>PRO</span>

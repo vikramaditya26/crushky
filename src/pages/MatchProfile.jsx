@@ -439,7 +439,7 @@ export default function MatchProfile() {
               return (
                 <div className="bg-white rounded-2xl p-5 border border-dark-text/5 mb-5">
                   <h2 className="font-display text-sm font-bold mb-4 flex items-center gap-2">
-                    <HandshakeIcon size={16} color="#C94B4B" /> What you two share
+                    <HandshakeIcon size={16} color="#5B2E8F" /> What you two share
                   </h2>
                   <div className="space-y-3">
                     {items.map((item, i) => (
@@ -461,7 +461,7 @@ export default function MatchProfile() {
             {/* Why you click */}
             <div className="bg-gradient-to-br from-rose/8 to-amber/5 border border-rose/10 rounded-2xl p-5 mb-5">
               <h2 className="font-display text-sm font-bold text-rose mb-2 flex items-center gap-2">
-                <SparkleIcon size={15} color="#C94B4B" /> Why You Two Click
+                <SparkleIcon size={15} color="#5B2E8F" /> Why You Two Click
               </h2>
               <p className="text-dark-text/70 text-sm leading-relaxed">{match.whyYouMatch}</p>
             </div>
@@ -523,7 +523,7 @@ export default function MatchProfile() {
             {/* Date suggestions — Crushky's top pick + more spots you'd both like */}
             <div className="mb-8">
               <h2 className="font-display text-sm font-bold flex items-center gap-2 mb-3">
-                <ForkIcon size={15} color="#C94B4B" /> Where you two should go
+                <ForkIcon size={15} color="#5B2E8F" /> Where you two should go
               </h2>
 
               {/* Top pick */}

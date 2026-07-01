@@ -47,7 +47,7 @@ export default function Welcome() {
         <button
           onClick={() => { seedDemoUser(); navigate('/dashboard') }}
           className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full font-semibold text-sm text-white cursor-pointer transition-all hover:opacity-90 active:scale-[0.98] mb-3"
-          style={{ background: '#C94B4B', boxShadow: '0 10px 30px rgba(201,75,75,0.4)' }}>
+          style={{ background: '#5B2E8F', boxShadow: '0 10px 30px rgba(91,46,143,0.4)' }}>
           Start exploring <span>→</span>
         </button>
 
@@ -61,7 +61,7 @@ export default function Welcome() {
             <span className="flex gap-1.5">
               {[0, 1, 2].map(i => (
                 <span key={i} className="w-2 h-2 rounded-full animate-bounce"
-                  style={{ background: '#C94B4B', animationDelay: `${i * 150}ms` }} />
+                  style={{ background: '#5B2E8F', animationDelay: `${i * 150}ms` }} />
               ))}
             </span>
           ) : (

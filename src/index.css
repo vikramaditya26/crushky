@@ -4,11 +4,13 @@
   --color-dark: #0D0D0D;
   --color-cream: #F5F0EB;
   --color-warm-cream: #FAF7F4;
-  --color-rose: #C94B4B;
-  --color-rose-soft: #E8A5A5;
-  --color-rose-light: #F3D5D5;
-  --color-amber: #D4956A;
-  --color-amber-light: #F0D9C4;
+  /* Brand: Hinge-style deep violet. (Token still named 'rose' so every existing
+     bg-rose/text-rose class recolors here without touching markup.) */
+  --color-rose: #5B2E8F;
+  --color-rose-soft: #8B5FBF;
+  --color-rose-light: #E7DCF5;
+  --color-amber: #A98FD6;
+  --color-amber-light: #EDE6F7;
   --color-dark-green: #2D3B2D;
   --color-sage: #8FA68F;
   --color-light-text: #FAFAFA;

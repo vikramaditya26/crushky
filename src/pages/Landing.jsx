@@ -15,7 +15,7 @@ function Grain({ opacity = 0.055 }) {
 /* ─── Colours ─────────────────────────────────────────── */
 const CREAM  = '#F0EBE3'
 const INK    = '#1A1410'
-const ROSE   = '#C94B4B'
+const ROSE   = '#5B2E8F'
 const FOREST = '#1E2D1C'
 
 /* ─── Helpers ─────────────────────────────────────────── */
@@ -113,7 +113,7 @@ function StoryText({ idx, total, line1, emph, scrollYProgress }) {
         {line1}
       </p>
       <p className="font-display font-bold italic"
-        style={{ fontSize: 'clamp(40px, 8.5vw, 110px)', color: '#FDA4AF',
+        style={{ fontSize: 'clamp(40px, 8.5vw, 110px)', color: '#C4A5E8',
           lineHeight: 1, marginTop: '0.15em' }}>
         {emph}
       </p>
@@ -306,7 +306,7 @@ function PhoneDemo() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 style={{ background: '#fff', borderRadius: 18, overflow: 'hidden',
-                  boxShadow: '0 12px 30px -8px rgba(201,75,75,0.25)', border: '1px solid rgba(201,75,75,0.15)' }}>
+                  boxShadow: '0 12px 30px -8px rgba(91,46,143,0.25)', border: '1px solid rgba(91,46,143,0.15)' }}>
                 <div style={{ display: 'flex', gap: 10, padding: 10 }}>
                   <img src="/model/1.jpg"
                     alt="" style={{ width: 62, height: 78, borderRadius: 12, objectFit: 'cover' }} />
@@ -501,7 +501,7 @@ export default function Landing() {
               style={{ fontSize: 'clamp(38px, 8vw, 110px)', lineHeight: 0.98,
                 color: CREAM, marginBottom: '1.75rem', letterSpacing: '-0.02em' }}>
               The app that{' '}
-              <em style={{ color: '#FDA4AF', fontStyle: 'italic' }}>listens</em>
+              <em style={{ color: '#C4A5E8', fontStyle: 'italic' }}>listens</em>
               <br />before it matches.
             </motion.h1>
 
@@ -593,7 +593,7 @@ export default function Landing() {
                 lineHeight: 1.05, letterSpacing: '-0.01em' }}>
               Three steps.
               <br />
-              <em style={{ color: '#FDA4AF' }}>One person.</em>
+              <em style={{ color: '#C4A5E8' }}>One person.</em>
             </h2>
           </FadeIn>
         </div>
@@ -622,7 +622,7 @@ export default function Landing() {
             <h2 className="font-display font-bold"
               style={{ fontSize: 'clamp(40px, 7.5vw, 96px)', color: CREAM,
                 lineHeight: 1.02, marginBottom: '1.75rem', letterSpacing: '-0.02em' }}>
-              The app that <em style={{ color: '#FDA4AF' }}>listens</em>
+              The app that <em style={{ color: '#C4A5E8' }}>listens</em>
               <br />before it matches.
             </h2>
           </FadeIn>

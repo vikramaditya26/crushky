@@ -166,7 +166,7 @@ function VoiceEntry({ onStart }) {
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(201,75,75,0.06) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(91,46,143,0.06) 0%, transparent 70%)' }} />
       </div>
 
       <div className="relative flex flex-col items-center au">
@@ -185,9 +185,9 @@ function VoiceEntry({ onStart }) {
             }`}
             style={{
               background: listening
-                ? 'linear-gradient(135deg, #C94B4B, #D4956A)'
-                : 'rgba(201,75,75,0.12)',
-              border: '1.5px solid rgba(201,75,75,0.3)',
+                ? 'linear-gradient(135deg, #5B2E8F, #A98FD6)'
+                : 'rgba(91,46,143,0.12)',
+              border: '1.5px solid rgba(91,46,143,0.3)',
             }}
           >
             {listening ? (
@@ -198,7 +198,7 @@ function VoiceEntry({ onStart }) {
                 ))}
               </div>
             ) : (
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(201,75,75,0.9)" strokeWidth="1.8" strokeLinecap="round">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(91,46,143,0.9)" strokeWidth="1.8" strokeLinecap="round">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                 <line x1="12" y1="19" x2="12" y2="23"/>
@@ -350,7 +350,7 @@ export default function Dashboard() {
           </div>
           <button onClick={() => setTab('profile')}
             className="w-9 h-9 rounded-full bg-gradient-to-br from-rose-soft to-amber flex items-center justify-center text-sm font-semibold text-white cursor-pointer transition-all hover:scale-105"
-            style={{ outline: tab === 'profile' ? '2px solid #C94B4B' : 'none', outlineOffset: 2 }}>
+            style={{ outline: tab === 'profile' ? '2px solid #5B2E8F' : 'none', outlineOffset: 2 }}>
             {user.name ? user.name[0].toUpperCase() : 'A'}
           </button>
         </div>
@@ -361,7 +361,7 @@ export default function Dashboard() {
         <button
           onClick={() => { setTab('matches'); setToast(null) }}
           className="toast-in fixed top-16 left-1/2 z-[60] flex items-center gap-3 bg-white rounded-full pl-1.5 pr-5 py-1.5 cursor-pointer"
-          style={{ transform: 'translateX(-50%)', boxShadow: '0 12px 36px rgba(26,20,16,0.18)', border: '1px solid rgba(201,75,75,0.15)' }}>
+          style={{ transform: 'translateX(-50%)', boxShadow: '0 12px 36px rgba(26,20,16,0.18)', border: '1px solid rgba(91,46,143,0.15)' }}>
           <img src={toast.photo} alt="" className="w-9 h-9 rounded-full object-cover" />
           <span className="text-left">
             <span className="block text-dark-text text-xs font-bold">✦ New match — {toast.name}</span>
@@ -407,18 +407,18 @@ export default function Dashboard() {
                 className="flex-1 flex flex-col items-center gap-0.5 pt-2.5 pb-2 cursor-pointer transition-all relative">
                 {t.id === 'profile' ? (
                   <span className="w-6 h-6 rounded-full bg-gradient-to-br from-rose-soft to-amber flex items-center justify-center text-[10px] font-bold text-white transition-all"
-                    style={{ outline: active ? '2px solid #C94B4B' : 'none', outlineOffset: 1.5 }}>
+                    style={{ outline: active ? '2px solid #5B2E8F' : 'none', outlineOffset: 1.5 }}>
                     {user.name ? user.name[0].toUpperCase() : 'A'}
                   </span>
                 ) : (
                   <span className="text-xl leading-none transition-all"
-                    style={{ color: active ? '#C94B4B' : 'rgba(26,26,26,0.3)',
+                    style={{ color: active ? '#5B2E8F' : 'rgba(26,26,26,0.3)',
                       transform: active ? 'scale(1.12)' : 'scale(1)' }}>
                     {t.icon}
                   </span>
                 )}
                 <span className="text-[10px] font-semibold"
-                  style={{ color: active ? '#C94B4B' : 'rgba(26,26,26,0.35)' }}>
+                  style={{ color: active ? '#5B2E8F' : 'rgba(26,26,26,0.35)' }}>
                   {t.label}
                 </span>
                 {t.badge && (
@@ -525,7 +525,7 @@ export default function Dashboard() {
                   <div key={i} className="absolute inset-0 rounded-lg bg-white border border-dark-text/8 shadow-md"
                     style={{ transform: `rotate(${p.r}deg) translateX(${p.x}px)`, padding: '6px 6px 16px' }}>
                     <div className="w-full h-full rounded-sm"
-                      style={{ background: 'linear-gradient(135deg, rgba(201,75,75,0.12), rgba(212,149,106,0.15))' }} />
+                      style={{ background: 'linear-gradient(135deg, rgba(91,46,143,0.12), rgba(169,143,214,0.15))' }} />
                   </div>
                 ))}
                 <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-rose text-lg">✦</span>
@@ -706,11 +706,11 @@ export default function Dashboard() {
             </div>
             {localStorage.getItem('crushky_premium') === 'true' ? (
               <span className="text-[10px] font-bold px-3 py-1.5 rounded-full text-white"
-                style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>PRO</span>
+                style={{ background: 'linear-gradient(135deg, #5B2E8F, #A98FD6)' }}>PRO</span>
             ) : (
               <button onClick={() => setTab('companion')}
                 className="text-xs font-bold px-4 py-2 rounded-full text-white cursor-pointer hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #C94B4B, #D4956A)' }}>
+                style={{ background: 'linear-gradient(135deg, #5B2E8F, #A98FD6)' }}>
                 Upgrade
               </button>
             )}
@@ -778,7 +778,7 @@ export default function Dashboard() {
                 }
               }}
               className="w-full py-3.5 rounded-full text-sm font-medium cursor-pointer transition-all hover:bg-rose/5"
-              style={{ border: '1px solid rgba(201,75,75,0.25)', color: '#C94B4B' }}>
+              style={{ border: '1px solid rgba(91,46,143,0.25)', color: '#5B2E8F' }}>
               Delete account
             </button>
           </div>

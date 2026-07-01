@@ -34,7 +34,7 @@ export function WhatsAppIcon({ size = 18 }) {
   )
 }
 
-export function CalendarIcon({ size = 18, color = '#C94B4B' }) {
+export function CalendarIcon({ size = 18, color = '#5B2E8F' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round">
       <rect x="3" y="4" width="18" height="18" rx="3" />
@@ -119,7 +119,7 @@ export const HandshakeIcon = (p) => (
   <Line {...p}><path d="M11 17l-2.2-2.2M14 14l-2.2-2.2M2.5 8.5L7 4l4.5 1.5L16 4l5.5 5.5-2 2L17 9l-4 4.5a1.6 1.6 0 0 1-2.3 0L8 10.8l-3.5 3z"/><path d="M4.5 13.8L8 17.3a1.6 1.6 0 0 0 2.3 0M8 17.3l1.5 1.5a1.6 1.6 0 0 0 2.3 0"/></Line>
 )
 
-export function PinIcon({ size = 18, color = '#C94B4B' }) {
+export function PinIcon({ size = 18, color = '#5B2E8F' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />

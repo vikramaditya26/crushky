@@ -94,7 +94,7 @@ export default function Login() {
               onClick={sendOtp}
               disabled={phone.length !== 10 || sending}
               className="w-full py-4 rounded-full text-white font-semibold text-sm cursor-pointer transition-all hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(120deg, #C94B4B, #D4956A)' }}>
+              style={{ background: 'linear-gradient(120deg, #5B2E8F, #A98FD6)' }}>
               {sending ? 'Sending…' : 'Send OTP'}
             </button>
 
@@ -129,8 +129,8 @@ export default function Login() {
                   onChange={e => handleOtpInput(i, e.target.value)}
                   className="w-14 h-16 text-center text-2xl font-bold bg-white rounded-2xl outline-none transition-all text-dark-text"
                   style={{
-                    border: d ? '2px solid #C94B4B' : '2px solid rgba(0,0,0,0.08)',
-                    boxShadow: d ? '0 0 12px rgba(201,75,75,0.15)' : 'none',
+                    border: d ? '2px solid #5B2E8F' : '2px solid rgba(0,0,0,0.08)',
+                    boxShadow: d ? '0 0 12px rgba(91,46,143,0.15)' : 'none',
                   }}
                 />
               ))}
